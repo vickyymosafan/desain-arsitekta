@@ -15,7 +15,7 @@ export default function Welcome() {
             <Head title="Arsitekta - Jasa Desain dan Bangun Rumah Profesional" />
             
             {/* Navbar */}
-            <nav className="fixed top-0 left-0 right-0 bg-white/95 shadow-md z-50 transition-all duration-300 backdrop-blur-sm">
+            <nav className="fixed top-0 left-0 right-0 bg-white shadow-md z-50 transition-all duration-300">
                 <div className="container mx-auto px-6">
                     <div className="flex justify-between items-center py-4">
                         {/* Logo */}
@@ -194,10 +194,8 @@ export default function Welcome() {
             </section>
             
             {/* Statistics */}
-            <section className="py-16 bg-white relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-50 rounded-full -translate-y-1/2 translate-x-1/3 opacity-70"></div>
-                <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-50 rounded-full translate-y-1/2 -translate-x-1/3 opacity-70"></div>
-                <div className="container mx-auto px-6 relative">
+            <section className="py-12 bg-white">
+                <div className="container mx-auto px-6">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {[
                             { number: '150+', label: 'Proyek Selesai', icon: 'M7 12l3-3 3 3 4-4M17 21H7a2 2 0 01-2-2V5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2z' },
@@ -210,7 +208,7 @@ export default function Welcome() {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.6, delay: index * 0.1 }}
                                 viewport={{ once: true, amount: 0.5 }}
-                                className="bg-gradient-to-br from-white to-emerald-50 rounded-lg p-8 text-center relative overflow-hidden group shadow-md hover:shadow-xl transition-all duration-300"
+                                className="bg-gray-50 rounded-sm p-8 text-center relative overflow-hidden group"
                             >
                                 <div className="absolute -right-10 -top-10 w-40 h-40 bg-emerald-50 rounded-full group-hover:scale-150 transition-transform duration-500 ease-out"></div>
                                 <div className="relative">
@@ -229,10 +227,8 @@ export default function Welcome() {
             </section>
 
             {/* Fitur Layanan */}
-            <section id="services" className="py-24 bg-gradient-to-br from-emerald-50/50 to-white relative overflow-hidden">
-                <div className="absolute top-0 left-1/4 w-64 h-64 bg-emerald-100/30 rounded-full blur-3xl"></div>
-                <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-emerald-50/50 rounded-full blur-3xl"></div>
-                <div className="container mx-auto px-6 relative">
+            <section id="services" className="py-24 bg-gray-50">
+                <div className="container mx-auto px-6">
                     <motion.div 
                         initial={{ opacity: 0, y: 30 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -295,9 +291,8 @@ export default function Welcome() {
             </section>
 
             {/* Portfolio Gallery */}
-            <section id="portfolio" className="py-24 bg-white relative overflow-hidden">
-                <div className="absolute top-1/2 left-0 transform -translate-y-1/2 w-96 h-96 bg-emerald-50/50 rounded-full -translate-x-1/2 blur-3xl"></div>
-                <div className="container mx-auto px-6 relative">
+            <section id="portfolio" className="py-24 bg-white">
+                <div className="container mx-auto px-6">
                     <motion.div 
                         initial={{ opacity: 0, y: 30 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -359,7 +354,7 @@ export default function Welcome() {
                                 location: 'Lumajang, Jawa Timur'
                             },
                             { 
-                                image: 'https://images.unsplash.com/photo-1600566753151-384129cf4e3e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80', 
+                                image: 'https://images.unsplash.com/photo-1600566753151-384129cf4e3e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80', 
                                 title: 'Ruko 2 Lantai', 
                                 category: 'komersial',
                                 location: 'Jember, Jawa Timur'
@@ -491,7 +486,7 @@ export default function Welcome() {
                                     style={{ width: `${beforeAfterPosition}%` }}
                                 >
                                     <img 
-                                        src="https://images.unsplash.com/photo-1600607687920-4e2a775e55f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" 
+                                        src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" 
                                         alt="After renovation" 
                                         className="absolute inset-0 w-full h-full object-cover"
                                         style={{ width: `${100 / (beforeAfterPosition/100)}%` }}
@@ -741,7 +736,7 @@ export default function Welcome() {
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                     </svg>
-                                    <span>Email: <a href="mailto:info@arsitekta.com" className="text-emerald-600">info@arsitekta.com</a></span>
+                                    <span>Email: [info@arsitekta.com](mailto:info@arsitekta.com)</span>
                                 </li>
                             </ul>
                         </motion.div>
