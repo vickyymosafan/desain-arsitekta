@@ -56,7 +56,7 @@ interface PageProps extends SharedData {
 }
 
 export default function Welcome() {
-    const { auth, services, portfolios, testimonials, faqs, beforeAfterProjects, stats } = usePage<PageProps>().props;
+    const { auth, services, portfolios, faqs } = usePage<PageProps>().props;
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('semua');
     const [activeFaq, setActiveFaq] = useState<number | null>(null);
