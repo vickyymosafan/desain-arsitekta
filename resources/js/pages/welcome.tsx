@@ -354,7 +354,7 @@ export default function Welcome() {
                                 location: 'Lumajang, Jawa Timur'
                             },
                             { 
-                                image: 'https://images.unsplash.com/photo-1600566753151-384129cf4e3e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80', 
+                                image: 'https://images.unsplash.com/photo-1600566753151-384129cf4e3e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80', 
                                 title: 'Ruko 2 Lantai', 
                                 category: 'komersial',
                                 location: 'Jember, Jawa Timur'
@@ -791,7 +791,7 @@ export default function Welcome() {
                             <h3 className="text-lg font-bold text-gray-900 mb-4">Lokasi Kami</h3>
                             <div className="h-64 overflow-hidden rounded-sm">
                                 <iframe 
-                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3951.842237340766!2d113.71825341428633!3d-8.174737394532955!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd69528b8a6f5b3%3A0x401a1f3a7b3e490!2sJl.%20Raya%20Jember%2C%20No.%20123%2C%20Jember%2C%20Jawa%20Timur!5e0!3m2!1sid!2sid!4v1641954333426!5m2!1sid!2sid" 
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3949.851742597738!2d113.69312231532292!3d-8.150696694167343!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd695266ceb2fbb%3A0x4f7d8c2cd93f9499!2sANTOSA%20ARCHITECT%20%7C%20JASA%20ARSITEK%20PROFESIONAL%20BERLISENSI!5e0!3m2!1sid!2sid!4v1713371884018!5m2!1sid!2sid" 
                                     frameBorder="0" 
                                     allowFullScreen 
                                     loading="lazy" 
