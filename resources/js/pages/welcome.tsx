@@ -3,12 +3,72 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import type { SharedData } from '@/types';
 
+// Define types for our page props
+interface Service {
+    id: number;
+    title: string;
+    description: string;
+    icon: string | null;
+    image: string | null;
+}
+
+interface Portfolio {
+    id: number;
+    title: string;
+    description: string;
+    image: string;
+    category: string;
+    completion_date: string | null;
+    location: string | null;
+    client_name: string | null;
+    before_image: string | null;
+    after_image: string | null;
+}
+
+interface Testimonial {
+    id: number;
+    client_name: string;
+    client_title: string | null;
+    content: string;
+    image: string | null;
+    rating: number;
+}
+
+interface Faq {
+    id: number;
+    question: string;
+    answer: string;
+}
+
+interface Stats {
+    projects: number;
+    experience: number;
+    clients: number;
+}
+
+interface PageProps extends SharedData {
+    services: Service[];
+    portfolios: Record<string, Portfolio[]>;
+    testimonials: Testimonial[];
+    faqs: Faq[];
+    beforeAfterProjects: Portfolio[];
+    stats: Stats;
+}
+
 export default function Welcome() {
-    const { auth } = usePage<SharedData>().props;
+    const { auth, services, portfolios, testimonials, faqs, beforeAfterProjects, stats } = usePage<PageProps>().props;
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('semua');
     const [activeFaq, setActiveFaq] = useState<number | null>(null);
     const [beforeAfterPosition, setBeforeAfterPosition] = useState(50);
+    
+    // Get all unique portfolio categories
+    const portfolioCategories = Object.keys(portfolios);
+    
+    // Get filtered portfolios based on active tab
+    const filteredPortfolios = activeTab === 'semua' 
+        ? Object.values(portfolios).flat() 
+        : portfolios[activeTab] || [];
     
     return (
         <>
@@ -198,9 +258,9 @@ export default function Welcome() {
                 <div className="container mx-auto px-6">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {[
-                            { number: '150+', label: 'Proyek Selesai', icon: 'M7 12l3-3 3 3 4-4M17 21H7a2 2 0 01-2-2V5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2z' },
-                            { number: '10+', label: 'Tahun Pengalaman', icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z' },
-                            { number: '99%', label: 'Klien Puas', icon: 'M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5' }
+                            { number: '150+', label: 'Proyek Selesai', icon: 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z' },
+                            { number: '10+', label: 'Tahun Pengalaman', icon: 'M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z' },
+                            { number: '99%', label: 'Klien Puas', icon: 'M14 10h4.764a2 2 0 0 1 1.789 2.894l-3.5 7A2 2 0 0 1 15.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 0 0-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2h2.5' }
                         ].map((stat, index) => (
                             <motion.div 
                                 key={index}
@@ -246,25 +306,9 @@ export default function Welcome() {
                     </motion.div>
                     
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {[
-                            { 
-                                icon: 'M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2', 
-                                title: 'Desain Arsitektur', 
-                                description: 'Jasa desain arsitektur untuk rumah, ruko, atau gedung dengan konsep modern, minimalis, atau klasik sesuai keinginan Anda.'
-                            },
-                            { 
-                                icon: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4', 
-                                title: 'Konstruksi', 
-                                description: 'Layanan pembangunan rumah dan bangunan komersial dari awal hingga selesai dengan kualitas premium dan tepat waktu.'
-                            },
-                            { 
-                                icon: 'M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z', 
-                                title: 'Interior Design', 
-                                description: 'Desain interior yang fungsional dan estetis untuk menciptakan ruang yang nyaman dan sesuai dengan gaya hidup Anda.'
-                            }
-                        ].map((service, index) => (
+                        {services.map((service, index) => (
                             <motion.div 
-                                key={index}
+                                key={service.id}
                                 initial={{ opacity: 0, y: 30 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -273,7 +317,10 @@ export default function Welcome() {
                             >
                                 <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mb-6 group-hover:bg-emerald-200 transition-colors duration-300">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-emerald-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={service.icon} />
+                                        {service.icon === 'design' && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />}
+                                        {service.icon === 'build' && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />}
+                                        {service.icon === 'interior' && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />}
+                                        {!service.icon && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />}
                                     </svg>
                                 </div>
                                 <h3 className="text-xl font-bold text-gray-900 mb-4">{service.title}</h3>
@@ -317,77 +364,36 @@ export default function Welcome() {
                         viewport={{ once: true, amount: 0.8 }}
                         className="flex flex-wrap justify-center mb-12 space-x-2"
                     >
-                        {['semua', 'rumah', 'interior', 'komersial', 'renovasi'].map((tab) => (
+                        <button
+                            onClick={() => setActiveTab('semua')}
+                            className={`px-6 py-2 rounded-sm text-sm font-medium transition-colors ${
+                                activeTab === 'semua' 
+                                    ? 'bg-emerald-600 text-white shadow-md' 
+                                    : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                            }`}
+                        >
+                            Semua
+                        </button>
+                        {portfolioCategories.map((category, index) => (
                             <button
-                                key={tab}
-                                onClick={() => setActiveTab(tab)}
-                                className={`px-6 py-2 rounded-sm text-sm font-medium transition-all mb-2
-                                    ${activeTab === tab 
+                                key={index}
+                                onClick={() => setActiveTab(category)}
+                                className={`px-6 py-2 rounded-sm text-sm font-medium transition-colors ${
+                                    activeTab === category 
                                         ? 'bg-emerald-600 text-white shadow-md' 
                                         : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
-                                    }`}
+                                }`}
                             >
-                                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                                {category.charAt(0).toUpperCase() + category.slice(1)}
                             </button>
                         ))}
                     </motion.div>
                     
                     {/* Portfolio Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {[
-                            { 
-                                image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2053&q=80', 
-                                title: 'Villa Modern Minimalis', 
-                                category: 'rumah',
-                                location: 'Jember, Jawa Timur'
-                            },
-                            { 
-                                image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2053&q=80', 
-                                title: 'Rumah Type 54', 
-                                category: 'rumah',
-                                location: 'Bondowoso, Jawa Timur'
-                            },
-                            { 
-                                image: 'https://images.unsplash.com/photo-1586023492125-d146006ff4be?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=958&q=80', 
-                                title: 'Interior Living Room Modern', 
-                                category: 'interior',
-                                location: 'Lumajang, Jawa Timur'
-                            },
-                            { 
-                                image: 'https://images.unsplash.com/photo-1600566753151-384129cf4e3e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80', 
-                                title: 'Ruko 2 Lantai', 
-                                category: 'komersial',
-                                location: 'Jember, Jawa Timur'
-                            },
-                            { 
-                                image: 'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80', 
-                                title: 'Kitchen Set Minimalis', 
-                                category: 'interior',
-                                location: 'Jember, Jawa Timur'
-                            },
-                            { 
-                                image: 'https://images.unsplash.com/photo-1507089947368-19c1da9775ae?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=876&q=80', 
-                                title: 'Renovasi Fasad Rumah Lama', 
-                                category: 'renovasi',
-                                location: 'Banyuwangi, Jawa Timur'
-                            },
-                            { 
-                                image: 'https://images.unsplash.com/photo-1600585154526-990dced4db3d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80', 
-                                title: 'Villa Resort', 
-                                category: 'komersial',
-                                location: 'Lumajang, Jawa Timur'
-                            },
-                            { 
-                                image: 'https://images.unsplash.com/photo-1613545325278-f24b0cae1224?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80', 
-                                title: 'Kantor Modern Terbuka', 
-                                category: 'komersial',
-                                location: 'Probolinggo, Jawa Timur'
-                            }
-                        ]
-                        .filter(item => activeTab === 'semua' || item.category === activeTab)
-                        .map((item, index) => (
+                        {filteredPortfolios.map((item, index) => (
                             <motion.div
-                                key={index}
+                                key={item.id}
                                 initial={{ opacity: 0, y: 20 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.5, delay: index * 0.05 }}
@@ -574,30 +580,9 @@ export default function Welcome() {
                     </motion.div>
                     
                     <div className="max-w-3xl mx-auto">
-                        {[
-                            {
-                                question: "Bagaimana proses konsultasi dan perencanaan proyek?",
-                                answer: "Proses dimulai dengan konsultasi awal untuk memahami kebutuhan dan harapan Anda. Kemudian kami akan membuat konsep desain awal dan estimasi biaya. Setelah persetujuan, kami akan mengembangkan desain lengkap, membuat RAB, dan memulai proses konstruksi yang diawasi oleh tim profesional kami."
-                            },
-                            {
-                                question: "Berapa lama waktu yang dibutuhkan untuk menyelesaikan proyek?",
-                                answer: "Durasi proyek bervariasi tergantung pada ukuran dan kompleksitas. Proyek renovasi kecil bisa memakan waktu 1-2 bulan, sedangkan pembangunan rumah baru biasanya membutuhkan waktu 6-12 bulan. Kami selalu memberikan timeline yang jelas dan realistis di awal proyek."
-                            },
-                            {
-                                question: "Apakah Arsitekta menyediakan jasa desain interior?",
-                                answer: "Ya, kami menyediakan layanan desain interior lengkap. Tim desainer interior kami akan bekerja sama dengan arsitek untuk menciptakan ruangan yang tidak hanya fungsional tetapi juga estetis dan mencerminkan gaya hidup Anda."
-                            },
-                            {
-                                question: "Bagaimana sistem pembayaran untuk proyek?",
-                                answer: "Kami menggunakan sistem pembayaran bertahap yang disesuaikan dengan progress pekerjaan. Biasanya terbagi menjadi 4-5 termin pembayaran, dimulai dengan down payment saat penandatanganan kontrak hingga pembayaran akhir setelah proyek selesai dan serah terima."
-                            },
-                            {
-                                question: "Apakah Arsitekta mengurus perizinan bangunan?",
-                                answer: "Ya, kami menyediakan layanan pengurusan izin bangunan (IMB) dan dokumen perizinan lainnya yang diperlukan. Tim kami berpengalaman dalam menangani birokrasi dan akan memastikan proyek Anda memenuhi semua persyaratan hukum dan teknis."
-                            }
-                        ].map((faq, index) => (
+                        {faqs.map((faq, index) => (
                             <motion.div 
-                                key={index}
+                                key={faq.id}
                                 initial={{ opacity: 0, y: 10 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -605,12 +590,12 @@ export default function Welcome() {
                                 className="mb-4"
                             >
                                 <div 
-                                    className={`p-6 bg-white rounded-sm shadow-sm cursor-pointer ${activeFaq === index ? 'border-l-4 border-emerald-500' : ''}`}
-                                    onClick={() => setActiveFaq(activeFaq === index ? null : index)}
+                                    className={`p-6 bg-white rounded-sm cursor-pointer ${activeFaq === faq.id ? 'border-l-4 border-emerald-500' : ''}`}
+                                    onClick={() => setActiveFaq(activeFaq === faq.id ? null : faq.id)}
                                 >
                                     <div className="flex justify-between items-center">
                                         <h3 className="text-lg font-bold text-gray-900">{faq.question}</h3>
-                                        <span className={`transition-transform duration-300 ${activeFaq === index ? 'rotate-180' : ''}`}>
+                                        <span className={`transition-transform duration-300 ${activeFaq === faq.id ? 'rotate-180' : ''}`}>
                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                                             </svg>
@@ -620,9 +605,9 @@ export default function Welcome() {
                                     <motion.div 
                                         initial={false}
                                         animate={{
-                                            height: activeFaq === index ? 'auto' : 0,
-                                            opacity: activeFaq === index ? 1 : 0,
-                                            marginTop: activeFaq === index ? 16 : 0
+                                            height: activeFaq === faq.id ? 'auto' : 0,
+                                            opacity: activeFaq === faq.id ? 1 : 0,
+                                            marginTop: activeFaq === faq.id ? 16 : 0
                                         }}
                                         transition={{ duration: 0.3 }}
                                         className="overflow-hidden"
