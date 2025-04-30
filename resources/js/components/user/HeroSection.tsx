@@ -631,6 +631,7 @@ interface HeroConfig {
     scrollIndicatorVariant?: 'default' | 'pulse' | 'bounce' | 'fade';
     scrollIndicatorColor?: string;
     scrollIndicatorSize?: 'sm' | 'md' | 'lg';
+    navbarSpacing?: boolean; // Option to control spacing below navbar
 }
 
 // Main Hero Section component with enhanced options
@@ -656,7 +657,8 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
         overlayStyle: 'bg-gradient-to-b from-black/60 via-black/40 to-black/60',
         scrollIndicatorVariant: 'default',
         scrollIndicatorColor: 'emerald',
-        scrollIndicatorSize: 'md'
+        scrollIndicatorSize: 'md',
+        navbarSpacing: true // New option to control navbar spacing
     };
     
     // Merge default config with provided config
@@ -879,28 +881,43 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
         }
     };
     
-    // Calculate height style based on config
-    const getHeightClass = () => {
-        switch(mergedConfig.height) {
-            case 'full': return 'h-full';
-            case 'screen': return 'h-screen';
-            case 'auto': return 'h-auto';
-            default: return mergedConfig.height || 'h-screen';
+
+    // Navbar height constant - adjust if your navbar has a different height
+    const NAVBAR_HEIGHT_PX = 80; // 5rem/80px
+    
+    // Calculate height style with navbar adjustment
+    const getHeightStyle = () => {
+        if (mergedConfig.height === 'screen' && mergedConfig.navbarSpacing) {
+            // For screen height, return the full viewport height minus navbar
+            return {
+                height: `calc(100vh - ${NAVBAR_HEIGHT_PX}px)`
+            };
+        } else if (mergedConfig.height === 'full') {
+            return { height: '100%' };
+        } else if (mergedConfig.height === 'auto') {
+            return { height: 'auto' };
+        } else {
+            // For custom heights or default
+            return { height: mergedConfig.height || `calc(100vh - ${NAVBAR_HEIGHT_PX}px)` };
         }
     };
 
     return (
         <section 
-            className={`relative ${getHeightClass()} w-full overflow-hidden`}
+            className="relative w-full overflow-hidden"
             ref={sliderRef}
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
+            style={{
+                ...getHeightStyle(),
+                marginTop: mergedConfig.navbarSpacing ? `${NAVBAR_HEIGHT_PX}px` : '0'
+            }}
         >
             {/* Full-screen background slider */}
-            <div className="absolute inset-0 z-0">
+            <div className="absolute inset-0 z-0 top-0">
                 <AnimatePresence initial={false}>
                     {slides.map((slide, index) => (
                         index === currentSlide && (
