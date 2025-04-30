@@ -1,6 +1,6 @@
 import { Link } from '@inertiajs/react';
-import { useState, useEffect, useRef, FC } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useRef, FC, useCallback } from 'react';
+import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
 
 // Types
 type ButtonVariant = 'primary' | 'secondary' | 'outline';
@@ -13,7 +13,9 @@ type AnimationVariant =
     'slideRight' | 'slideRightBounce' | 'slideRightSpring' |
     'zoom' | 'zoomBounce' | 'zoomSpring' |
     'flip' | 'flipX' | 'flipY' |
-    'rotate' | 'pulse' | 'shake' | 'bounce' | 'stagger' | 'none';
+    'rotate' | 'pulse' | 'shake' | 'bounce' | 'stagger' | 'none' |
+    'glitch' | 'blur' | 'wave' | 'float' | 'morph' | '3dFlip' | 'neon' |
+    'textReveal' | 'textGradient' | 'textShadow' | 'prismaticText';
 
 type TransitionType = 'tween' | 'spring' | 'inertia';
 type EasingType = 'linear' | 'easeIn' | 'easeOut' | 'easeInOut' | 'circIn' | 'circOut' | 'circInOut' | 'backIn' | 'backOut' | 'backInOut' | 'anticipate';
@@ -26,14 +28,20 @@ interface Slide {
     subtext?: string;
     overlay?: string; // Custom overlay gradient
     position?: 'center' | 'top' | 'bottom' | 'left' | 'right'; // Image position
+    video?: string; // Optional video background
+    effect?: 'none' | 'parallax' | 'blur' | 'zoom' | 'glitch' | 'grain'; // Visual effects
+    accent?: string; // Accent color for slide-specific highlights
+    tag?: string; // Optional tag (like 'New', 'Featured', etc.)
 }
 
 interface SlideIndicatorProps {
     slides: Slide[];
     currentSlide: number;
     goToSlide: (index: number) => void;
-    variant?: 'dots' | 'lines' | 'numbers';
-    size?: 'sm' | 'md' | 'lg';
+    variant?: 'dots' | 'lines' | 'numbers' | 'pills' | 'emoji' | 'minimal';
+    size?: 'sm' | 'md' | 'lg' | 'xl';
+    position?: 'bottom' | 'top' | 'left' | 'right' | 'custom';
+    customClass?: string;
 }
 
 interface CTAButton {
@@ -61,32 +69,46 @@ const SlideIndicators: FC<SlideIndicatorProps> = ({
     currentSlide, 
     goToSlide, 
     variant = 'dots', 
-    size = 'md' 
+    size = 'md',
+    position = 'bottom',
+    customClass = ''
 }) => {
     // Size classes mapping
     const sizeClasses = {
-        sm: { dot: 'h-1.5 w-1.5', line: 'h-1.5 w-4', active: 'w-8' },
-        md: { dot: 'h-2.5 w-2.5', line: 'h-2.5 w-6', active: 'w-12' },
-        lg: { dot: 'h-3 w-3', line: 'h-3 w-8', active: 'w-16' },
+        sm: { dot: 'h-1.5 w-1.5', line: 'h-1.5 w-4', active: 'w-8', pill: 'h-6 px-2', emoji: 'text-xs' },
+        md: { dot: 'h-2.5 w-2.5', line: 'h-2.5 w-6', active: 'w-12', pill: 'h-8 px-3', emoji: 'text-sm' },
+        lg: { dot: 'h-3 w-3', line: 'h-3 w-8', active: 'w-16', pill: 'h-10 px-4', emoji: 'text-base' },
+        xl: { dot: 'h-4 w-4', line: 'h-4 w-10', active: 'w-20', pill: 'h-12 px-5', emoji: 'text-lg' }
+    };
+    
+    // Position classes mapping
+    const positionClasses = {
+        bottom: 'bottom-8 left-1/2 -translate-x-1/2',
+        top: 'top-8 left-1/2 -translate-x-1/2',
+        left: 'left-8 top-1/2 -translate-y-1/2 flex-col space-y-3 space-x-0',
+        right: 'right-8 top-1/2 -translate-y-1/2 flex-col space-y-3 space-x-0',
+        custom: customClass
     };
 
     // Render dots style indicators
     if (variant === 'dots') {
         return (
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex space-x-3 z-10">
+            <div className={`absolute ${positionClasses[position]} flex space-x-3 z-10`}>
                 {slides.map((_, index) => (
                     <motion.button
                         key={index}
                         onClick={() => goToSlide(index)}
-                        className={`rounded-full transition-all duration-300 ${sizeClasses[size].dot} ${
-                            index === currentSlide ? "bg-emerald-500 scale-125" : "bg-white/60 hover:bg-white/90"
+                        className={`rounded-full backdrop-blur-sm transition-all duration-300 ${sizeClasses[size].dot} ${
+                            index === currentSlide 
+                                ? "bg-emerald-500 scale-125 shadow-lg shadow-emerald-500/20" 
+                                : "bg-white/60 hover:bg-white/90"
                         }`}
-                        whileTap={{ scale: 0.9 }}
-                        whileHover={{ scale: 1.2 }}
+                        whileTap={{ scale: 0.9, rotate: -5 }}
+                        whileHover={{ scale: 1.2, y: -2, boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.3)' }}
                         aria-label={`Go to slide ${index + 1}`}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
+                        transition={{ delay: index * 0.1, type: 'spring', stiffness: 400 }}
                     />
                 ))}
             </div>
@@ -96,21 +118,103 @@ const SlideIndicators: FC<SlideIndicatorProps> = ({
     // Render lines style indicators
     if (variant === 'lines') {
         return (
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex space-x-4 z-10">
+            <div className={`absolute ${positionClasses[position]} flex space-x-4 z-10`}>
                 {slides.map((_, index) => (
                     <motion.button
                         key={index}
                         onClick={() => goToSlide(index)}
-                        className={`relative transition-all duration-300 ${sizeClasses[size].line} ${
-                            index === currentSlide ? `${sizeClasses[size].active} bg-emerald-500` : "bg-white/60 hover:bg-white/90"
+                        className={`relative backdrop-blur-sm transition-all duration-300 ${sizeClasses[size].line} ${
+                            index === currentSlide 
+                                ? `${sizeClasses[size].active} bg-gradient-to-r from-emerald-400 to-emerald-600 shadow-lg shadow-emerald-500/20` 
+                                : "bg-white/60 hover:bg-white/90"
                         }`}
                         whileTap={{ scale: 0.9 }}
-                        whileHover={{ y: -2 }}
+                        whileHover={{ y: -2, boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.3)' }}
                         aria-label={`Go to slide ${index + 1}`}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        style={{ borderRadius: '4px' }}
+                        transition={{ delay: index * 0.1, type: 'spring', stiffness: 300 }}
+                        style={{ borderRadius: '8px' }}
+                    />
+                ))}
+            </div>
+        );
+    }
+    
+    // Render pills style indicators (new trendy style)
+    if (variant === 'pills') {
+        return (
+            <div className={`absolute ${positionClasses[position]} flex space-x-2 z-10`}>
+                {slides.map((_, index) => (
+                    <motion.button
+                        key={index}
+                        onClick={() => goToSlide(index)}
+                        className={`rounded-full backdrop-blur-sm flex items-center justify-center ${sizeClasses[size].pill} ${
+                            index === currentSlide 
+                                ? "bg-gradient-to-r from-emerald-400 to-emerald-600 text-white font-medium shadow-lg shadow-emerald-500/30" 
+                                : "bg-white/20 text-white/80 hover:bg-white/30"
+                        }`}
+                        whileTap={{ scale: 0.9 }}
+                        whileHover={{ scale: 1.05, y: -2 }}
+                        aria-label={`Go to slide ${index + 1}`}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1, type: 'spring' }}
+                    >
+                        {index + 1}
+                    </motion.button>
+                ))}
+            </div>
+        );
+    }
+    
+    // Render emoji style indicators (fun Gen-Z style)
+    if (variant === 'emoji') {
+        const emojis = ['✨', '🔥', '💎', '✌️', '🚀', '💯', '🌈', '⭐'];
+        return (
+            <div className={`absolute ${positionClasses[position]} flex space-x-3 z-10`}>
+                {slides.map((_, index) => (
+                    <motion.button
+                        key={index}
+                        onClick={() => goToSlide(index)}
+                        className={`rounded-full flex items-center justify-center backdrop-blur-sm ${sizeClasses[size].emoji} p-2 ${
+                            index === currentSlide 
+                                ? "bg-black/40 text-white scale-125" 
+                                : "bg-black/20 text-white/70 hover:bg-black/30 hover:text-white/90"
+                        }`}
+                        whileTap={{ scale: 0.9, rotate: -5 }}
+                        whileHover={{ scale: 1.2, y: -3, rotate: 5 }}
+                        aria-label={`Go to slide ${index + 1}`}
+                        initial={{ opacity: 0, scale: 0, rotate: -10 }}
+                        animate={{ opacity: 1, scale: index === currentSlide ? 1.25 : 1, rotate: 0 }}
+                        transition={{ delay: index * 0.1, type: 'spring', damping: 10 }}
+                    >
+                        {emojis[index % emojis.length]}
+                    </motion.button>
+                ))}
+            </div>
+        );
+    }
+    
+    // Render minimal style indicators (sleek modern style)
+    if (variant === 'minimal') {
+        return (
+            <div className={`absolute ${positionClasses[position]} flex items-center space-x-4 z-10 bg-black/20 backdrop-blur-xl px-4 py-2 rounded-full`}>
+                {slides.map((_, index) => (
+                    <motion.button
+                        key={index}
+                        onClick={() => goToSlide(index)}
+                        className={`w-1 h-6 rounded-full transition-all duration-300 ${
+                            index === currentSlide 
+                                ? "bg-emerald-500 h-8" 
+                                : "bg-white/40 hover:bg-white/60"
+                        }`}
+                        whileTap={{ scaleX: 1.5 }}
+                        whileHover={{ scaleX: 1.5 }}
+                        aria-label={`Go to slide ${index + 1}`}
+                        initial={{ opacity: 0, scaleY: 0 }}
+                        animate={{ opacity: 1, scaleY: 1 }}
+                        transition={{ delay: index * 0.05 }}
                     />
                 ))}
             </div>
@@ -170,6 +274,7 @@ const HeroContent: FC<HeroContentProps> = ({
             fast: { duration: 0.3, ease: 'easeOut' as EasingType },
             bounce: { type: 'spring' as TransitionType, stiffness: 300, damping: 10, mass: 0.5 },
             spring: { type: 'spring' as TransitionType, stiffness: 100, damping: 15, mass: 1 },
+            elastic: { type: 'spring' as TransitionType, stiffness: 200, damping: 8, mass: 0.8 },
             stagger: (i: number) => ({ delay: customDelay + (i * 0.1) })
         };
         
@@ -332,6 +437,102 @@ const HeroContent: FC<HeroContentProps> = ({
                 animate: { opacity: 1, y: 0 },
                 transition: transitions.stagger(0) // Will be applied per element with proper index
             },
+            // Modern Gen-Z animations
+            glitch: {
+                initial: { opacity: 0, x: [-10, 10, -5, 5, 0], filter: 'blur(10px)' },
+                animate: { 
+                    opacity: 1, 
+                    x: [5, -5, 2, -2, 0],
+                    filter: 'blur(0px)',
+                    textShadow: ['0 0 5px #0ff', '0 0 2px #f0f', '0 0 0px #000']
+                },
+                transition: { 
+                    duration: 0.5,
+                    times: [0, 0.2, 0.4, 0.6, 1]
+                }
+            },
+            blur: {
+                initial: { opacity: 0, filter: 'blur(20px)' },
+                animate: { opacity: 1, filter: 'blur(0px)' },
+                transition: { duration: 0.8, ease: 'easeOut' as EasingType }
+            },
+            wave: {
+                initial: { y: 20, skewX: 0 },
+                animate: { 
+                    y: 0,
+                    skewX: [-5, 5, -3, 3, 0]
+                },
+                transition: {
+                    duration: 0.8,
+                    times: [0, 0.3, 0.5, 0.7, 1]
+                }
+            },
+            float: {
+                initial: { y: 0 },
+                animate: { y: [-8, 8, -4, 0] },
+                transition: { 
+                    repeat: Infinity, 
+                    repeatType: 'mirror', 
+                    duration: 5,
+                    ease: 'easeInOut' as EasingType,
+                    times: [0, 0.4, 0.7, 1]
+                }
+            },
+            morph: {
+                initial: { borderRadius: '30% 70% 70% 30% / 30% 30% 70% 70%', scale: 0.8, opacity: 0 },
+                animate: { 
+                    borderRadius: ['30% 70% 70% 30% / 30% 30% 70% 70%', '56% 44% 27% 73% / 24% 62% 38% 76%', '30% 70% 70% 30% / 30% 30% 70% 70%'],
+                    scale: 1,
+                    opacity: 1
+                },
+                transition: { duration: 1.5, repeat: 0 }
+            },
+            '3dFlip': {
+                initial: { opacity: 0, rotateY: 90, perspective: '1000px' },
+                animate: { opacity: 1, rotateY: 0, perspective: '1000px' },
+                transition: transitions.elastic
+            },
+            neon: {
+                initial: { opacity: 0, textShadow: '0 0 0px rgba(66, 220, 163, 0)' },
+                animate: { 
+                    opacity: 1, 
+                    textShadow: [
+                        '0 0 5px rgba(66, 220, 163, 0.8)', 
+                        '0 0 10px rgba(66, 220, 163, 0.5)', 
+                        '0 0 15px rgba(66, 220, 163, 0.3)',
+                        '0 0 20px rgba(66, 220, 163, 0.7)'
+                    ]
+                },
+                transition: { 
+                    opacity: { duration: 0.3 },
+                    textShadow: { 
+                        duration: 3, 
+                        repeat: Infinity, 
+                        repeatType: 'reverse',
+                        times: [0, 0.3, 0.6, 1]
+                    }
+                }
+            },
+            textReveal: {
+                initial: { opacity: 0, y: 50, clipPath: 'inset(0 0 100% 0)' },
+                animate: { opacity: 1, y: 0, clipPath: 'inset(0 0 0% 0)' },
+                transition: { duration: 0.8, ease: 'circOut' as EasingType }
+            },
+            textGradient: {
+                initial: { backgroundPosition: '-100% 0', opacity: 0 },
+                animate: { backgroundPosition: '0% 0', opacity: 1 },
+                transition: { duration: 0.8 }
+            },
+            textShadow: {
+                initial: { opacity: 0, textShadow: '0 0 0px rgba(16, 185, 129, 0)' },
+                animate: { opacity: 1, textShadow: '0 10px 30px rgba(16, 185, 129, 0.5)' },
+                transition: { duration: 0.6 }
+            },
+            prismaticText: {
+                initial: { opacity: 0, backgroundPosition: '0% 50%' },
+                animate: { opacity: 1, backgroundPosition: '100% 50%' },
+                transition: { duration: 3, repeat: Infinity, repeatType: 'reverse' }
+            },
             none: {
                 initial: { opacity: 1 },
                 animate: { opacity: 1 },
@@ -364,11 +565,36 @@ const HeroContent: FC<HeroContentProps> = ({
     const renderButton = (button: CTAButton, index: number) => {
         const { text, href, variant = 'primary', icon = true, external = false } = button;
         
-        // Button style variants
+        // Button icon based on text content - auto-detect for better UX
+        const getButtonIcon = () => {
+            const lowerText = text.toLowerCase();
+            if (lowerText.includes('kontak') || lowerText.includes('konsultasi')) {
+                return <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>;
+            } else if (lowerText.includes('portfolio') || lowerText.includes('projek') || lowerText.includes('galeri')) {
+                return <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>;
+            } else if (lowerText.includes('mulai') || lowerText.includes('order') || lowerText.includes('pesan')) {
+                return <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>;
+            } else {
+                return <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>;
+            }
+        };
+        
+        // Glassmorphism effect for buttons
+        const getGlassmorphismEffect = () => {
+            return variant === 'secondary' ? {
+                background: 'rgba(255, 255, 255, 0.1)',
+                backdropFilter: 'blur(10px)',
+                WebkitBackdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255, 255, 255, 0.18)',
+                boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.12)'
+            } : {};
+        };
+        
+        // Button style variants - modernized with more Gen-Z styling
         const buttonStyles = {
-            primary: "rounded-md bg-emerald-600 px-6 py-3.5 font-medium text-white shadow-lg transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 group flex items-center justify-center gap-2",
-            secondary: "rounded-md border border-white/70 backdrop-blur-sm bg-transparent px-6 py-3.5 font-medium text-white transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 flex items-center justify-center",
-            outline: "rounded-md border-2 border-emerald-500 px-6 py-3.5 font-medium text-white transition hover:bg-emerald-500/20 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 flex items-center justify-center gap-2"
+            primary: "rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-3.5 font-medium text-white shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:shadow-emerald-500/40 hover:scale-105 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 group flex items-center justify-center gap-2",
+            secondary: "rounded-xl border border-white/70 backdrop-blur-md bg-white/10 px-6 py-3.5 font-medium text-white transition-all duration-300 hover:bg-white/20 hover:scale-105 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 flex items-center justify-center gap-2",
+            outline: "rounded-xl border-2 border-emerald-500 px-6 py-3.5 font-medium text-white transition-all duration-300 hover:bg-emerald-500/20 hover:scale-105 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 flex items-center justify-center gap-2"
         };
         
         // Determine button component based on external flag
@@ -378,21 +604,21 @@ const HeroContent: FC<HeroContentProps> = ({
         return (
             <motion.div 
                 key={`btn-${index}`}
-                whileHover={{ scale: 1.05 }} 
-                whileTap={{ scale: 0.98 }}
-                initial={{ opacity: 0, y: 20 }}
+                whileHover={{ scale: 1.05, y: -5 }} 
+                whileTap={{ scale: 0.95, rotate: -1 }}
+                initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 + (index * 0.1) }}
+                transition={{ delay: 0.4 + (index * 0.15), type: 'spring', stiffness: 400, damping: 10 }}
             >
                 <ButtonComponent
                     {...buttonProps}
                     className={buttonStyles[variant]}
                 >
                     {text}
-                    {icon && variant === 'primary' && (
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 transform transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                        </svg>
+                    {icon && (
+                        <span className="relative ml-1 group-hover:translate-x-1 transition-transform">
+                            {getButtonIcon()}
+                        </span>
                     )}
                 </ButtonComponent>
             </motion.div>
@@ -404,37 +630,71 @@ const HeroContent: FC<HeroContentProps> = ({
             {/* Vertical side text */}
             <div className="absolute top-0 right-8 h-full flex items-center z-10 hidden lg:block">
                 <div className="flex flex-col items-center">
-                    <div className="transform -rotate-90 whitespace-nowrap">
-                        <motion.p 
-                            className="uppercase tracking-[0.2em] text-white/70 font-light text-sm"
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.6 }}
-                        >
-                            Est. 2025 • Premium Architecture
-                        </motion.p>
-                    </div>
-                    <div className="h-40 w-px bg-white/30 my-6"></div>
-                    <div className="flex space-x-4">
+                    {/* Modern 3D-style rotating badge */}
+                    <motion.div
+                        className="bg-black/30 backdrop-blur-md py-2 px-4 rounded-full mb-6 border border-white/10"
+                        initial={{ opacity: 0, y: 20, rotateX: 90 }}
+                        animate={{ opacity: 1, y: 0, rotateX: 0 }}
+                        transition={{ delay: 0.5, duration: 0.7, type: 'spring' }}
+                        style={{ perspective: '1000px', transformStyle: 'preserve-3d' }}
+                    >
+                        <div className="transform -rotate-90 whitespace-nowrap">
+                            <motion.p 
+                                className="bg-gradient-to-r from-white to-emerald-300 bg-clip-text text-transparent font-medium uppercase tracking-[0.2em] text-sm"
+                                animate={{ filter: ['drop-shadow(0 0 2px rgba(52, 211, 153, 0.7))', 'drop-shadow(0 0 5px rgba(52, 211, 153, 0.3))', 'drop-shadow(0 0 2px rgba(52, 211, 153, 0.7))'] }}
+                                transition={{ duration: 4, repeat: Infinity }}
+                            >
+                                Est. 2025 • Premium Architecture
+                            </motion.p>
+                        </div>
+                    </motion.div>
+                    
+                    {/* Animated line */}
+                    <motion.div 
+                        className="h-40 w-px my-6 relative overflow-hidden"
+                        style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)' }}
+                    >
+                        <motion.div 
+                            className="absolute top-0 left-0 w-full h-full bg-emerald-400/60"
+                            animate={{ y: ['-100%', '100%'] }}
+                            transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+                        />
+                    </motion.div>
+                    
+                    {/* Modern social media icons with hover effects */}
+                    <div className="flex flex-col space-y-4">
                         <motion.a 
                             href="#" 
-                            className="text-white/80 hover:text-white transition-colors"
-                            whileHover={{ y: -2, scale: 1.1 }}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.7 }}
+                            className="relative bg-white/10 backdrop-blur-md p-3 rounded-full text-white/80 transition-colors hover:text-white"
+                            whileHover={{ scale: 1.15, y: -2, boxShadow: '0 10px 25px -5px rgba(255, 255, 255, 0.3)' }}
+                            whileTap={{ scale: 0.95 }}
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.7, type: 'spring' }}
                         >
                             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" /></svg>
                         </motion.a>
                         <motion.a 
                             href="#" 
-                            className="text-white/80 hover:text-white transition-colors"
-                            whileHover={{ y: -2, scale: 1.1 }}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.8 }}
+                            className="relative bg-white/10 backdrop-blur-md p-3 rounded-full text-white/80 transition-colors hover:text-white"
+                            whileHover={{ scale: 1.15, y: -2, boxShadow: '0 10px 25px -5px rgba(255, 255, 255, 0.3)' }}
+                            whileTap={{ scale: 0.95 }}
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.8, type: 'spring' }}
                         >
                             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clipRule="evenodd" /></svg>
+                        </motion.a>
+                        <motion.a 
+                            href="#" 
+                            className="relative bg-white/10 backdrop-blur-md p-3 rounded-full text-white/80 transition-colors hover:text-white"
+                            whileHover={{ scale: 1.15, y: -2, boxShadow: '0 10px 25px -5px rgba(255, 255, 255, 0.3)' }}
+                            whileTap={{ scale: 0.95 }}
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.9, type: 'spring' }}
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"></path></svg>
                         </motion.a>
                     </div>
                 </div>
@@ -454,33 +714,81 @@ const HeroContent: FC<HeroContentProps> = ({
                         <span className="text-xs uppercase tracking-wider font-semibold text-white">Arsitekta Pro</span>
                     </motion.div>
                     
-                    <motion.h1 
-                        className="font-playfair text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4 text-white drop-shadow-md"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1 }}
+                    <motion.div
+                        className="relative mb-4"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5 }}
                     >
-                        {title}{' '}
-                        {titleHighlight && (
-                            <motion.span 
-                                className="text-emerald-400 inline-block"
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.2 }}
+                        {/* Decorative blob shape in background */}
+                        <motion.div
+                            className="absolute -top-10 -left-10 w-32 h-32 bg-gradient-to-br from-emerald-400/30 to-emerald-600/20 rounded-full filter blur-3xl opacity-70 z-0"
+                            animate={{ 
+                                scale: [1, 1.1, 1.05, 1],
+                                rotate: [0, 5, -5, 0],
+                            }}
+                            transition={{ 
+                                duration: 8, 
+                                repeat: Infinity,
+                                repeatType: 'mirror' 
+                            }}
+                        />
+
+                        <motion.h1 
+                            className="font-playfair text-4xl md:text-5xl lg:text-7xl font-bold leading-tight text-white drop-shadow-xl relative z-10 mb-2"
+                            initial={{ opacity: 0, y: 30, clipPath: 'inset(0 0 100% 0)' }}
+                            animate={{ opacity: 1, y: 0, clipPath: 'inset(0 0 0% 0)' }}
+                            transition={{ delay: 0.1, duration: 0.7, ease: 'circOut' }}
+                        >
+                            {title}{' '}
+                            {titleHighlight && (
+                                <motion.span 
+                                    className="relative inline-block"
+                                    initial={{ opacity: 0, y: 40 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.4, type: 'spring', stiffness: 100 }}
+                                >
+                                    <span className="relative"
+                                        style={{
+                                            background: 'linear-gradient(90deg, #34d399 0%, #10b981 100%)',
+                                            WebkitBackgroundClip: 'text',
+                                            WebkitTextFillColor: 'transparent',
+                                            backgroundSize: '200% 100%',
+                                            animation: 'gradient-shift 4s ease infinite'
+                                        }}
+                                    >
+                                        {titleHighlight}
+                                    </span>
+                                    {/* Decorative underline with animation */}
+                                    <motion.span 
+                                        className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-300 to-emerald-500"
+                                        initial={{ scaleX: 0, originX: 0 }}
+                                        animate={{ scaleX: 1 }}
+                                        transition={{ delay: 0.7, duration: 0.7, ease: 'circOut' }}
+                                    />
+                                </motion.span>
+                            )}
+                        </motion.h1>
+                        
+                        <motion.p 
+                            className="text-xl text-white/90 mb-8 drop-shadow-lg max-w-lg backdrop-blur-sm rounded-lg py-3 px-1"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.6, duration: 0.5 }}
+                        >
+                            <motion.span
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: [0, 1, 1] }}
+                                transition={{ 
+                                    duration: 1.5, 
+                                    delay: 0.8,
+                                    times: [0, 0.2, 1]
+                                }}
                             >
-                                {titleHighlight}
+                                {description}
                             </motion.span>
-                        )}
-                    </motion.h1>
-                    
-                    <motion.p 
-                        className="text-lg text-white/90 mb-8 drop-shadow-sm max-w-lg"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3 }}
-                    >
-                        {description}
-                    </motion.p>
+                        </motion.p>
+                    </motion.div>
                     
                     <motion.div 
                         className="flex flex-col sm:flex-row gap-4"
@@ -664,7 +972,7 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
     // Merge default config with provided config
     const mergedConfig = { ...defaultConfig, ...config };
     
-    // Data for slides
+    // Data for slides with enhanced properties
     const slides: Slide[] = [
         {
             id: 1,
@@ -672,7 +980,10 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
             alt: "Modern House Design",
             headline: "Desain Modern",
             subtext: "Arsitektur yang mengikuti tren terkini",
-            position: 'center'
+            position: 'center',
+            effect: 'parallax',
+            accent: '#34d399',
+            tag: 'Trending'
         },
         {
             id: 2,
@@ -680,7 +991,10 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
             alt: "Contemporary Home",
             headline: "Inovasi Terdepan",
             subtext: "Solusi rumah impian yang futuristik",
-            position: 'center'
+            position: 'center',
+            effect: 'zoom',
+            accent: '#3b82f6',
+            tag: 'Popular'
         },
         {
             id: 3,
@@ -689,7 +1003,10 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
             headline: "Kemewahan Exclusive",
             subtext: "Pengalaman hunian premium berkualitas",
             position: 'center',
-            overlay: 'bg-gradient-to-t from-black/70 via-black/50 to-black/70'
+            overlay: 'bg-gradient-to-t from-black/70 via-black/50 to-black/70',
+            effect: 'blur',
+            accent: '#ef4444',
+            tag: 'Featured'
         }
     ];
 
@@ -926,31 +1243,131 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
                                 className="absolute inset-0"
                                 {...getSlideAnimationStyle(index > currentSlide)}
                             >
-                                <img 
-                                    src={slide.image} 
-                                    alt={slide.alt} 
-                                    className={`h-full w-full object-cover ${
-                                        slide.position === 'top' ? 'object-top' : 
-                                        slide.position === 'bottom' ? 'object-bottom' : 
-                                        slide.position === 'left' ? 'object-left' : 
-                                        slide.position === 'right' ? 'object-right' : 'object-center'
-                                    }`}
-                                    loading={index === 0 ? "eager" : "lazy"}
-                                />
+                                {/* Slide image with effect based on slide.effect property */}
+                                <motion.div className="h-full w-full" style={{ overflow: 'hidden' }}>
+                                    <motion.img 
+                                        src={slide.image} 
+                                        alt={slide.alt} 
+                                        className={`h-full w-full object-cover ${
+                                            slide.position === 'top' ? 'object-top' : 
+                                            slide.position === 'bottom' ? 'object-bottom' : 
+                                            slide.position === 'left' ? 'object-left' : 
+                                            slide.position === 'right' ? 'object-right' : 'object-center'
+                                        }`}
+                                        loading={index === 0 ? "eager" : "lazy"}
+                                        animate={
+                                            slide.effect === 'parallax' ? { scale: 1.1, y: [0, -15, 0], x: [0, 10, 0] } : 
+                                            slide.effect === 'zoom' ? { scale: [1, 1.05, 1.02] } : 
+                                            slide.effect === 'blur' ? { filter: ['blur(0px)', 'blur(2px)', 'blur(0px)'] } : 
+                                            slide.effect === 'glitch' ? { x: [0, -2, 2, -1, 1, 0], y: [0, 1, -1, 0] } : 
+                                            { scale: 1 }
+                                        }
+                                        transition={{ 
+                                            duration: 8, 
+                                            ease: 'easeInOut',
+                                            repeat: Infinity, 
+                                            repeatType: 'reverse' 
+                                        }}
+                                    />
+                                </motion.div>
+                                
+                                {/* Grain overlay for texture */}
+                                <div 
+                                    className="absolute inset-0 opacity-30" 
+                                    style={{ 
+                                        backgroundImage: 'url("/noise.png")', 
+                                        backgroundRepeat: 'repeat',
+                                        mixBlendMode: 'overlay' 
+                                    }}
+                                ></div>
                                 
                                 {/* Gradient overlay - customizable per slide */}
                                 <div className={`absolute inset-0 ${slide.overlay || mergedConfig.overlayStyle}`}></div>
                                 
-                                {/* Slide info badge */}
+                                {/* Decorative elements - based on slide accent color */}
+                                <motion.div 
+                                    className="absolute left-[10%] top-[20%] w-32 h-32 rounded-full opacity-20 mix-blend-screen" 
+                                    style={{ background: slide.accent || '#34d399' }}
+                                    animate={{ 
+                                        y: [-10, 10, -5, 0],
+                                        scale: [1, 1.1, 0.9, 1],
+                                        rotate: [0, 5, -5, 0],
+                                        opacity: [0.2, 0.3, 0.2]
+                                    }}
+                                    transition={{ duration: 8, repeat: Infinity, repeatType: 'mirror' }}
+                                />
+                                
+                                <motion.div 
+                                    className="absolute right-[15%] bottom-[25%] w-24 h-24 rounded-full opacity-20 mix-blend-screen" 
+                                    style={{ background: slide.accent || '#34d399' }}
+                                    animate={{ 
+                                        y: [10, -10, 5, 0],
+                                        scale: [0.9, 1.1, 1, 0.9],
+                                        rotate: [0, -5, 5, 0],
+                                        opacity: [0.2, 0.3, 0.2]
+                                    }}
+                                    transition={{ duration: 6, repeat: Infinity, repeatType: 'mirror', delay: 1 }}
+                                />
+                                
+                                {/* Tag - New, Trending, Featured, etc. */}
+                                {slide.tag && (
+                                    <motion.div 
+                                        className="absolute top-6 right-6 z-20"
+                                        initial={{ opacity: 0, y: -20, rotate: -5 }}
+                                        animate={{ opacity: 1, y: 0, rotate: 0 }}
+                                        transition={{ delay: 0.7, type: 'spring' }}
+                                    >
+                                        <div 
+                                            className="flex items-center gap-1 bg-black/30 backdrop-blur-md px-3 py-1.5 rounded-full" 
+                                            style={{ boxShadow: `0 0 20px ${slide.accent || '#34d399'}40` }}
+                                        >
+                                            <span 
+                                                className="w-2 h-2 rounded-full animate-pulse" 
+                                                style={{ background: slide.accent || '#34d399' }}
+                                            />
+                                            <span className="text-white text-xs font-medium tracking-wider">{slide.tag}</span>
+                                        </div>
+                                    </motion.div>
+                                )}
+                                
+                                {/* Enhanced slide info badge */}
                                 {(slide.headline || slide.subtext) && (
                                     <motion.div 
-                                        className="absolute top-8 left-8 bg-black/30 backdrop-blur-md rounded-lg py-2 px-4 max-w-xs hidden md:block"
-                                        initial={{ opacity: 0, x: -30 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        transition={{ delay: 0.4, duration: 0.5 }}
+                                        className="absolute top-8 left-8 bg-black/30 backdrop-blur-md rounded-xl py-3 px-5 max-w-xs hidden md:block border border-white/10"
+                                        style={{ boxShadow: `0 10px 30px -5px ${slide.accent || '#34d399'}20` }}
+                                        initial={{ opacity: 0, x: -30, y: 20 }}
+                                        animate={{ opacity: 1, x: 0, y: 0 }}
+                                        transition={{ delay: 0.4, duration: 0.7, type: 'spring' }}
                                     >
-                                        {slide.headline && <h3 className="text-white font-semibold text-lg">{slide.headline}</h3>}
-                                        {slide.subtext && <p className="text-white/80 text-sm">{slide.subtext}</p>}
+                                        {slide.headline && 
+                                            <motion.h3 
+                                                className="text-white font-semibold text-xl mb-1"
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                transition={{ delay: 0.6 }}
+                                            >
+                                                <span 
+                                                    className="pr-2"
+                                                    style={{ 
+                                                        borderLeft: `3px solid ${slide.accent || '#34d399'}`, 
+                                                        paddingLeft: '8px',
+                                                        marginLeft: '-12px'
+                                                    }}
+                                                >
+                                                    {slide.headline}
+                                                </span>
+                                            </motion.h3>
+                                        }
+                                        {slide.subtext && 
+                                            <motion.p 
+                                                className="text-white/80 text-sm"
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: 1 }}
+                                                transition={{ delay: 0.7 }}
+                                            >
+                                                {slide.subtext}
+                                            </motion.p>
+                                        }
                                     </motion.div>
                                 )}
                             </motion.div>
