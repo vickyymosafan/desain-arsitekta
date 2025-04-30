@@ -1274,7 +1274,7 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
                                 <div 
                                     className="absolute inset-0 opacity-30" 
                                     style={{ 
-                                        backgroundImage: 'url("/noise.png")', 
+                                        backgroundImage: 'url("https://images.unsplash.com/photo-1595876210-50f6313738a4?q=80&w=500&auto=format&fit=crop&crop=entropy&cs=tinysrgb&ixlib=rb-4.0.3")', 
                                         backgroundRepeat: 'repeat',
                                         mixBlendMode: 'overlay' 
                                     }}
