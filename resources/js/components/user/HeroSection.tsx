@@ -632,7 +632,6 @@ const HeroContent: FC<HeroContentProps> = ({
                 <div className="flex flex-col items-center">
                     {/* Modern 3D-style rotating badge */}
                     <motion.div
-                        className="bg-black/30 backdrop-blur-md py-2 px-4 rounded-full mb-6 border border-white/10"
                         initial={{ opacity: 0, y: 20, rotateX: 90 }}
                         animate={{ opacity: 1, y: 0, rotateX: 0 }}
                         transition={{ delay: 0.5, duration: 0.7, type: 'spring' }}
