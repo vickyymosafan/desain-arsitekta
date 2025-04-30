@@ -3,55 +3,229 @@ import { useState, useEffect, useRef, FC } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Types
+type ButtonVariant = 'primary' | 'secondary' | 'outline';
+type AnimationVariant = 'fadeIn' | 'slideUp' | 'slideDown' | 'slideLeft' | 'slideRight' | 'zoom';
+
 interface Slide {
     id: number;
     image: string;
     alt: string;
     headline?: string;
     subtext?: string;
+    overlay?: string; // Custom overlay gradient
+    position?: 'center' | 'top' | 'bottom' | 'left' | 'right'; // Image position
 }
 
 interface SlideIndicatorProps {
     slides: Slide[];
     currentSlide: number;
     goToSlide: (index: number) => void;
+    variant?: 'dots' | 'lines' | 'numbers';
+    size?: 'sm' | 'md' | 'lg';
+}
+
+interface CTAButton {
+    text: string;
+    href: string;
+    variant?: ButtonVariant;
+    icon?: boolean;
+    external?: boolean;
 }
 
 interface HeroContentProps {
     title: string;
-    titleHighlight: string;
+    titleHighlight?: string;
     description: string;
-    ctaPrimary: { text: string; href: string };
-    ctaSecondary: { text: string; href: string };
+    ctaPrimary: CTAButton;
+    ctaSecondary?: CTAButton;
     currentSlide: number;
+    animation?: AnimationVariant;
+    alignment?: 'left' | 'center' | 'right';
 }
 
-// Component for slide indicators (dots)
-const SlideIndicators: FC<SlideIndicatorProps> = ({ slides, currentSlide, goToSlide }) => (
-    <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex space-x-4 z-10">
-        {slides.map((_, index) => (
-            <motion.button
-                key={index}
-                onClick={() => goToSlide(index)}
-                className={`relative h-2.5 transition-all duration-300 ${
-                    index === currentSlide ? "w-12 bg-emerald-500" : "w-6 bg-white/60 hover:bg-white/90"
-                }`}
-                whileTap={{ scale: 0.9 }}
-                whileHover={{ y: -2 }}
-                aria-label={`Go to slide ${index + 1}`}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                style={{ borderRadius: '4px' }}
-            />
-        ))}
-    </div>
-);
+// Component for slide indicators with multiple style variants
+const SlideIndicators: FC<SlideIndicatorProps> = ({ 
+    slides, 
+    currentSlide, 
+    goToSlide, 
+    variant = 'dots', 
+    size = 'md' 
+}) => {
+    // Size classes mapping
+    const sizeClasses = {
+        sm: { dot: 'h-1.5 w-1.5', line: 'h-1.5 w-4', active: 'w-8' },
+        md: { dot: 'h-2.5 w-2.5', line: 'h-2.5 w-6', active: 'w-12' },
+        lg: { dot: 'h-3 w-3', line: 'h-3 w-8', active: 'w-16' },
+    };
+
+    // Render dots style indicators
+    if (variant === 'dots') {
+        return (
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex space-x-3 z-10">
+                {slides.map((_, index) => (
+                    <motion.button
+                        key={index}
+                        onClick={() => goToSlide(index)}
+                        className={`rounded-full transition-all duration-300 ${sizeClasses[size].dot} ${
+                            index === currentSlide ? "bg-emerald-500 scale-125" : "bg-white/60 hover:bg-white/90"
+                        }`}
+                        whileTap={{ scale: 0.9 }}
+                        whileHover={{ scale: 1.2 }}
+                        aria-label={`Go to slide ${index + 1}`}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                    />
+                ))}
+            </div>
+        );
+    }
+    
+    // Render lines style indicators
+    if (variant === 'lines') {
+        return (
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex space-x-4 z-10">
+                {slides.map((_, index) => (
+                    <motion.button
+                        key={index}
+                        onClick={() => goToSlide(index)}
+                        className={`relative transition-all duration-300 ${sizeClasses[size].line} ${
+                            index === currentSlide ? `${sizeClasses[size].active} bg-emerald-500` : "bg-white/60 hover:bg-white/90"
+                        }`}
+                        whileTap={{ scale: 0.9 }}
+                        whileHover={{ y: -2 }}
+                        aria-label={`Go to slide ${index + 1}`}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        style={{ borderRadius: '4px' }}
+                    />
+                ))}
+            </div>
+        );
+    }
+    
+    // Render numbers style indicators
+    return (
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex space-x-2 z-10">
+            {slides.map((_, index) => (
+                <motion.button
+                    key={index}
+                    onClick={() => goToSlide(index)}
+                    className={`h-8 w-8 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-300 ${
+                        index === currentSlide 
+                            ? "bg-emerald-500 text-white" 
+                            : "bg-white/20 text-white/80 hover:bg-white/30"
+                    }`}
+                    whileTap={{ scale: 0.9 }}
+                    whileHover={{ scale: 1.1 }}
+                    aria-label={`Go to slide ${index + 1}`}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                >
+                    {index + 1}
+                </motion.button>
+            ))}
+        </div>
+    );
+};
 
 // Component for hero content (text and buttons)
-const HeroContent: FC<HeroContentProps> = ({ title, titleHighlight, description, ctaPrimary, ctaSecondary, currentSlide }) => {
+const HeroContent: FC<HeroContentProps> = ({ 
+    title, 
+    titleHighlight = '', 
+    description, 
+    ctaPrimary, 
+    ctaSecondary, 
+    currentSlide,
+    animation = 'fadeIn',
+    alignment = 'left' 
+}) => {
+    // Generate text alignment classes based on alignment prop
+    const alignmentClasses = {
+        left: 'text-left justify-start',
+        center: 'text-center justify-center',
+        right: 'text-right justify-end'
+    };
+    
+    // Animation variants
+    const getAnimationVariants = (type: AnimationVariant) => {
+        switch(type) {
+            case 'fadeIn': return { 
+                initial: { opacity: 0 },
+                animate: { opacity: 1 }
+            };
+            case 'slideUp': return {
+                initial: { opacity: 0, y: 50 },
+                animate: { opacity: 1, y: 0 }
+            };
+            case 'slideDown': return {
+                initial: { opacity: 0, y: -50 },
+                animate: { opacity: 1, y: 0 }
+            };
+            case 'slideLeft': return {
+                initial: { opacity: 0, x: 50 },
+                animate: { opacity: 1, x: 0 }
+            };
+            case 'slideRight': return {
+                initial: { opacity: 0, x: -50 },
+                animate: { opacity: 1, x: 0 }
+            };
+            case 'zoom': return {
+                initial: { opacity: 0, scale: 0.8 },
+                animate: { opacity: 1, scale: 1 }
+            };
+            default: return {
+                initial: { opacity: 0 },
+                animate: { opacity: 1 }
+            };
+        }
+    };
+    
+    const animVariants = getAnimationVariants(animation);
+    
+    // Function to render button based on variant
+    const renderButton = (button: CTAButton, index: number) => {
+        const { text, href, variant = 'primary', icon = true, external = false } = button;
+        
+        // Button style variants
+        const buttonStyles = {
+            primary: "rounded-md bg-emerald-600 px-6 py-3.5 font-medium text-white shadow-lg transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 group flex items-center justify-center gap-2",
+            secondary: "rounded-md border border-white/70 backdrop-blur-sm bg-transparent px-6 py-3.5 font-medium text-white transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 flex items-center justify-center",
+            outline: "rounded-md border-2 border-emerald-500 px-6 py-3.5 font-medium text-white transition hover:bg-emerald-500/20 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 flex items-center justify-center gap-2"
+        };
+        
+        // Determine button component based on external flag
+        const ButtonComponent = external ? 'a' : Link;
+        const buttonProps = external ? { href, target: "_blank", rel: "noopener noreferrer" } : { href };
+        
+        return (
+            <motion.div 
+                key={`btn-${index}`}
+                whileHover={{ scale: 1.05 }} 
+                whileTap={{ scale: 0.98 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 + (index * 0.1) }}
+            >
+                <ButtonComponent
+                    {...buttonProps}
+                    className={buttonStyles[variant]}
+                >
+                    {text}
+                    {icon && variant === 'primary' && (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 transform transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
+                    )}
+                </ButtonComponent>
+            </motion.div>
+        );
+    };
+    
     return (
-        <div className="relative h-full w-full z-10 flex items-center justify-start">
+        <div className={`relative h-full w-full z-10 flex items-center ${alignmentClasses[alignment]}`}>
             {/* Vertical side text */}
             <div className="absolute top-0 right-8 h-full flex items-center z-10 hidden lg:block">
                 <div className="flex flex-col items-center">
@@ -93,9 +267,8 @@ const HeroContent: FC<HeroContentProps> = ({ title, titleHighlight, description,
 
             <div className="container mx-auto px-4 md:px-6 lg:px-8">
                 <motion.div 
-                    className="max-w-xl md:max-w-2xl"
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    className={`max-w-xl md:max-w-2xl ${alignment === 'center' ? 'mx-auto' : ''} ${alignment === 'right' ? 'ml-auto' : ''}`}
+                    {...animVariants}
                     transition={{ duration: 0.7 }}
                 >
                     <motion.div 
@@ -114,14 +287,16 @@ const HeroContent: FC<HeroContentProps> = ({ title, titleHighlight, description,
                         transition={{ delay: 0.1 }}
                     >
                         {title}{' '}
-                        <motion.span 
-                            className="text-emerald-400 inline-block"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.2 }}
-                        >
-                            {titleHighlight}
-                        </motion.span>
+                        {titleHighlight && (
+                            <motion.span 
+                                className="text-emerald-400 inline-block"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.2 }}
+                            >
+                                {titleHighlight}
+                            </motion.span>
+                        )}
                     </motion.h1>
                     
                     <motion.p 
@@ -139,25 +314,8 @@ const HeroContent: FC<HeroContentProps> = ({ title, titleHighlight, description,
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.4 }}
                     >
-                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
-                            <Link
-                                href={ctaPrimary.href}
-                                className="rounded-md bg-emerald-600 px-6 py-3.5 font-medium text-white shadow-lg transition flex items-center justify-center gap-2 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 group"
-                            >
-                                {ctaPrimary.text}
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 transform transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                                </svg>
-                            </Link>
-                        </motion.div>
-                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
-                            <Link
-                                href={ctaSecondary.href}
-                                className="rounded-md border border-white/70 backdrop-blur-sm bg-transparent px-6 py-3.5 font-medium text-white transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 flex items-center justify-center"
-                            >
-                                {ctaSecondary.text}
-                            </Link>
-                        </motion.div>
+                        {renderButton(ctaPrimary, 0)}
+                        {ctaSecondary && renderButton(ctaSecondary, 1)}
                     </motion.div>
                 </motion.div>
             </div>
@@ -185,8 +343,47 @@ const ScrollIndicator: FC = () => (
     </motion.div>
 );
 
-// Main Hero Section component
-const HeroSection: FC = () => {
+// Define hero section configuration types
+interface HeroConfig {
+    height?: 'full' | 'screen' | 'auto' | string;
+    autoplay?: boolean;
+    autoplaySpeed?: number;
+    pauseOnHover?: boolean;
+    showIndicators?: boolean;
+    showNumber?: boolean;
+    slidesAnimation?: 'fade' | 'slide' | 'zoom' | 'none';
+    indicatorType?: 'dots' | 'lines' | 'numbers';
+    indicatorSize?: 'sm' | 'md' | 'lg';
+    contentAlignment?: 'left' | 'center' | 'right';
+    contentAnimation?: AnimationVariant;
+    overlayStyle?: string;
+}
+
+// Main Hero Section component with enhanced options
+interface HeroSectionProps {
+    config?: HeroConfig;
+}
+
+const HeroSection: FC<HeroSectionProps> = ({ config }) => {
+    // Default configuration
+    const defaultConfig: HeroConfig = {
+        height: 'screen',
+        autoplay: true,
+        autoplaySpeed: 5000,
+        pauseOnHover: true,
+        showIndicators: true,
+        showNumber: true,
+        slidesAnimation: 'fade',
+        indicatorType: 'lines',
+        indicatorSize: 'md',
+        contentAlignment: 'left',
+        contentAnimation: 'slideUp',
+        overlayStyle: 'bg-gradient-to-b from-black/60 via-black/40 to-black/60'
+    };
+    
+    // Merge default config with provided config
+    const mergedConfig = { ...defaultConfig, ...config };
+    
     // Data for slides
     const slides: Slide[] = [
         {
@@ -194,44 +391,62 @@ const HeroSection: FC = () => {
             image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
             alt: "Modern House Design",
             headline: "Desain Modern",
-            subtext: "Arsitektur yang mengikuti tren terkini"
+            subtext: "Arsitektur yang mengikuti tren terkini",
+            position: 'center'
         },
         {
             id: 2,
             image: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80",
             alt: "Contemporary Home",
             headline: "Inovasi Terdepan",
-            subtext: "Solusi rumah impian yang futuristik"
+            subtext: "Solusi rumah impian yang futuristik",
+            position: 'center'
         },
         {
             id: 3,
             image: "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
             alt: "Luxury Residence",
             headline: "Kemewahan Exclusive",
-            subtext: "Pengalaman hunian premium berkualitas"
+            subtext: "Pengalaman hunian premium berkualitas",
+            position: 'center',
+            overlay: 'bg-gradient-to-t from-black/70 via-black/50 to-black/70'
         }
     ];
 
     // State for current slide
     const [currentSlide, setCurrentSlide] = useState<number>(0);
+    const [isPaused, setIsPaused] = useState<boolean>(false);
 
     // Hero content data
     const heroContent = {
         title: "Wujudkan Rumah",
         titleHighlight: "Impian Anda",
         description: "Kami memberikan solusi terbaik untuk kebutuhan desain dan konstruksi bangunan Anda dengan pendekatan modern dan berkelanjutan.",
-        ctaPrimary: { text: "Konsultasi Sekarang", href: "/contact" },
-        ctaSecondary: { text: "Lihat Portofolio", href: "/portfolio" }
+        ctaPrimary: { 
+            text: "Konsultasi Sekarang", 
+            href: "/contact", 
+            variant: 'primary' as ButtonVariant, 
+            icon: true
+        },
+        ctaSecondary: { 
+            text: "Lihat Portofolio", 
+            href: "/portfolio", 
+            variant: 'secondary' as ButtonVariant
+        },
+        animation: mergedConfig.contentAnimation,
+        alignment: mergedConfig.contentAlignment
     };
 
     // Auto-advance slides
     useEffect(() => {
+        if (!mergedConfig.autoplay || isPaused) return;
+        
         const interval = setInterval(() => {
             setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length);
-        }, 5000); // Change slide every 5 seconds
+        }, mergedConfig.autoplaySpeed);
 
         return () => clearInterval(interval);
-    }, [slides.length]);
+    }, [mergedConfig.autoplay, mergedConfig.autoplaySpeed, slides.length, isPaused]);
 
     // Reference for the slider container
     const sliderRef = useRef<HTMLDivElement>(null);
@@ -247,6 +462,19 @@ const HeroSection: FC = () => {
 
     const goToNextSlide = (): void => {
         setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length);
+    };
+    
+    // Pause autoplay on hover if configured
+    const handleMouseEnter = () => {
+        if (mergedConfig.pauseOnHover) {
+            setIsPaused(true);
+        }
+    };
+    
+    const handleMouseLeave = () => {
+        if (mergedConfig.pauseOnHover) {
+            setIsPaused(false);
+        }
     };
     
     // Touch swipe handling
@@ -277,14 +505,60 @@ const HeroSection: FC = () => {
             goToPrevSlide();
         }
     };
+    
+    // Get animation style based on config
+    const getSlideAnimationStyle = (isActive: boolean) => {
+        switch(mergedConfig.slidesAnimation) {
+            case 'fade':
+                return {
+                    initial: { opacity: 0 },
+                    animate: { opacity: 1, scale: 1 },
+                    exit: { opacity: 0 },
+                    transition: { duration: 0.8, ease: "easeOut" }
+                };
+            case 'slide':
+                return {
+                    initial: { opacity: 0, x: isActive ? 100 : -100 },
+                    animate: { opacity: 1, x: 0 },
+                    exit: { opacity: 0, x: isActive ? -100 : 100 },
+                    transition: { duration: 0.8, ease: "easeInOut" }
+                };
+            case 'zoom':
+                return {
+                    initial: { opacity: 0, scale: 1.2 },
+                    animate: { opacity: 1, scale: 1 },
+                    exit: { opacity: 0, scale: 0.8 },
+                    transition: { duration: 0.8, ease: "easeInOut" }
+                };
+            default: // 'none'
+                return {
+                    initial: { opacity: 1 },
+                    animate: { opacity: 1 },
+                    exit: { opacity: 1 },
+                    transition: { duration: 0 }
+                };
+        }
+    };
+    
+    // Calculate height style based on config
+    const getHeightClass = () => {
+        switch(mergedConfig.height) {
+            case 'full': return 'h-full';
+            case 'screen': return 'h-screen';
+            case 'auto': return 'h-auto';
+            default: return mergedConfig.height || 'h-screen';
+        }
+    };
 
     return (
         <section 
-            className="relative h-screen w-full overflow-hidden" 
+            className={`relative ${getHeightClass()} w-full overflow-hidden`}
             ref={sliderRef}
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
         >
             {/* Full-screen background slider */}
             <div className="absolute inset-0 z-0">
@@ -294,49 +568,61 @@ const HeroSection: FC = () => {
                             <motion.div 
                                 key={slide.id}
                                 className="absolute inset-0"
-                                initial={{ opacity: 0, scale: 1.05 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0 }}
-                                transition={{ duration: 0.8, ease: "easeOut" }}
+                                {...getSlideAnimationStyle(index > currentSlide)}
                             >
                                 <img 
                                     src={slide.image} 
                                     alt={slide.alt} 
-                                    className="h-full w-full object-cover"
+                                    className={`h-full w-full object-cover ${
+                                        slide.position === 'top' ? 'object-top' : 
+                                        slide.position === 'bottom' ? 'object-bottom' : 
+                                        slide.position === 'left' ? 'object-left' : 
+                                        slide.position === 'right' ? 'object-right' : 'object-center'
+                                    }`}
                                     loading={index === 0 ? "eager" : "lazy"}
                                 />
                                 
-                                {/* Gradient overlay */}
-                                <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/60"></div>
+                                {/* Gradient overlay - customizable per slide */}
+                                <div className={`absolute inset-0 ${slide.overlay || mergedConfig.overlayStyle}`}></div>
                                 
                                 {/* Slide info badge */}
-                                <motion.div 
-                                    className="absolute top-8 left-8 bg-black/30 backdrop-blur-md rounded-lg py-2 px-4 max-w-xs hidden md:block"
-                                    initial={{ opacity: 0, x: -30 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.4, duration: 0.5 }}
-                                >
-                                    <h3 className="text-white font-semibold text-lg">{slide.headline}</h3>
-                                    <p className="text-white/80 text-sm">{slide.subtext}</p>
-                                </motion.div>
+                                {(slide.headline || slide.subtext) && (
+                                    <motion.div 
+                                        className="absolute top-8 left-8 bg-black/30 backdrop-blur-md rounded-lg py-2 px-4 max-w-xs hidden md:block"
+                                        initial={{ opacity: 0, x: -30 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: 0.4, duration: 0.5 }}
+                                    >
+                                        {slide.headline && <h3 className="text-white font-semibold text-lg">{slide.headline}</h3>}
+                                        {slide.subtext && <p className="text-white/80 text-sm">{slide.subtext}</p>}
+                                    </motion.div>
+                                )}
                             </motion.div>
                         )
                     ))}
                 </AnimatePresence>
                 
-                {/* Slide number indicator */}
-                <div className="absolute bottom-8 right-8 z-10 hidden md:block">
-                    <div className="text-white font-light text-3xl tracking-tighter">
-                        <span className="text-emerald-400 font-medium">{(currentSlide + 1).toString().padStart(2, '0')}</span>
-                        <span className="text-white/40 mx-2">/</span>
-                        <span className="text-white/70">{slides.length.toString().padStart(2, '0')}</span>
+                {/* Slide number indicator - optional based on config */}
+                {mergedConfig.showNumber && (
+                    <div className="absolute bottom-8 right-8 z-10 hidden md:block">
+                        <div className="text-white font-light text-3xl tracking-tighter">
+                            <span className="text-emerald-400 font-medium">{(currentSlide + 1).toString().padStart(2, '0')}</span>
+                            <span className="text-white/40 mx-2">/</span>
+                            <span className="text-white/70">{slides.length.toString().padStart(2, '0')}</span>
+                        </div>
                     </div>
-                </div>
+                )}
                 
-
-                
-                {/* Navigation controls */}
-                <SlideIndicators slides={slides} currentSlide={currentSlide} goToSlide={goToSlide} />
+                {/* Navigation controls - optional based on config */}
+                {mergedConfig.showIndicators && (
+                    <SlideIndicators 
+                        slides={slides} 
+                        currentSlide={currentSlide} 
+                        goToSlide={goToSlide}
+                        variant={mergedConfig.indicatorType}
+                        size={mergedConfig.indicatorSize}
+                    />
+                )}
             </div>
             
             {/* Content */}
