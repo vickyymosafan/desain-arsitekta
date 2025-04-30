@@ -2,7 +2,6 @@ import { type SharedData } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
 import Navbar from '@/components/user/Navbar';
 import HeroSection from '@/components/user/HeroSection';
-import StatisticsSection from '@/components/user/StatisticsSection';
 import ServicesSection from '@/components/user/ServicesSection';
 
 export default function Welcome() {
@@ -18,6 +17,7 @@ export default function Welcome() {
             <div>
                 <Navbar user={auth.user} />
                 <HeroSection />
+                <ServicesSection />
             </div>
         </>
     );
