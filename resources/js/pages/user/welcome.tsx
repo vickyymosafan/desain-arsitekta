@@ -15,11 +15,9 @@ export default function Welcome() {
                 <link href="https://fonts.bunny.net/css?family=nunito:400,500,600,700&family=playfair-display:700,800" rel="stylesheet" />
                 <meta name="description" content="Arsitekta - Jasa profesional untuk desain, konstruksi, dan renovasi bangunan dengan kualitas terbaik." />
             </Head>
-            <div className="min-h-screen bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100">
+            <div>
                 <Navbar user={auth.user} />
                 <HeroSection />
-                <StatisticsSection />
-                <ServicesSection />
             </div>
         </>
     );
