@@ -882,7 +882,7 @@ const ScrollIndicator: FC<ScrollIndicatorProps> = ({
     
     return (
         <motion.div 
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 hidden md:flex flex-col items-center justify-center"
+            className="absolute bottom-16 left-1/2 -translate-x-1/2 z-10 hidden md:flex flex-col items-center justify-center"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1, duration: 0.6 }}
@@ -939,6 +939,7 @@ interface HeroConfig {
     scrollIndicatorColor?: string;
     scrollIndicatorSize?: 'sm' | 'md' | 'lg';
     navbarSpacing?: boolean; // Option to control spacing below navbar
+    navbarHeight?: number; // Height of the navbar in pixels
 }
 
 // Main Hero Section component with enhanced options
@@ -965,7 +966,8 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
         scrollIndicatorVariant: 'default',
         scrollIndicatorColor: 'emerald',
         scrollIndicatorSize: 'md',
-        navbarSpacing: true // New option to control navbar spacing
+        navbarSpacing: true, // Option to control spacing below navbar
+        navbarHeight: 100 // Default navbar height in pixels
     };
     
     // Merge default config with provided config
@@ -1200,14 +1202,14 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
     
 
     // Navbar height constant - adjust if your navbar has a different height
-    const NAVBAR_HEIGHT_PX = 80; // 5rem/80px
+    const NAVBAR_HEIGHT_PX = 120; // Increased significantly to ensure proper spacing below navbar
     
     // Calculate height style with navbar adjustment
     const getHeightStyle = () => {
         if (mergedConfig.height === 'screen' && mergedConfig.navbarSpacing) {
             // For screen height, return the full viewport height minus navbar
             return {
-                height: `calc(100vh - ${NAVBAR_HEIGHT_PX}px)`
+                height: `calc(100vh - 80px)` // Fixed 80px navbar height
             };
         } else if (mergedConfig.height === 'full') {
             return { height: '100%' };
@@ -1215,7 +1217,7 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
             return { height: 'auto' };
         } else {
             // For custom heights or default
-            return { height: mergedConfig.height || `calc(100vh - ${NAVBAR_HEIGHT_PX}px)` };
+            return { height: mergedConfig.height || '85vh' };
         }
     };
 
@@ -1236,7 +1238,11 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
 
     return (
         <div 
-            className={`relative section-fullscreen ${getHeightClass(mergedConfig.height)} overflow-hidden ${mergedConfig.navbarSpacing ? 'pt-16 md:pt-20' : ''}`}
+            className={`relative section-fullscreen ${getHeightClass(mergedConfig.height)} overflow-hidden`}
+            style={{
+                marginTop: mergedConfig.navbarSpacing ? mergedConfig.navbarHeight + 'px' : '0',
+                height: mergedConfig.height === 'screen' ? `calc(100vh - ${mergedConfig.navbarHeight}px)` : '100vh'
+            }}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             onTouchStart={onTouchStart}
@@ -1388,7 +1394,7 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
                 
                 {/* Slide number indicator - optional based on config */}
                 {mergedConfig.showNumber && (
-                    <div className="absolute bottom-8 right-8 z-10 hidden md:block">
+                    <div className="absolute bottom-16 right-8 z-10 hidden md:block">
                         <div className="text-white font-light text-3xl tracking-tighter">
                             <span className="text-emerald-400 font-medium">{(currentSlide + 1).toString().padStart(2, '0')}</span>
                             <span className="text-white/40 mx-2">/</span>
@@ -1405,6 +1411,8 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
                         goToSlide={goToSlide}
                         variant={mergedConfig.indicatorType}
                         size={mergedConfig.indicatorSize}
+                        position="bottom"
+                        customClass="bottom-12"
                     />
                 )}
             </div>
