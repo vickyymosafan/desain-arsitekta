@@ -4,7 +4,19 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 // Types
 type ButtonVariant = 'primary' | 'secondary' | 'outline';
-type AnimationVariant = 'fadeIn' | 'slideUp' | 'slideDown' | 'slideLeft' | 'slideRight' | 'zoom';
+// Animation types for more powerful and flexible animations
+type AnimationVariant = 
+    'fadeIn' | 'fadeInSlow' | 'fadeInFast' |
+    'slideUp' | 'slideUpBounce' | 'slideUpSpring' |
+    'slideDown' | 'slideDownBounce' | 'slideDownSpring' |
+    'slideLeft' | 'slideLeftBounce' | 'slideLeftSpring' |
+    'slideRight' | 'slideRightBounce' | 'slideRightSpring' |
+    'zoom' | 'zoomBounce' | 'zoomSpring' |
+    'flip' | 'flipX' | 'flipY' |
+    'rotate' | 'pulse' | 'shake' | 'bounce' | 'stagger' | 'none';
+
+type TransitionType = 'tween' | 'spring' | 'inertia';
+type EasingType = 'linear' | 'easeIn' | 'easeOut' | 'easeInOut' | 'circIn' | 'circOut' | 'circInOut' | 'backIn' | 'backOut' | 'backInOut' | 'anticipate';
 
 interface Slide {
     id: number;
@@ -149,41 +161,204 @@ const HeroContent: FC<HeroContentProps> = ({
         right: 'text-right justify-end'
     };
     
-    // Animation variants
-    const getAnimationVariants = (type: AnimationVariant) => {
-        switch(type) {
-            case 'fadeIn': return { 
+    // Enhanced animation system with advanced variants and transitions
+    const getAnimationVariants = (type: AnimationVariant, customDelay: number = 0) => {
+        // Base transition configurations
+        const transitions = {
+            default: { duration: 0.6, ease: 'easeOut' as EasingType },
+            slow: { duration: 1.2, ease: 'easeInOut' as EasingType },
+            fast: { duration: 0.3, ease: 'easeOut' as EasingType },
+            bounce: { type: 'spring' as TransitionType, stiffness: 300, damping: 10, mass: 0.5 },
+            spring: { type: 'spring' as TransitionType, stiffness: 100, damping: 15, mass: 1 },
+            stagger: (i: number) => ({ delay: customDelay + (i * 0.1) })
+        };
+        
+        // Animation variant presets
+        const variants = {
+            // Fade variants
+            fadeIn: {
                 initial: { opacity: 0 },
-                animate: { opacity: 1 }
-            };
-            case 'slideUp': return {
+                animate: { opacity: 1 },
+                transition: transitions.default
+            },
+            fadeInSlow: {
+                initial: { opacity: 0 },
+                animate: { opacity: 1 },
+                transition: transitions.slow
+            },
+            fadeInFast: {
+                initial: { opacity: 0 },
+                animate: { opacity: 1 },
+                transition: transitions.fast
+            },
+            
+            // Slide variants
+            slideUp: {
                 initial: { opacity: 0, y: 50 },
-                animate: { opacity: 1, y: 0 }
-            };
-            case 'slideDown': return {
+                animate: { opacity: 1, y: 0 },
+                transition: transitions.default
+            },
+            slideUpBounce: {
+                initial: { opacity: 0, y: 70 },
+                animate: { opacity: 1, y: 0 },
+                transition: transitions.bounce
+            },
+            slideUpSpring: {
+                initial: { opacity: 0, y: 50 },
+                animate: { opacity: 1, y: 0 },
+                transition: transitions.spring
+            },
+            slideDown: {
                 initial: { opacity: 0, y: -50 },
-                animate: { opacity: 1, y: 0 }
-            };
-            case 'slideLeft': return {
+                animate: { opacity: 1, y: 0 },
+                transition: transitions.default
+            },
+            slideDownBounce: {
+                initial: { opacity: 0, y: -70 },
+                animate: { opacity: 1, y: 0 },
+                transition: transitions.bounce
+            },
+            slideDownSpring: {
+                initial: { opacity: 0, y: -50 },
+                animate: { opacity: 1, y: 0 },
+                transition: transitions.spring
+            },
+            slideLeft: {
                 initial: { opacity: 0, x: 50 },
-                animate: { opacity: 1, x: 0 }
-            };
-            case 'slideRight': return {
+                animate: { opacity: 1, x: 0 },
+                transition: transitions.default
+            },
+            slideLeftBounce: {
+                initial: { opacity: 0, x: 70 },
+                animate: { opacity: 1, x: 0 },
+                transition: transitions.bounce
+            },
+            slideLeftSpring: {
+                initial: { opacity: 0, x: 50 },
+                animate: { opacity: 1, x: 0 },
+                transition: transitions.spring
+            },
+            slideRight: {
                 initial: { opacity: 0, x: -50 },
-                animate: { opacity: 1, x: 0 }
-            };
-            case 'zoom': return {
+                animate: { opacity: 1, x: 0 },
+                transition: transitions.default
+            },
+            slideRightBounce: {
+                initial: { opacity: 0, x: -70 },
+                animate: { opacity: 1, x: 0 },
+                transition: transitions.bounce
+            },
+            slideRightSpring: {
+                initial: { opacity: 0, x: -50 },
+                animate: { opacity: 1, x: 0 },
+                transition: transitions.spring
+            },
+            
+            // Zoom and scale variants
+            zoom: {
                 initial: { opacity: 0, scale: 0.8 },
-                animate: { opacity: 1, scale: 1 }
-            };
-            default: return {
-                initial: { opacity: 0 },
-                animate: { opacity: 1 }
-            };
-        }
+                animate: { opacity: 1, scale: 1 },
+                transition: transitions.default
+            },
+            zoomBounce: {
+                initial: { opacity: 0, scale: 0.5 },
+                animate: { opacity: 1, scale: 1 },
+                transition: transitions.bounce
+            },
+            zoomSpring: {
+                initial: { opacity: 0, scale: 0.8 },
+                animate: { opacity: 1, scale: 1 },
+                transition: transitions.spring
+            },
+            
+            // 3D transform variants
+            flip: {
+                initial: { opacity: 0, rotateY: 90 },
+                animate: { opacity: 1, rotateY: 0 },
+                transition: { ...transitions.default, duration: 0.8 }
+            },
+            flipX: {
+                initial: { opacity: 0, rotateX: 90 },
+                animate: { opacity: 1, rotateX: 0 },
+                transition: { ...transitions.default, duration: 0.8 }
+            },
+            flipY: {
+                initial: { opacity: 0, rotateY: 90 },
+                animate: { opacity: 1, rotateY: 0 },
+                transition: { ...transitions.default, duration: 0.8 }
+            },
+            
+            // Special effects variants
+            rotate: {
+                initial: { opacity: 0, rotate: -15 },
+                animate: { opacity: 1, rotate: 0 },
+                transition: transitions.spring
+            },
+            pulse: {
+                initial: { opacity: 0, scale: 0.8 },
+                animate: { 
+                    opacity: 1, 
+                    scale: [0.8, 1.1, 0.9, 1.05, 1],
+                },
+                transition: { 
+                    duration: 1, 
+                    times: [0, 0.25, 0.5, 0.75, 1]
+                }
+            },
+            shake: {
+                initial: { opacity: 0, x: 0 },
+                animate: { 
+                    opacity: 1, 
+                    x: [0, -10, 10, -5, 5, 0],
+                },
+                transition: { 
+                    duration: 0.8, 
+                    times: [0, 0.2, 0.4, 0.6, 0.8, 1]
+                }
+            },
+            bounce: {
+                initial: { opacity: 0, y: -20 },
+                animate: { 
+                    opacity: 1, 
+                    y: [0, -30, -15, -30, -5, -10, 0],
+                },
+                transition: { 
+                    duration: 1.5, 
+                    times: [0, 0.2, 0.3, 0.45, 0.65, 0.85, 1]
+                }
+            },
+            stagger: {
+                initial: { opacity: 0, y: 20 },
+                animate: { opacity: 1, y: 0 },
+                transition: transitions.stagger(0) // Will be applied per element with proper index
+            },
+            none: {
+                initial: { opacity: 1 },
+                animate: { opacity: 1 },
+                transition: { duration: 0 }
+            }
+        };
+        
+        return variants[type] || variants.fadeIn;
     };
     
-    const animVariants = getAnimationVariants(animation);
+    // Create animation props with delay composition
+    const createAnimationProps = (type: AnimationVariant, delay: number = 0, once: boolean = false) => {
+        const variant = getAnimationVariants(type, delay);
+        const transition = variant.transition as any; // Type cast to handle different transition types
+        return {
+            initial: variant.initial,
+            animate: variant.animate,
+            transition: {
+                ...transition,
+                delay: delay + (transition.delay || 0)
+            },
+            viewport: once ? { once: true } : undefined
+        };
+    };
+    
+    // Get animation props for current component
+    const animProps = createAnimationProps(animation, 0);
     
     // Function to render button based on variant
     const renderButton = (button: CTAButton, index: number) => {
@@ -268,8 +443,7 @@ const HeroContent: FC<HeroContentProps> = ({
             <div className="container mx-auto px-4 md:px-6 lg:px-8">
                 <motion.div 
                     className={`max-w-xl md:max-w-2xl ${alignment === 'center' ? 'mx-auto' : ''} ${alignment === 'right' ? 'ml-auto' : ''}`}
-                    {...animVariants}
-                    transition={{ duration: 0.7 }}
+                    {...animProps}
                 >
                     <motion.div 
                         className="mb-3 inline-block bg-emerald-500/90 backdrop-blur-sm px-4 py-1 rounded-full"
@@ -323,25 +497,118 @@ const HeroContent: FC<HeroContentProps> = ({
     );
 };
 
-// Component for scroll indicator
-const ScrollIndicator: FC = () => (
-    <motion.div 
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 hidden md:flex flex-col items-center justify-center"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1, duration: 0.6 }}
-    >
-        <div className="text-white/70 text-xs uppercase tracking-widest font-light mb-2">Scroll</div>
+// Component for scroll indicator with enhanced animations
+interface ScrollIndicatorProps {
+    variant?: 'default' | 'pulse' | 'bounce' | 'fade';
+    color?: string;
+    size?: 'sm' | 'md' | 'lg';
+}
+
+const ScrollIndicator: FC<ScrollIndicatorProps> = ({ 
+    variant = 'default', 
+    color = 'white',
+    size = 'md' 
+}) => {
+    // Size variants
+    const sizeClasses = {
+        sm: 'h-6 w-6 text-xs',
+        md: 'h-8 w-8 text-sm',
+        lg: 'h-10 w-10 text-base'
+    };
+    
+    // Color variants
+    const colorClasses = {
+        white: 'text-white/80',
+        emerald: 'text-emerald-400',
+        primary: 'text-emerald-500'
+    };
+    
+    // Animation variants
+    const getIconAnimation = () => {
+        switch(variant) {
+            case 'pulse':
+                return {
+                    animate: { 
+                        scale: [1, 1.2, 1],
+                        opacity: [0.7, 1, 0.7]
+                    },
+                    transition: { 
+                        repeat: Infinity, 
+                        duration: 2,
+                        ease: 'easeInOut'
+                    }
+                };
+            case 'bounce':
+                return {
+                    animate: { 
+                        y: [0, -8, 0],
+                        scale: [1, 1.1, 1]
+                    },
+                    transition: { 
+                        repeat: Infinity, 
+                        duration: 1.2,
+                        ease: 'easeOut'
+                    }
+                };
+            case 'fade':
+                return {
+                    animate: { 
+                        opacity: [0.4, 1, 0.4],
+                        filter: ['blur(0px)', 'blur(1px)', 'blur(0px)']
+                    },
+                    transition: { 
+                        repeat: Infinity, 
+                        duration: 2.5
+                    }
+                };
+            default: // Default scrolling animation
+                return {
+                    animate: { y: [0, 8, 0] },
+                    transition: { repeat: Infinity, duration: 1.5 }
+                };
+        }
+    };
+    
+    // Get color class based on color prop
+    const textColor = colorClasses[color as keyof typeof colorClasses] || 'text-white/80';
+    const iconAnimation = getIconAnimation();
+    
+    return (
         <motion.div 
-            animate={{ y: [0, 8, 0] }} 
-            transition={{ repeat: Infinity, duration: 1.5 }}
+            className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 hidden md:flex flex-col items-center justify-center"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1, duration: 0.6 }}
         >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-            </svg>
+            <motion.div 
+                className={`text-white/70 text-xs uppercase tracking-widest font-light mb-2`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.2 }}
+            >
+                Scroll
+            </motion.div>
+            <motion.div 
+                {...iconAnimation}
+            >
+                <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    className={`${sizeClasses[size]} ${textColor}`} 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor"
+                >
+                    <path 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round" 
+                        strokeWidth={1.5} 
+                        d="M19 14l-7 7m0 0l-7-7m7 7V3" 
+                    />
+                </svg>
+            </motion.div>
         </motion.div>
-    </motion.div>
-);
+    );
+};
 
 // Define hero section configuration types
 interface HeroConfig {
@@ -351,12 +618,19 @@ interface HeroConfig {
     pauseOnHover?: boolean;
     showIndicators?: boolean;
     showNumber?: boolean;
-    slidesAnimation?: 'fade' | 'slide' | 'zoom' | 'none';
+    showScrollIndicator?: boolean;
+    slidesAnimation?: 
+        'fade' | 'slide' | 'zoom' | 'none' | 
+        'flip' | 'rotate' | 'slideUp' | 'slideDown' | 
+        'crossFade' | 'elastic';
     indicatorType?: 'dots' | 'lines' | 'numbers';
     indicatorSize?: 'sm' | 'md' | 'lg';
     contentAlignment?: 'left' | 'center' | 'right';
     contentAnimation?: AnimationVariant;
     overlayStyle?: string;
+    scrollIndicatorVariant?: 'default' | 'pulse' | 'bounce' | 'fade';
+    scrollIndicatorColor?: string;
+    scrollIndicatorSize?: 'sm' | 'md' | 'lg';
 }
 
 // Main Hero Section component with enhanced options
@@ -365,7 +639,7 @@ interface HeroSectionProps {
 }
 
 const HeroSection: FC<HeroSectionProps> = ({ config }) => {
-    // Default configuration
+    // Default configuration with enhanced animation options
     const defaultConfig: HeroConfig = {
         height: 'screen',
         autoplay: true,
@@ -373,12 +647,16 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
         pauseOnHover: true,
         showIndicators: true,
         showNumber: true,
+        showScrollIndicator: true,
         slidesAnimation: 'fade',
         indicatorType: 'lines',
         indicatorSize: 'md',
         contentAlignment: 'left',
-        contentAnimation: 'slideUp',
-        overlayStyle: 'bg-gradient-to-b from-black/60 via-black/40 to-black/60'
+        contentAnimation: 'slideUpSpring',
+        overlayStyle: 'bg-gradient-to-b from-black/60 via-black/40 to-black/60',
+        scrollIndicatorVariant: 'default',
+        scrollIndicatorColor: 'emerald',
+        scrollIndicatorSize: 'md'
     };
     
     // Merge default config with provided config
@@ -506,30 +784,91 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
         }
     };
     
-    // Get animation style based on config
+    // Enhanced slide animations with advanced transitions
     const getSlideAnimationStyle = (isActive: boolean) => {
+        // Define transition presets for slides
+        const slideTransitions = {
+            default: { duration: 0.8, ease: 'easeOut' as EasingType },
+            smooth: { duration: 1.2, ease: 'easeInOut' as EasingType },
+            spring: { type: 'spring' as TransitionType, stiffness: 80, damping: 20 },
+            bounce: { type: 'spring' as TransitionType, stiffness: 200, damping: 15, velocity: 1 }
+        };
+
+        // Define advanced animation presets for slides
         switch(mergedConfig.slidesAnimation) {
             case 'fade':
                 return {
                     initial: { opacity: 0 },
-                    animate: { opacity: 1, scale: 1 },
+                    animate: { opacity: 1 },
                     exit: { opacity: 0 },
-                    transition: { duration: 0.8, ease: "easeOut" }
+                    transition: slideTransitions.default
                 };
+                
             case 'slide':
                 return {
-                    initial: { opacity: 0, x: isActive ? 100 : -100 },
+                    initial: { opacity: 0, x: isActive ? '100%' : '-100%' },
                     animate: { opacity: 1, x: 0 },
-                    exit: { opacity: 0, x: isActive ? -100 : 100 },
-                    transition: { duration: 0.8, ease: "easeInOut" }
+                    exit: { opacity: 0, x: isActive ? '-100%' : '100%' },
+                    transition: slideTransitions.smooth
                 };
+                
             case 'zoom':
                 return {
-                    initial: { opacity: 0, scale: 1.2 },
-                    animate: { opacity: 1, scale: 1 },
-                    exit: { opacity: 0, scale: 0.8 },
-                    transition: { duration: 0.8, ease: "easeInOut" }
+                    initial: { opacity: 0, scale: 1.2, filter: 'blur(8px)' },
+                    animate: { opacity: 1, scale: 1, filter: 'blur(0px)' },
+                    exit: { opacity: 0, scale: 0.9, filter: 'blur(8px)' },
+                    transition: slideTransitions.default
                 };
+                
+            // Add more advanced animation options
+            case 'flip':
+                return {
+                    initial: { opacity: 0, rotateY: isActive ? 90 : -90 },
+                    animate: { opacity: 1, rotateY: 0 },
+                    exit: { opacity: 0, rotateY: isActive ? -90 : 90 },
+                    transition: { ...slideTransitions.default, duration: 1 }
+                };
+                
+            case 'rotate':
+                return {
+                    initial: { opacity: 0, rotate: isActive ? 5 : -5, scale: 0.9 },
+                    animate: { opacity: 1, rotate: 0, scale: 1 },
+                    exit: { opacity: 0, rotate: isActive ? -5 : 5, scale: 0.9 },
+                    transition: slideTransitions.spring
+                };
+                
+            case 'slideUp':
+                return {
+                    initial: { opacity: 0, y: 50 },
+                    animate: { opacity: 1, y: 0 },
+                    exit: { opacity: 0, y: -50 },
+                    transition: slideTransitions.spring
+                };
+                
+            case 'slideDown':
+                return {
+                    initial: { opacity: 0, y: -50 },
+                    animate: { opacity: 1, y: 0 },
+                    exit: { opacity: 0, y: 50 },
+                    transition: slideTransitions.spring
+                };
+                
+            case 'crossFade':
+                return {
+                    initial: { opacity: 0, filter: 'blur(8px)' },
+                    animate: { opacity: 1, filter: 'blur(0px)' },
+                    exit: { opacity: 0, filter: 'blur(8px)' },
+                    transition: { ...slideTransitions.default, duration: 1.2 }
+                };
+                
+            case 'elastic':
+                return {
+                    initial: { opacity: 0, x: isActive ? 100 : -100, scale: 0.8 },
+                    animate: { opacity: 1, x: 0, scale: 1 },
+                    exit: { opacity: 0, x: isActive ? -100 : 100, scale: 0.8 },
+                    transition: slideTransitions.bounce
+                };
+                
             default: // 'none'
                 return {
                     initial: { opacity: 1 },
@@ -628,8 +967,14 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
             {/* Content */}
             <HeroContent {...heroContent} currentSlide={currentSlide} />
             
-            {/* Scroll indicator */}
-            <ScrollIndicator />
+            {/* Scroll indicator - optional based on config */}
+            {mergedConfig.showScrollIndicator && (
+                <ScrollIndicator
+                    variant={mergedConfig.scrollIndicatorVariant}
+                    color={mergedConfig.scrollIndicatorColor}
+                    size={mergedConfig.scrollIndicatorSize}
+                />
+            )}
         </section>
     );
 };
