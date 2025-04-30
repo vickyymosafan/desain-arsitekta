@@ -62,7 +62,7 @@ const HeroContent: FC<HeroContentProps> = ({ title, titleHighlight, description,
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.6 }}
                         >
-                            Est. 2023 • Premium Architecture
+                            Est. 2025 • Premium Architecture
                         </motion.p>
                     </div>
                     <div className="h-40 w-px bg-white/30 my-6"></div>
