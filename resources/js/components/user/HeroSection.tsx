@@ -83,8 +83,8 @@ const SlideIndicators: FC<SlideIndicatorProps> = ({
     
     // Position classes mapping
     const positionClasses = {
-        bottom: 'bottom-8 left-1/2 -translate-x-1/2',
-        top: 'top-8 left-1/2 -translate-x-1/2',
+        bottom: 'bottom-16 left-1/2 -translate-x-1/2',
+        top: 'top-24 left-1/2 -translate-x-1/2',
         left: 'left-8 top-1/2 -translate-y-1/2 flex-col space-y-3 space-x-0',
         right: 'right-8 top-1/2 -translate-y-1/2 flex-col space-y-3 space-x-0',
         custom: customClass
@@ -804,6 +804,15 @@ const HeroContent: FC<HeroContentProps> = ({
     );
 };
 
+// Adding CSS to handle navbar spacing globally
+const globalCss = `
+    @keyframes gradient-shift {
+        0% { background-position: 0% 50% }
+        50% { background-position: 100% 50% }
+        100% { background-position: 0% 50% }
+    }
+`;
+
 // Component for scroll indicator with enhanced animations
 interface ScrollIndicatorProps {
     variant?: 'default' | 'pulse' | 'bounce' | 'fade';
@@ -942,6 +951,13 @@ interface HeroConfig {
     navbarHeight?: number; // Height of the navbar in pixels
 }
 
+// Add the global CSS to the document
+if (typeof document !== 'undefined') {
+    const style = document.createElement('style');
+    style.innerHTML = globalCss;
+    document.head.appendChild(style);
+}
+
 // Main Hero Section component with enhanced options
 interface HeroSectionProps {
     config?: HeroConfig;
@@ -960,14 +976,14 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
         slidesAnimation: 'fade',
         indicatorType: 'lines',
         indicatorSize: 'md',
-        contentAlignment: 'left',
+        contentAlignment: 'center',
         contentAnimation: 'slideUpSpring',
         overlayStyle: 'bg-gradient-to-b from-black/60 via-black/40 to-black/60',
         scrollIndicatorVariant: 'default',
         scrollIndicatorColor: 'emerald',
         scrollIndicatorSize: 'md',
         navbarSpacing: true, // Option to control spacing below navbar
-        navbarHeight: 100 // Default navbar height in pixels
+        navbarHeight: 80 // Default navbar height in pixels
     };
     
     // Merge default config with provided config
@@ -1204,21 +1220,14 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
     // Navbar height constant - adjust if your navbar has a different height
     const NAVBAR_HEIGHT_PX = 120; // Increased significantly to ensure proper spacing below navbar
     
-    // Calculate height style with navbar adjustment
-    const getHeightStyle = () => {
-        if (mergedConfig.height === 'screen' && mergedConfig.navbarSpacing) {
-            // For screen height, return the full viewport height minus navbar
+    // Determine appropriate content vertical position based on navbar height
+    const getContentPosition = () => {
+        if (mergedConfig.navbarSpacing) {
             return {
-                height: `calc(100vh - 80px)` // Fixed 80px navbar height
+                paddingTop: mergedConfig.navbarHeight + 'px'
             };
-        } else if (mergedConfig.height === 'full') {
-            return { height: '100%' };
-        } else if (mergedConfig.height === 'auto') {
-            return { height: 'auto' };
-        } else {
-            // For custom heights or default
-            return { height: mergedConfig.height || '85vh' };
         }
+        return {};
     };
 
     const getHeightClass = (height?: string) => {
@@ -1238,10 +1247,11 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
 
     return (
         <div 
-            className={`relative section-fullscreen ${getHeightClass(mergedConfig.height)} overflow-hidden`}
+            className={`relative section-fullscreen overflow-hidden w-full`}
             style={{
-                marginTop: mergedConfig.navbarSpacing ? mergedConfig.navbarHeight + 'px' : '0',
-                height: mergedConfig.height === 'screen' ? `calc(100vh - ${mergedConfig.navbarHeight}px)` : '100vh'
+                marginTop: 0,
+                height: '100vh',
+                paddingTop: mergedConfig.navbarSpacing ? mergedConfig.navbarHeight + 'px' : '0'
             }}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
@@ -1251,7 +1261,7 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
             ref={sliderRef}
         >
             {/* Full-screen background slider */}
-            <div className="absolute inset-0 z-0 top-0">
+            <div className="absolute inset-0 z-0 top-0" style={getContentPosition()}>
                 <AnimatePresence initial={false}>
                     {slides.map((slide, index) => (
                         index === currentSlide && (
