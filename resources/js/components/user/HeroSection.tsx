@@ -1004,41 +1004,44 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
     };
     
 
-    // Navbar height constant - adjust if your navbar has a different height
-    const NAVBAR_HEIGHT_PX = 120; // Increased significantly to ensure proper spacing below navbar
-    
-    // Determine appropriate content vertical position based on navbar height
-    const getContentPosition = () => {
+    // Calculate precise navbar spacing based on config and viewport size
+    const getContentPosition = useCallback(() => {
         if (mergedConfig.navbarSpacing) {
             return {
-                paddingTop: mergedConfig.navbarHeight + 'px'
+                paddingTop: `${mergedConfig.navbarHeight}px`,
+                height: `calc(100vh - ${mergedConfig.navbarHeight}px)`
             };
         }
-        return {};
-    };
+        return {
+            height: '100vh'
+        };
+    }, [mergedConfig.navbarSpacing, mergedConfig.navbarHeight]);
 
-    const getHeightClass = (height?: string) => {
-        if (!height) return '';
+    // Convert height configuration to precise CSS values including calc() for responsive adjustments
+    const getHeightStyle = useCallback((height?: string) => {
+        if (!height) return {};
         
-        switch (height) {
-            case 'screen':
-                return 'h-screen';
-            case 'full':
-                return 'h-full';
-            case 'auto':
-                return 'h-auto';
-            default:
-                return '';
+        if (height === 'screen') {
+            return mergedConfig.navbarSpacing 
+                ? { height: `calc(100vh - ${mergedConfig.navbarHeight}px)` }
+                : { height: '100vh' };
+        } else if (height === 'full') {
+            return { height: '100%' };
+        } else if (height === 'auto') {
+            return { height: 'auto' };
+        } else if (height.includes('px') || height.includes('%') || height.includes('vh')) {
+            return { height };
         }
-    };
+        return {};
+    }, [mergedConfig.navbarSpacing, mergedConfig.navbarHeight]);
 
     return (
         <div 
             className={`relative section-fullscreen overflow-hidden w-full`}
             style={{
                 marginTop: 0,
-                height: '100vh',
-                paddingTop: mergedConfig.navbarSpacing ? mergedConfig.navbarHeight + 'px' : '0'
+                ...getHeightStyle(mergedConfig.height),
+                paddingTop: mergedConfig.navbarSpacing ? `${mergedConfig.navbarHeight}px` : '0'
             }}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
@@ -1048,7 +1051,7 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
             ref={sliderRef}
         >
             {/* Full-screen background slider */}
-            <div className="absolute inset-0 z-0 top-0" style={getContentPosition()}>
+            <div className="absolute inset-0 z-0" style={getContentPosition()}>
                 <AnimatePresence initial={false}>
                     {slides.map((slide, index) => (
                         index === currentSlide && (
@@ -1069,6 +1072,8 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
                                             slide.position === 'right' ? 'object-right' : 'object-center'
                                         }`}
                                         loading={index === 0 ? "eager" : "lazy"}
+                                        fetchPriority={index === 0 ? "high" : "auto"}
+                                        decoding="async"
                                         animate={
                                             slide.effect === 'parallax' ? { scale: 1.1, y: [0, -15, 0], x: [0, 10, 0] } : 
                                             slide.effect === 'zoom' ? { scale: [1, 1.05, 1.02] } : 
@@ -1082,26 +1087,42 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
                                             repeat: Infinity, 
                                             repeatType: 'reverse' 
                                         }}
+                                        style={{
+                                            willChange: 'transform',
+                                            transform: 'translateZ(0)' // Hardware acceleration
+                                        }}
                                     />
                                 </motion.div>
                                 
-                                {/* Grain overlay for texture */}
+                                {/* Grain overlay for texture - optimized performance */}
                                 <div 
                                     className="absolute inset-0 opacity-30" 
                                     style={{ 
-                                        backgroundImage: 'url("https://images.unsplash.com/photo-1595876210-50f6313738a4?q=80&w=500&auto=format&fit=crop&crop=entropy&cs=tinysrgb&ixlib=rb-4.0.3")', 
+                                        backgroundImage: 'url("https://images.unsplash.com/photo-1595876210-50f6313738a4?q=80&w=300&auto=format&fit=crop&ixlib=rb-4.0.3")', 
                                         backgroundRepeat: 'repeat',
-                                        mixBlendMode: 'overlay' 
+                                        mixBlendMode: 'overlay',
+                                        willChange: 'opacity',
+                                        pointerEvents: 'none' // Prevents mouse events for better performance
                                     }}
+                                    aria-hidden="true"
                                 ></div>
                                 
                                 {/* Gradient overlay - customizable per slide */}
                                 <div className={`absolute inset-0 ${slide.overlay || mergedConfig.overlayStyle}`}></div>
                                 
-                                {/* Decorative elements - based on slide accent color */}
+                                {/* Decorative elements - based on slide accent color with improved positioning and performance */}
                                 <motion.div 
-                                    className="absolute left-[10%] top-[20%] w-32 h-32 rounded-full opacity-20 mix-blend-screen" 
-                                    style={{ background: slide.accent || '#34d399' }}
+                                    className="absolute opacity-20 mix-blend-screen hidden md:block" 
+                                    style={{ 
+                                        background: slide.accent || '#34d399',
+                                        left: 'calc(10% + clamp(0px, 2vw, 20px))',  // Responsive positioning with clamp
+                                        top: 'calc(20% + clamp(0px, 2vh, 20px))',   // Responsive positioning with clamp
+                                        width: 'clamp(64px, 8vw, 128px)',           // Responsive sizing with clamp
+                                        height: 'clamp(64px, 8vw, 128px)',          // Responsive sizing with clamp
+                                        borderRadius: '50%',
+                                        willChange: 'transform, opacity',
+                                        pointerEvents: 'none'
+                                    }}
                                     animate={{ 
                                         y: [-10, 10, -5, 0],
                                         scale: [1, 1.1, 0.9, 1],
@@ -1109,11 +1130,21 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
                                         opacity: [0.2, 0.3, 0.2]
                                     }}
                                     transition={{ duration: 8, repeat: Infinity, repeatType: 'mirror' }}
+                                    aria-hidden="true"
                                 />
                                 
                                 <motion.div 
-                                    className="absolute right-[15%] bottom-[25%] w-24 h-24 rounded-full opacity-20 mix-blend-screen" 
-                                    style={{ background: slide.accent || '#34d399' }}
+                                    className="absolute opacity-20 mix-blend-screen hidden md:block" 
+                                    style={{ 
+                                        background: slide.accent || '#34d399',
+                                        right: 'calc(15% + clamp(0px, 2vw, 20px))',  // Responsive positioning with clamp
+                                        bottom: 'calc(25% + clamp(0px, 2vh, 20px))', // Responsive positioning with clamp
+                                        width: 'clamp(48px, 6vw, 96px)',             // Responsive sizing with clamp
+                                        height: 'clamp(48px, 6vw, 96px)',            // Responsive sizing with clamp
+                                        borderRadius: '50%',
+                                        willChange: 'transform, opacity',
+                                        pointerEvents: 'none'
+                                    }}
                                     animate={{ 
                                         y: [10, -10, 5, 0],
                                         scale: [0.9, 1.1, 1, 0.9],
@@ -1121,37 +1152,48 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
                                         opacity: [0.2, 0.3, 0.2]
                                     }}
                                     transition={{ duration: 6, repeat: Infinity, repeatType: 'mirror', delay: 1 }}
+                                    aria-hidden="true"
                                 />
                                 
-                                {/* Tag - New, Trending, Featured, etc. */}
+                                {/* Tag - New, Trending, Featured, etc. - With improved positioning and responsive design */}
                                 {slide.tag && (
                                     <motion.div 
-                                        className="absolute top-6 right-6 z-20"
+                                        className="absolute z-20 sm:top-6 sm:right-6 top-4 right-4"
                                         initial={{ opacity: 0, y: -20, rotate: -5 }}
                                         animate={{ opacity: 1, y: 0, rotate: 0 }}
-                                        transition={{ delay: 0.7, type: 'spring' }}
+                                        transition={{ delay: 0.7, type: 'spring', stiffness: 120, damping: 15 }}
                                     >
                                         <div 
-                                            className="flex items-center gap-1 bg-black/30 backdrop-blur-md px-3 py-1.5 rounded-full" 
-                                            style={{ boxShadow: `0 0 20px ${slide.accent || '#34d399'}40` }}
+                                            className="flex items-center gap-1 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10" 
+                                            style={{ 
+                                                boxShadow: `0 0 20px ${slide.accent || '#34d399'}40`,
+                                                transform: 'translateZ(0)' // Hardware acceleration
+                                            }}
                                         >
                                             <span 
                                                 className="w-2 h-2 rounded-full animate-pulse" 
                                                 style={{ background: slide.accent || '#34d399' }}
+                                                aria-hidden="true"
                                             />
                                             <span className="text-white text-xs font-medium tracking-wider">{slide.tag}</span>
                                         </div>
                                     </motion.div>
                                 )}
                                 
-                                {/* Enhanced slide info badge */}
+                                {/* Enhanced slide info badge - With improved responsive positioning and visual design */}
                                 {(slide.headline || slide.subtext) && (
                                     <motion.div 
-                                        className="absolute top-8 left-8 bg-black/30 backdrop-blur-md rounded-xl py-3 px-5 max-w-xs hidden md:block border border-white/10"
-                                        style={{ boxShadow: `0 10px 30px -5px ${slide.accent || '#34d399'}20` }}
+                                        className="absolute bg-black/40 backdrop-blur-md rounded-xl py-3 px-5 max-w-xs hidden md:block border border-white/10"
+                                        style={{ 
+                                            boxShadow: `0 10px 30px -5px ${slide.accent || '#34d399'}20`,
+                                            top: 'clamp(24px, 5vh, 40px)',          // Responsive positioning with clamp
+                                            left: 'clamp(24px, 5vw, 40px)',          // Responsive positioning with clamp
+                                            maxWidth: 'clamp(240px, 25vw, 320px)',   // Responsive width with clamp
+                                            transform: 'translateZ(0)'                // Hardware acceleration
+                                        }}
                                         initial={{ opacity: 0, x: -30, y: 20 }}
                                         animate={{ opacity: 1, x: 0, y: 0 }}
-                                        transition={{ delay: 0.4, duration: 0.7, type: 'spring' }}
+                                        transition={{ delay: 0.4, duration: 0.7, type: 'spring', stiffness: 100, damping: 15 }}
                                     >
                                         {slide.headline && 
                                             <motion.h3 
@@ -1161,7 +1203,7 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
                                                 transition={{ delay: 0.6 }}
                                             >
                                                 <span 
-                                                    className="pr-2"
+                                                    className="pr-2 inline-block"
                                                     style={{ 
                                                         borderLeft: `3px solid ${slide.accent || '#34d399'}`, 
                                                         paddingLeft: '8px',
@@ -1174,7 +1216,7 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
                                         }
                                         {slide.subtext && 
                                             <motion.p 
-                                                className="text-white/80 text-sm"
+                                                className="text-white/80 text-sm leading-relaxed"
                                                 initial={{ opacity: 0 }}
                                                 animate={{ opacity: 1 }}
                                                 transition={{ delay: 0.7 }}
@@ -1189,10 +1231,16 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
                     ))}
                 </AnimatePresence>
                 
-                {/* Slide number indicator - optional based on config */}
+                {/* Slide number indicator - optional based on config - with improved responsive positioning */}
                 {mergedConfig.showNumber && (
-                    <div className="absolute bottom-16 right-8 z-10 hidden md:block">
-                        <div className="text-white font-light text-3xl tracking-tighter">
+                    <div 
+                        className="absolute z-10 hidden md:block"
+                        style={{
+                            bottom: 'clamp(40px, 10vh, 64px)',  // Responsive positioning with clamp
+                            right: 'clamp(24px, 5vw, 40px)'      // Responsive positioning with clamp
+                        }}
+                    >
+                        <div className="text-white font-light text-3xl tracking-tighter shadow-lg bg-black/20 backdrop-blur-sm rounded-md px-3 py-1 border border-white/10">
                             <span className="text-emerald-400 font-medium">{(currentSlide + 1).toString().padStart(2, '0')}</span>
                             <span className="text-white/40 mx-2">/</span>
                             <span className="text-white/70">{slides.length.toString().padStart(2, '0')}</span>
@@ -1200,7 +1248,7 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
                     </div>
                 )}
                 
-                {/* Navigation controls - optional based on config */}
+                {/* Navigation controls - optional based on config - with improved positioning */}
                 {mergedConfig.showIndicators && (
                     <SlideIndicators 
                         slides={slides} 
@@ -1208,8 +1256,8 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
                         goToSlide={goToSlide}
                         variant={mergedConfig.indicatorType}
                         size={mergedConfig.indicatorSize}
-                        position="bottom"
-                        customClass="bottom-12"
+                        position="custom"
+                        customClass="absolute left-1/2 -translate-x-1/2 bottom-0 mb-8 sm:mb-12 z-20"
                     />
                 )}
             </div>
