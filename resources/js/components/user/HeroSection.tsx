@@ -333,38 +333,7 @@ const HeroSection: FC = () => {
                     </div>
                 </div>
                 
-                {/* Navigation arrows */}
-                <div className="absolute inset-y-0 left-4 z-10 flex items-center justify-center">
-                    <motion.button 
-                        onClick={goToPrevSlide}
-                        className="p-2 rounded-full bg-black/20 backdrop-blur-sm text-white/80 hover:text-white hover:bg-emerald-600/80 transition-all duration-300"
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.6 }}
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                        </svg>
-                    </motion.button>
-                </div>
-                
-                <div className="absolute inset-y-0 right-4 z-10 flex items-center justify-center">
-                    <motion.button 
-                        onClick={goToNextSlide}
-                        className="p-2 rounded-full bg-black/20 backdrop-blur-sm text-white/80 hover:text-white hover:bg-emerald-600/80 transition-all duration-300"
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        initial={{ opacity: 0, x: 10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.6 }}
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                    </motion.button>
-                </div>
+
                 
                 {/* Navigation controls */}
                 <SlideIndicators slides={slides} currentSlide={currentSlide} goToSlide={goToSlide} />
