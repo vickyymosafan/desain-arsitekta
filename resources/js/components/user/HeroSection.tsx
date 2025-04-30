@@ -1013,24 +1013,25 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
     const [currentSlide, setCurrentSlide] = useState<number>(0);
     const [isPaused, setIsPaused] = useState<boolean>(false);
 
-    // Hero content data
+    // Hero content data with improved user-friendly messaging
     const heroContent = {
-        title: "Wujudkan Rumah",
+        title: "Bangun Rumah",
         titleHighlight: "Impian Anda",
-        description: "Kami memberikan solusi terbaik untuk kebutuhan desain dan konstruksi bangunan Anda dengan pendekatan modern dan berkelanjutan.",
+        description: "Desain modern, konstruksi berkualitas, dan solusi yang berkelanjutan untuk mewujudkan hunian ideal sesuai gaya hidup Anda.",
         ctaPrimary: { 
-            text: "Konsultasi Sekarang", 
+            text: "Mulai Konsultasi Gratis", 
             href: "/contact", 
             variant: 'primary' as ButtonVariant, 
             icon: true
         },
         ctaSecondary: { 
-            text: "Lihat Portofolio", 
+            text: "Lihat Hasil Karya", 
             href: "/portfolio", 
-            variant: 'secondary' as ButtonVariant
+            variant: 'secondary' as ButtonVariant,
+            icon: true
         },
         animation: mergedConfig.contentAnimation,
-        alignment: mergedConfig.contentAlignment
+        alignment: 'center' as 'left' | 'center' | 'right' // Center alignment for better focus
     };
 
     // Auto-advance slides
