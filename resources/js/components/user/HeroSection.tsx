@@ -770,7 +770,7 @@ const HeroContent: FC<HeroContentProps> = ({
                         </motion.h1>
                         
                         <motion.p 
-                            className="text-xl text-white/90 mb-8 drop-shadow-lg max-w-lg backdrop-blur-sm rounded-lg py-3 px-1"
+                            className="text-xl text-white/90 mb-8 drop-shadow-lg max-w-lg bg-black/10 backdrop-blur-[2px] rounded-lg py-3 px-1"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.6, duration: 0.5 }}
