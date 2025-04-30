@@ -4,6 +4,7 @@ import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from
 
 // Types
 type ButtonVariant = 'primary' | 'secondary' | 'outline';
+
 // Animation types for more powerful and flexible animations
 type AnimationVariant = 
     'fadeIn' | 'fadeInSlow' | 'fadeInFast' |
@@ -19,6 +20,94 @@ type AnimationVariant =
 
 type TransitionType = 'tween' | 'spring' | 'inertia';
 type EasingType = 'linear' | 'easeIn' | 'easeOut' | 'easeInOut' | 'circIn' | 'circOut' | 'circInOut' | 'backIn' | 'backOut' | 'backInOut' | 'anticipate';
+
+// Animation utilities to reduce redundancy
+const transitions = {
+    default: { duration: 0.6, ease: 'easeOut' as EasingType },
+    slow: { duration: 1.2, ease: 'easeInOut' as EasingType },
+    fast: { duration: 0.3, ease: 'easeOut' as EasingType },
+    bounce: { type: 'spring' as TransitionType, stiffness: 300, damping: 10, mass: 0.5 },
+    spring: { type: 'spring' as TransitionType, stiffness: 100, damping: 15, mass: 1 },
+    elastic: { type: 'spring' as TransitionType, stiffness: 200, damping: 8, mass: 0.8 }
+};
+
+// Basic animation variant type
+type AnimationVariantProps = {
+    initial: Record<string, any>;
+    animate: Record<string, any>;
+    transition: Record<string, any>;
+};
+
+// Reusable animation variants
+const animationVariants: Record<string, AnimationVariantProps> = {
+    // Fade variants
+    fadeIn: {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        transition: transitions.default
+    },
+    fadeInSlow: {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        transition: transitions.slow
+    },
+    fadeInFast: {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        transition: transitions.fast
+    },
+    
+    // Slide variants
+    slideUp: {
+        initial: { opacity: 0, y: 50 },
+        animate: { opacity: 1, y: 0 },
+        transition: transitions.default
+    },
+    slideUpBounce: {
+        initial: { opacity: 0, y: 70 },
+        animate: { opacity: 1, y: 0 },
+        transition: transitions.bounce
+    },
+    slideDown: {
+        initial: { opacity: 0, y: -50 },
+        animate: { opacity: 1, y: 0 },
+        transition: transitions.default
+    },
+    slideLeft: {
+        initial: { opacity: 0, x: 50 },
+        animate: { opacity: 1, x: 0 },
+        transition: transitions.default
+    },
+    slideRight: {
+        initial: { opacity: 0, x: -50 },
+        animate: { opacity: 1, x: 0 },
+        transition: transitions.default
+    }
+};
+
+// Helper function to get animation variant with delay
+const getAnimationWithDelay = (type: AnimationVariant, delay: number = 0): AnimationVariantProps => {
+    const variant = animationVariants[type] || animationVariants.fadeIn;
+    return {
+        ...variant,
+        transition: {
+            ...variant.transition,
+            delay
+        }
+    };
+};
+
+// Create animation props with configurable options
+const createAnimationProps = (type: AnimationVariant, delay: number = 0, once: boolean = false) => {
+    const variant = getAnimationWithDelay(type, delay);
+    
+    return {
+        initial: variant.initial,
+        animate: variant.animate,
+        transition: variant.transition,
+        viewport: once ? { once: true } : undefined
+    };
+};
 
 interface Slide {
     id: number;
@@ -63,6 +152,23 @@ interface HeroContentProps {
     alignment?: 'left' | 'center' | 'right';
 }
 
+// Define types for slide indicator variant configuration
+type IndicatorMotionProps = {
+    whileTap: Record<string, any>;
+    whileHover: Record<string, any>;
+    initial: Record<string, any>;
+    animate: Record<string, any> | ((index: number) => Record<string, any>);
+    transition: (index: number) => Record<string, any>;
+};
+
+type IndicatorVariantConfig = {
+    containerClass: string;
+    itemClass: (index: number) => string;
+    motionProps: IndicatorMotionProps;
+    style: Record<string, any>;
+    content: (index: number) => React.ReactNode;
+};
+
 // Component for slide indicators with multiple style variants
 const SlideIndicators: FC<SlideIndicatorProps> = ({ 
     slides, 
@@ -90,160 +196,198 @@ const SlideIndicators: FC<SlideIndicatorProps> = ({
         custom: customClass
     };
 
-    // Render dots style indicators
-    if (variant === 'dots') {
-        return (
-            <div className={`absolute ${positionClasses[position]} flex space-x-3 z-10`}>
-                {slides.map((_, index) => (
-                    <motion.button
-                        key={index}
-                        onClick={() => goToSlide(index)}
-                        className={`rounded-full backdrop-blur-sm transition-all duration-300 ${sizeClasses[size].dot} ${
-                            index === currentSlide 
-                                ? "bg-emerald-500 scale-125 shadow-lg shadow-emerald-500/20" 
-                                : "bg-white/60 hover:bg-white/90"
-                        }`}
-                        whileTap={{ scale: 0.9, rotate: -5 }}
-                        whileHover={{ scale: 1.2, y: -2, boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.3)' }}
-                        aria-label={`Go to slide ${index + 1}`}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1, type: 'spring', stiffness: 400 }}
-                    />
-                ))}
-            </div>
-        );
-    }
+    // Configuration for each indicator variant
+    const variantConfig: Record<string, IndicatorVariantConfig> = {
+        dots: {
+            containerClass: 'flex space-x-3',
+            itemClass: (index: number) => `rounded-full backdrop-blur-sm transition-all duration-300 ${sizeClasses[size].dot} ${
+                index === currentSlide 
+                    ? 'bg-emerald-500 scale-125 shadow-lg shadow-emerald-500/20' 
+                    : 'bg-white/60 hover:bg-white/90'
+            }`,
+            motionProps: {
+                whileTap: { scale: 0.9, rotate: -5 },
+                whileHover: { scale: 1.2, y: -2, boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.3)' },
+                initial: { opacity: 0, y: 20 },
+                animate: { opacity: 1, y: 0 },
+                transition: (index: number) => ({ delay: index * 0.1, type: 'spring', stiffness: 400 })
+            },
+            style: {},
+            content: (_index: number) => null
+        },
+        lines: {
+            containerClass: 'flex space-x-4',
+            itemClass: (index: number) => `relative backdrop-blur-sm transition-all duration-300 ${sizeClasses[size].line} ${
+                index === currentSlide 
+                    ? `${sizeClasses[size].active} bg-gradient-to-r from-emerald-400 to-emerald-600 shadow-lg shadow-emerald-500/20` 
+                    : 'bg-white/60 hover:bg-white/90'
+            }`,
+            motionProps: {
+                whileTap: { scale: 0.9 },
+                whileHover: { y: -2, boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.3)' },
+                initial: { opacity: 0, y: 20 },
+                animate: { opacity: 1, y: 0 },
+                transition: (index: number) => ({ delay: index * 0.1, type: 'spring', stiffness: 300 })
+            },
+            style: { borderRadius: '8px' },
+            content: (_index: number) => null
+        },
+        pills: {
+            containerClass: 'flex space-x-2',
+            itemClass: (index: number) => `rounded-full backdrop-blur-sm flex items-center justify-center ${sizeClasses[size].pill} ${
+                index === currentSlide 
+                    ? 'bg-gradient-to-r from-emerald-400 to-emerald-600 text-white font-medium shadow-lg shadow-emerald-500/30' 
+                    : 'bg-white/20 text-white/80 hover:bg-white/30'
+            }`,
+            motionProps: {
+                whileTap: { scale: 0.9 },
+                whileHover: { scale: 1.05, y: -2 },
+                initial: { opacity: 0, y: 20 },
+                animate: { opacity: 1, y: 0 },
+                transition: (index: number) => ({ delay: index * 0.1, type: 'spring' })
+            },
+            style: {},
+            content: (index: number) => index + 1
+        },
+        emoji: {
+            containerClass: 'flex space-x-3',
+            itemClass: (index: number) => `rounded-full flex items-center justify-center backdrop-blur-sm ${sizeClasses[size].emoji} p-2 ${
+                index === currentSlide 
+                    ? 'bg-black/40 text-white scale-125' 
+                    : 'bg-black/20 text-white/70 hover:bg-black/30 hover:text-white/90'
+            }`,
+            motionProps: {
+                whileTap: { scale: 0.9, rotate: -5 },
+                whileHover: { scale: 1.2, y: -3, rotate: 5 },
+                initial: { opacity: 0, scale: 0, rotate: -10 },
+                animate: { opacity: 1, scale: (index: number) => index === currentSlide ? 1.25 : 1, rotate: 0 },
+                transition: (index: number) => ({ delay: index * 0.1, type: 'spring', damping: 10 })
+            },
+            style: {},
+            content: (index: number) => ['✨', '🔥', '💎', '✌️', '🚀', '💯', '🌈', '⭐'][index % 8]
+        },
+        minimal: {
+            containerClass: 'flex items-center space-x-4 bg-black/20 backdrop-blur-xl px-4 py-2 rounded-full',
+            itemClass: (index: number) => `w-1 h-6 rounded-full transition-all duration-300 ${
+                index === currentSlide 
+                    ? 'bg-emerald-500 h-8' 
+                    : 'bg-white/40 hover:bg-white/60'
+            }`,
+            motionProps: {
+                whileTap: { scaleX: 1.5 },
+                whileHover: { scaleX: 1.5 },
+                initial: { opacity: 0, scaleY: 0 },
+                animate: { opacity: 1, scaleY: 1 },
+                transition: (index: number) => ({ delay: index * 0.05 })
+            },
+            style: {},
+            content: (_index: number) => null
+        },
+        numbers: {
+            containerClass: 'flex space-x-2',
+            itemClass: (index: number) => `h-8 w-8 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-300 ${
+                index === currentSlide 
+                    ? 'bg-emerald-500 text-white' 
+                    : 'bg-white/20 text-white/80 hover:bg-white/30'
+            }`,
+            motionProps: {
+                whileTap: { scale: 0.9 },
+                whileHover: { scale: 1.1 },
+                initial: { opacity: 0, y: 20 },
+                animate: { opacity: 1, y: 0 },
+                transition: (index: number) => ({ delay: index * 0.1 })
+            },
+            style: {},
+            content: (index: number) => index + 1
+        }
+    };
+
+    // Get the current variant configuration, default to numbers
+    const config = variantConfig[variant as keyof typeof variantConfig] || variantConfig.numbers;
     
-    // Render lines style indicators
-    if (variant === 'lines') {
-        return (
-            <div className={`absolute ${positionClasses[position]} flex space-x-4 z-10`}>
-                {slides.map((_, index) => (
-                    <motion.button
-                        key={index}
-                        onClick={() => goToSlide(index)}
-                        className={`relative backdrop-blur-sm transition-all duration-300 ${sizeClasses[size].line} ${
-                            index === currentSlide 
-                                ? `${sizeClasses[size].active} bg-gradient-to-r from-emerald-400 to-emerald-600 shadow-lg shadow-emerald-500/20` 
-                                : "bg-white/60 hover:bg-white/90"
-                        }`}
-                        whileTap={{ scale: 0.9 }}
-                        whileHover={{ y: -2, boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.3)' }}
-                        aria-label={`Go to slide ${index + 1}`}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1, type: 'spring', stiffness: 300 }}
-                        style={{ borderRadius: '8px' }}
-                    />
-                ))}
-            </div>
-        );
-    }
-    
-    // Render pills style indicators (new trendy style)
-    if (variant === 'pills') {
-        return (
-            <div className={`absolute ${positionClasses[position]} flex space-x-2 z-10`}>
-                {slides.map((_, index) => (
-                    <motion.button
-                        key={index}
-                        onClick={() => goToSlide(index)}
-                        className={`rounded-full backdrop-blur-sm flex items-center justify-center ${sizeClasses[size].pill} ${
-                            index === currentSlide 
-                                ? "bg-gradient-to-r from-emerald-400 to-emerald-600 text-white font-medium shadow-lg shadow-emerald-500/30" 
-                                : "bg-white/20 text-white/80 hover:bg-white/30"
-                        }`}
-                        whileTap={{ scale: 0.9 }}
-                        whileHover={{ scale: 1.05, y: -2 }}
-                        aria-label={`Go to slide ${index + 1}`}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1, type: 'spring' }}
-                    >
-                        {index + 1}
-                    </motion.button>
-                ))}
-            </div>
-        );
-    }
-    
-    // Render emoji style indicators (fun Gen-Z style)
-    if (variant === 'emoji') {
-        const emojis = ['✨', '🔥', '💎', '✌️', '🚀', '💯', '🌈', '⭐'];
-        return (
-            <div className={`absolute ${positionClasses[position]} flex space-x-3 z-10`}>
-                {slides.map((_, index) => (
-                    <motion.button
-                        key={index}
-                        onClick={() => goToSlide(index)}
-                        className={`rounded-full flex items-center justify-center backdrop-blur-sm ${sizeClasses[size].emoji} p-2 ${
-                            index === currentSlide 
-                                ? "bg-black/40 text-white scale-125" 
-                                : "bg-black/20 text-white/70 hover:bg-black/30 hover:text-white/90"
-                        }`}
-                        whileTap={{ scale: 0.9, rotate: -5 }}
-                        whileHover={{ scale: 1.2, y: -3, rotate: 5 }}
-                        aria-label={`Go to slide ${index + 1}`}
-                        initial={{ opacity: 0, scale: 0, rotate: -10 }}
-                        animate={{ opacity: 1, scale: index === currentSlide ? 1.25 : 1, rotate: 0 }}
-                        transition={{ delay: index * 0.1, type: 'spring', damping: 10 }}
-                    >
-                        {emojis[index % emojis.length]}
-                    </motion.button>
-                ))}
-            </div>
-        );
-    }
-    
-    // Render minimal style indicators (sleek modern style)
-    if (variant === 'minimal') {
-        return (
-            <div className={`absolute ${positionClasses[position]} flex items-center space-x-4 z-10 bg-black/20 backdrop-blur-xl px-4 py-2 rounded-full`}>
-                {slides.map((_, index) => (
-                    <motion.button
-                        key={index}
-                        onClick={() => goToSlide(index)}
-                        className={`w-1 h-6 rounded-full transition-all duration-300 ${
-                            index === currentSlide 
-                                ? "bg-emerald-500 h-8" 
-                                : "bg-white/40 hover:bg-white/60"
-                        }`}
-                        whileTap={{ scaleX: 1.5 }}
-                        whileHover={{ scaleX: 1.5 }}
-                        aria-label={`Go to slide ${index + 1}`}
-                        initial={{ opacity: 0, scaleY: 0 }}
-                        animate={{ opacity: 1, scaleY: 1 }}
-                        transition={{ delay: index * 0.05 }}
-                    />
-                ))}
-            </div>
-        );
-    }
-    
-    // Render numbers style indicators
     return (
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex space-x-2 z-10">
+        <div className={`absolute ${positionClasses[position]} ${config.containerClass} z-10`}>
             {slides.map((_, index) => (
                 <motion.button
                     key={index}
                     onClick={() => goToSlide(index)}
-                    className={`h-8 w-8 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-300 ${
-                        index === currentSlide 
-                            ? "bg-emerald-500 text-white" 
-                            : "bg-white/20 text-white/80 hover:bg-white/30"
-                    }`}
-                    whileTap={{ scale: 0.9 }}
-                    whileHover={{ scale: 1.1 }}
+                    className={config.itemClass(index)}
+                    whileTap={config.motionProps.whileTap}
+                    whileHover={config.motionProps.whileHover}
+                    initial={config.motionProps.initial}
+                    animate={
+                        typeof config.motionProps.animate === 'function' 
+                        ? config.motionProps.animate(index) 
+                        : config.motionProps.animate
+                    }
+                    transition={config.motionProps.transition(index)}
+                    style={config.style}
                     aria-label={`Go to slide ${index + 1}`}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
                 >
-                    {index + 1}
+                    {config.content(index)}
                 </motion.button>
             ))}
         </div>
+    );
+};
+
+// Helper type for button icons
+const buttonIconMap: Record<string, React.ReactNode> = {
+    contact: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>,
+    portfolio: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>,
+    order: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>,
+    default: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+};
+
+// Button style variants
+const buttonStyles: Record<ButtonVariant, string> = {
+    primary: "rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-3.5 font-medium text-white shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:shadow-emerald-500/40 hover:scale-105 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 group flex items-center justify-center gap-2",
+    secondary: "rounded-xl border border-white/70 backdrop-blur-md bg-white/10 px-6 py-3.5 font-medium text-white transition-all duration-300 hover:bg-white/20 hover:scale-105 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 flex items-center justify-center gap-2",
+    outline: "rounded-xl border-2 border-emerald-500 px-6 py-3.5 font-medium text-white transition-all duration-300 hover:bg-emerald-500/20 hover:scale-105 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 flex items-center justify-center gap-2"
+};
+
+// Component for rendering CTA buttons
+const CTAButtonComponent: FC<{ button: CTAButton, index: number }> = ({ button, index }) => {
+    const { text, href, variant = 'primary', icon = true, external = false } = button;
+    
+    // Button icon based on text content - auto-detect for better UX
+    const getButtonIcon = () => {
+        const lowerText = text.toLowerCase();
+        if (lowerText.includes('kontak') || lowerText.includes('konsultasi')) {
+            return buttonIconMap.contact;
+        } else if (lowerText.includes('portfolio') || lowerText.includes('projek') || lowerText.includes('galeri')) {
+            return buttonIconMap.portfolio;
+        } else if (lowerText.includes('mulai') || lowerText.includes('order') || lowerText.includes('pesan')) {
+            return buttonIconMap.order;
+        } 
+        return buttonIconMap.default;
+    };
+    
+    // Determine button component based on external flag
+    const ButtonComponent = external ? 'a' : Link;
+    const buttonProps = external ? { href, target: "_blank", rel: "noopener noreferrer" } : { href };
+    
+    return (
+        <motion.div 
+            key={`btn-${index}`}
+            whileHover={{ scale: 1.05, y: -5 }} 
+            whileTap={{ scale: 0.95, rotate: -1 }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 + (index * 0.15), type: 'spring', stiffness: 400, damping: 10 }}
+        >
+            <ButtonComponent
+                {...buttonProps}
+                className={buttonStyles[variant]}
+            >
+                {text}
+                {icon && (
+                    <span className="relative ml-1 group-hover:translate-x-1 transition-transform">
+                        {getButtonIcon()}
+                    </span>
+                )}
+            </ButtonComponent>
+        </motion.div>
     );
 };
 
@@ -265,365 +409,8 @@ const HeroContent: FC<HeroContentProps> = ({
         right: 'text-right justify-end'
     };
     
-    // Enhanced animation system with advanced variants and transitions
-    const getAnimationVariants = (type: AnimationVariant, customDelay: number = 0) => {
-        // Base transition configurations
-        const transitions = {
-            default: { duration: 0.6, ease: 'easeOut' as EasingType },
-            slow: { duration: 1.2, ease: 'easeInOut' as EasingType },
-            fast: { duration: 0.3, ease: 'easeOut' as EasingType },
-            bounce: { type: 'spring' as TransitionType, stiffness: 300, damping: 10, mass: 0.5 },
-            spring: { type: 'spring' as TransitionType, stiffness: 100, damping: 15, mass: 1 },
-            elastic: { type: 'spring' as TransitionType, stiffness: 200, damping: 8, mass: 0.8 },
-            stagger: (i: number) => ({ delay: customDelay + (i * 0.1) })
-        };
-        
-        // Animation variant presets
-        const variants = {
-            // Fade variants
-            fadeIn: {
-                initial: { opacity: 0 },
-                animate: { opacity: 1 },
-                transition: transitions.default
-            },
-            fadeInSlow: {
-                initial: { opacity: 0 },
-                animate: { opacity: 1 },
-                transition: transitions.slow
-            },
-            fadeInFast: {
-                initial: { opacity: 0 },
-                animate: { opacity: 1 },
-                transition: transitions.fast
-            },
-            
-            // Slide variants
-            slideUp: {
-                initial: { opacity: 0, y: 50 },
-                animate: { opacity: 1, y: 0 },
-                transition: transitions.default
-            },
-            slideUpBounce: {
-                initial: { opacity: 0, y: 70 },
-                animate: { opacity: 1, y: 0 },
-                transition: transitions.bounce
-            },
-            slideUpSpring: {
-                initial: { opacity: 0, y: 50 },
-                animate: { opacity: 1, y: 0 },
-                transition: transitions.spring
-            },
-            slideDown: {
-                initial: { opacity: 0, y: -50 },
-                animate: { opacity: 1, y: 0 },
-                transition: transitions.default
-            },
-            slideDownBounce: {
-                initial: { opacity: 0, y: -70 },
-                animate: { opacity: 1, y: 0 },
-                transition: transitions.bounce
-            },
-            slideDownSpring: {
-                initial: { opacity: 0, y: -50 },
-                animate: { opacity: 1, y: 0 },
-                transition: transitions.spring
-            },
-            slideLeft: {
-                initial: { opacity: 0, x: 50 },
-                animate: { opacity: 1, x: 0 },
-                transition: transitions.default
-            },
-            slideLeftBounce: {
-                initial: { opacity: 0, x: 70 },
-                animate: { opacity: 1, x: 0 },
-                transition: transitions.bounce
-            },
-            slideLeftSpring: {
-                initial: { opacity: 0, x: 50 },
-                animate: { opacity: 1, x: 0 },
-                transition: transitions.spring
-            },
-            slideRight: {
-                initial: { opacity: 0, x: -50 },
-                animate: { opacity: 1, x: 0 },
-                transition: transitions.default
-            },
-            slideRightBounce: {
-                initial: { opacity: 0, x: -70 },
-                animate: { opacity: 1, x: 0 },
-                transition: transitions.bounce
-            },
-            slideRightSpring: {
-                initial: { opacity: 0, x: -50 },
-                animate: { opacity: 1, x: 0 },
-                transition: transitions.spring
-            },
-            
-            // Zoom and scale variants
-            zoom: {
-                initial: { opacity: 0, scale: 0.8 },
-                animate: { opacity: 1, scale: 1 },
-                transition: transitions.default
-            },
-            zoomBounce: {
-                initial: { opacity: 0, scale: 0.5 },
-                animate: { opacity: 1, scale: 1 },
-                transition: transitions.bounce
-            },
-            zoomSpring: {
-                initial: { opacity: 0, scale: 0.8 },
-                animate: { opacity: 1, scale: 1 },
-                transition: transitions.spring
-            },
-            
-            // 3D transform variants
-            flip: {
-                initial: { opacity: 0, rotateY: 90 },
-                animate: { opacity: 1, rotateY: 0 },
-                transition: { ...transitions.default, duration: 0.8 }
-            },
-            flipX: {
-                initial: { opacity: 0, rotateX: 90 },
-                animate: { opacity: 1, rotateX: 0 },
-                transition: { ...transitions.default, duration: 0.8 }
-            },
-            flipY: {
-                initial: { opacity: 0, rotateY: 90 },
-                animate: { opacity: 1, rotateY: 0 },
-                transition: { ...transitions.default, duration: 0.8 }
-            },
-            
-            // Special effects variants
-            rotate: {
-                initial: { opacity: 0, rotate: -15 },
-                animate: { opacity: 1, rotate: 0 },
-                transition: transitions.spring
-            },
-            pulse: {
-                initial: { opacity: 0, scale: 0.8 },
-                animate: { 
-                    opacity: 1, 
-                    scale: [0.8, 1.1, 0.9, 1.05, 1],
-                },
-                transition: { 
-                    duration: 1, 
-                    times: [0, 0.25, 0.5, 0.75, 1]
-                }
-            },
-            shake: {
-                initial: { opacity: 0, x: 0 },
-                animate: { 
-                    opacity: 1, 
-                    x: [0, -10, 10, -5, 5, 0],
-                },
-                transition: { 
-                    duration: 0.8, 
-                    times: [0, 0.2, 0.4, 0.6, 0.8, 1]
-                }
-            },
-            bounce: {
-                initial: { opacity: 0, y: -20 },
-                animate: { 
-                    opacity: 1, 
-                    y: [0, -30, -15, -30, -5, -10, 0],
-                },
-                transition: { 
-                    duration: 1.5, 
-                    times: [0, 0.2, 0.3, 0.45, 0.65, 0.85, 1]
-                }
-            },
-            stagger: {
-                initial: { opacity: 0, y: 20 },
-                animate: { opacity: 1, y: 0 },
-                transition: transitions.stagger(0) // Will be applied per element with proper index
-            },
-            // Modern Gen-Z animations
-            glitch: {
-                initial: { opacity: 0, x: [-10, 10, -5, 5, 0], filter: 'blur(10px)' },
-                animate: { 
-                    opacity: 1, 
-                    x: [5, -5, 2, -2, 0],
-                    filter: 'blur(0px)',
-                    textShadow: ['0 0 5px #0ff', '0 0 2px #f0f', '0 0 0px #000']
-                },
-                transition: { 
-                    duration: 0.5,
-                    times: [0, 0.2, 0.4, 0.6, 1]
-                }
-            },
-            blur: {
-                initial: { opacity: 0, filter: 'blur(20px)' },
-                animate: { opacity: 1, filter: 'blur(0px)' },
-                transition: { duration: 0.8, ease: 'easeOut' as EasingType }
-            },
-            wave: {
-                initial: { y: 20, skewX: 0 },
-                animate: { 
-                    y: 0,
-                    skewX: [-5, 5, -3, 3, 0]
-                },
-                transition: {
-                    duration: 0.8,
-                    times: [0, 0.3, 0.5, 0.7, 1]
-                }
-            },
-            float: {
-                initial: { y: 0 },
-                animate: { y: [-8, 8, -4, 0] },
-                transition: { 
-                    repeat: Infinity, 
-                    repeatType: 'mirror', 
-                    duration: 5,
-                    ease: 'easeInOut' as EasingType,
-                    times: [0, 0.4, 0.7, 1]
-                }
-            },
-            morph: {
-                initial: { borderRadius: '30% 70% 70% 30% / 30% 30% 70% 70%', scale: 0.8, opacity: 0 },
-                animate: { 
-                    borderRadius: ['30% 70% 70% 30% / 30% 30% 70% 70%', '56% 44% 27% 73% / 24% 62% 38% 76%', '30% 70% 70% 30% / 30% 30% 70% 70%'],
-                    scale: 1,
-                    opacity: 1
-                },
-                transition: { duration: 1.5, repeat: 0 }
-            },
-            '3dFlip': {
-                initial: { opacity: 0, rotateY: 90, perspective: '1000px' },
-                animate: { opacity: 1, rotateY: 0, perspective: '1000px' },
-                transition: transitions.elastic
-            },
-            neon: {
-                initial: { opacity: 0, textShadow: '0 0 0px rgba(66, 220, 163, 0)' },
-                animate: { 
-                    opacity: 1, 
-                    textShadow: [
-                        '0 0 5px rgba(66, 220, 163, 0.8)', 
-                        '0 0 10px rgba(66, 220, 163, 0.5)', 
-                        '0 0 15px rgba(66, 220, 163, 0.3)',
-                        '0 0 20px rgba(66, 220, 163, 0.7)'
-                    ]
-                },
-                transition: { 
-                    opacity: { duration: 0.3 },
-                    textShadow: { 
-                        duration: 3, 
-                        repeat: Infinity, 
-                        repeatType: 'reverse',
-                        times: [0, 0.3, 0.6, 1]
-                    }
-                }
-            },
-            textReveal: {
-                initial: { opacity: 0, y: 50, clipPath: 'inset(0 0 100% 0)' },
-                animate: { opacity: 1, y: 0, clipPath: 'inset(0 0 0% 0)' },
-                transition: { duration: 0.8, ease: 'circOut' as EasingType }
-            },
-            textGradient: {
-                initial: { backgroundPosition: '-100% 0', opacity: 0 },
-                animate: { backgroundPosition: '0% 0', opacity: 1 },
-                transition: { duration: 0.8 }
-            },
-            textShadow: {
-                initial: { opacity: 0, textShadow: '0 0 0px rgba(16, 185, 129, 0)' },
-                animate: { opacity: 1, textShadow: '0 10px 30px rgba(16, 185, 129, 0.5)' },
-                transition: { duration: 0.6 }
-            },
-            prismaticText: {
-                initial: { opacity: 0, backgroundPosition: '0% 50%' },
-                animate: { opacity: 1, backgroundPosition: '100% 50%' },
-                transition: { duration: 3, repeat: Infinity, repeatType: 'reverse' }
-            },
-            none: {
-                initial: { opacity: 1 },
-                animate: { opacity: 1 },
-                transition: { duration: 0 }
-            }
-        };
-        
-        return variants[type] || variants.fadeIn;
-    };
-    
-    // Create animation props with delay composition
-    const createAnimationProps = (type: AnimationVariant, delay: number = 0, once: boolean = false) => {
-        const variant = getAnimationVariants(type, delay);
-        const transition = variant.transition as any; // Type cast to handle different transition types
-        return {
-            initial: variant.initial,
-            animate: variant.animate,
-            transition: {
-                ...transition,
-                delay: delay + (transition.delay || 0)
-            },
-            viewport: once ? { once: true } : undefined
-        };
-    };
-    
-    // Get animation props for current component
+    // Get animation props for current component using our utility function
     const animProps = createAnimationProps(animation, 0);
-    
-    // Function to render button based on variant
-    const renderButton = (button: CTAButton, index: number) => {
-        const { text, href, variant = 'primary', icon = true, external = false } = button;
-        
-        // Button icon based on text content - auto-detect for better UX
-        const getButtonIcon = () => {
-            const lowerText = text.toLowerCase();
-            if (lowerText.includes('kontak') || lowerText.includes('konsultasi')) {
-                return <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>;
-            } else if (lowerText.includes('portfolio') || lowerText.includes('projek') || lowerText.includes('galeri')) {
-                return <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>;
-            } else if (lowerText.includes('mulai') || lowerText.includes('order') || lowerText.includes('pesan')) {
-                return <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>;
-            } else {
-                return <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>;
-            }
-        };
-        
-        // Glassmorphism effect for buttons
-        const getGlassmorphismEffect = () => {
-            return variant === 'secondary' ? {
-                background: 'rgba(255, 255, 255, 0.1)',
-                backdropFilter: 'blur(10px)',
-                WebkitBackdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255, 255, 255, 0.18)',
-                boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.12)'
-            } : {};
-        };
-        
-        // Button style variants - modernized with more Gen-Z styling
-        const buttonStyles = {
-            primary: "rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-3.5 font-medium text-white shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:shadow-emerald-500/40 hover:scale-105 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 group flex items-center justify-center gap-2",
-            secondary: "rounded-xl border border-white/70 backdrop-blur-md bg-white/10 px-6 py-3.5 font-medium text-white transition-all duration-300 hover:bg-white/20 hover:scale-105 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 flex items-center justify-center gap-2",
-            outline: "rounded-xl border-2 border-emerald-500 px-6 py-3.5 font-medium text-white transition-all duration-300 hover:bg-emerald-500/20 hover:scale-105 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 flex items-center justify-center gap-2"
-        };
-        
-        // Determine button component based on external flag
-        const ButtonComponent = external ? 'a' : Link;
-        const buttonProps = external ? { href, target: "_blank", rel: "noopener noreferrer" } : { href };
-        
-        return (
-            <motion.div 
-                key={`btn-${index}`}
-                whileHover={{ scale: 1.05, y: -5 }} 
-                whileTap={{ scale: 0.95, rotate: -1 }}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 + (index * 0.15), type: 'spring', stiffness: 400, damping: 10 }}
-            >
-                <ButtonComponent
-                    {...buttonProps}
-                    className={buttonStyles[variant]}
-                >
-                    {text}
-                    {icon && (
-                        <span className="relative ml-1 group-hover:translate-x-1 transition-transform">
-                            {getButtonIcon()}
-                        </span>
-                    )}
-                </ButtonComponent>
-            </motion.div>
-        );
-    };
     
     return (
         <div className={`relative h-full w-full z-10 flex items-center ${alignmentClasses[alignment]}`}>
@@ -795,8 +582,8 @@ const HeroContent: FC<HeroContentProps> = ({
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.4 }}
                     >
-                        {renderButton(ctaPrimary, 0)}
-                        {ctaSecondary && renderButton(ctaSecondary, 1)}
+                        <CTAButtonComponent button={ctaPrimary} index={0} />
+                        {ctaSecondary && <CTAButtonComponent button={ctaSecondary} index={1} />}
                     </motion.div>
                 </motion.div>
             </div>
