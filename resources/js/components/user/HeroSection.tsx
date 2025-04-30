@@ -1219,19 +1219,30 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
         }
     };
 
+    const getHeightClass = (height?: string) => {
+        if (!height) return '';
+        
+        switch (height) {
+            case 'screen':
+                return 'h-screen';
+            case 'full':
+                return 'h-full';
+            case 'auto':
+                return 'h-auto';
+            default:
+                return '';
+        }
+    };
+
     return (
-        <section 
-            className="relative w-full overflow-hidden"
-            ref={sliderRef}
+        <div 
+            className={`relative section-fullscreen ${getHeightClass(mergedConfig.height)} overflow-hidden ${mergedConfig.navbarSpacing ? 'pt-16 md:pt-20' : ''}`}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-            style={{
-                ...getHeightStyle(),
-                marginTop: mergedConfig.navbarSpacing ? `${NAVBAR_HEIGHT_PX}px` : '0'
-            }}
+            ref={sliderRef}
         >
             {/* Full-screen background slider */}
             <div className="absolute inset-0 z-0 top-0">
@@ -1409,7 +1420,7 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
                     size={mergedConfig.scrollIndicatorSize}
                 />
             )}
-        </section>
+        </div>
     );
 };
 

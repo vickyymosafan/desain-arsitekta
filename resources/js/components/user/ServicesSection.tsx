@@ -150,7 +150,7 @@ const ServicesSection: React.FC = () => {
   return (
     <motion.section 
       ref={sectionRef}
-      className="py-24 md:py-32 relative overflow-hidden" 
+      className="min-h-screen flex flex-col justify-center relative overflow-hidden py-16 sm:py-24" 
       id="services"
       onMouseMove={handleMouseMove}
       initial="hidden"
@@ -158,6 +158,8 @@ const ServicesSection: React.FC = () => {
       variants={sectionVariants}
       style={{
         background: 'linear-gradient(180deg, #f0fdf4 0%, #e6f7ec 100%)',
+        scrollSnapAlign: 'start',
+        scrollMarginTop: '0px'
       }}
     >
       {/* Modern decorative elements with animated effects */}

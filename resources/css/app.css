@@ -7,6 +7,30 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Global styles for fullscreen sections */
+.section-fullscreen {
+  min-height: 100vh; /* Full viewport height */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  scroll-snap-align: start; /* For smooth section scrolling */
+  scroll-margin-top: 0px;
+}
+
+/* Add scroll snapping to the main container */
+html.snap-scroll {
+  scroll-behavior: smooth;
+}
+
+body.snap-scroll {
+  height: 100vh;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+}
+
+
 @theme {
     --font-sans:
         'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
