@@ -14,11 +14,6 @@ interface SlideIndicatorProps {
     goToSlide: (index: number) => void;
 }
 
-interface NavigationArrowsProps {
-    goToPrevSlide: () => void;
-    goToNextSlide: () => void;
-}
-
 interface HeroContentProps {
     title: string;
     titleHighlight: string;
@@ -43,30 +38,6 @@ const SlideIndicators: FC<SlideIndicatorProps> = ({ slides, currentSlide, goToSl
             />
         ))}
     </div>
-);
-
-// Component for navigation arrows
-const NavigationArrows: FC<NavigationArrowsProps> = ({ goToPrevSlide, goToNextSlide }) => (
-    <>
-        <button 
-            onClick={goToPrevSlide}
-            className="absolute left-6 top-1/2 -translate-y-1/2 z-10 bg-white/80 dark:bg-gray-800/80 p-2 rounded-full shadow-md hover:bg-white dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            aria-label="Previous slide"
-        >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-        </button>
-        <button 
-            onClick={goToNextSlide}
-            className="absolute right-6 top-1/2 -translate-y-1/2 z-10 bg-white/80 dark:bg-gray-800/80 p-2 rounded-full shadow-md hover:bg-white dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            aria-label="Next slide"
-        >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-        </button>
-    </>
 );
 
 // Component for hero content (text and buttons)
@@ -184,7 +155,6 @@ const HeroSection: FC = () => {
                 ))}
                 
                 {/* Navigation controls */}
-                <NavigationArrows goToPrevSlide={goToPrevSlide} goToNextSlide={goToNextSlide} />
                 <SlideIndicators slides={slides} currentSlide={currentSlide} goToSlide={goToSlide} />
             </div>
             
