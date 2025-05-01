@@ -184,11 +184,13 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
     const getContentPosition = useCallback(() => {
         if (mergedConfig.navbarSpacing) {
             return {
-                height: `calc(100vh - ${mergedConfig.navbarHeight}px)`
+                height: `calc(100vh - ${mergedConfig.navbarHeight}px)`,
+                minHeight: `calc(100vh - ${mergedConfig.navbarHeight}px)`
             };
         }
         return {
-            height: '100vh'
+            height: '100vh',
+            minHeight: '100vh'
         };
     }, [mergedConfig.navbarSpacing, mergedConfig.navbarHeight]);
 
@@ -198,14 +200,26 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
         
         if (height === 'screen') {
             return mergedConfig.navbarSpacing 
-                ? { height: `calc(100vh - ${mergedConfig.navbarHeight}px)` }
-                : { height: '100vh' };
+                ? { 
+                    height: `calc(100vh - ${mergedConfig.navbarHeight}px)`,
+                    minHeight: `calc(100vh - ${mergedConfig.navbarHeight}px)` 
+                }
+                : { 
+                    height: '100vh',
+                    minHeight: '100vh' 
+                };
         } else if (height === 'full') {
-            return { height: '100%' };
+            return { 
+                height: '100%',
+                minHeight: '100vh' 
+            };
         } else if (height === 'auto') {
             return { height: 'auto' };
         } else if (height.includes('px') || height.includes('%') || height.includes('vh')) {
-            return { height };
+            return { 
+                height,
+                minHeight: height.includes('vh') ? height : '100vh'
+            };
         }
         return {};
     }, [mergedConfig.navbarSpacing, mergedConfig.navbarHeight]);
@@ -215,6 +229,7 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
             className={`relative section-fullscreen overflow-hidden w-full`}
             style={{
                 marginTop: mergedConfig.navbarSpacing ? `${mergedConfig.navbarHeight}px` : 0,
+                position: 'relative',
                 ...getHeightStyle(mergedConfig.height)
             }}
             onMouseEnter={handleMouseEnter}
@@ -225,7 +240,7 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
             ref={sliderRef}
         >
             {/* Full-screen background slider */}
-            <div className="absolute inset-0 z-0" style={getContentPosition()}>
+            <div className="absolute inset-0 z-0 w-full" style={getContentPosition()}>
                 <AnimatePresence initial={false}>
                     {slides.map((slide, index) => (
                         index === currentSlide && (
@@ -235,11 +250,11 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
                                 {...getSlideAnimationStyle(mergedConfig.slidesAnimation || 'fade', index > currentSlide)}
                             >
                                 {/* Slide image with effect based on slide.effect property */}
-                                <motion.div className="h-full w-full" style={{ overflow: 'hidden' }}>
+                                <motion.div className="h-full w-full" style={{ overflow: 'hidden', position: 'relative' }}>
                                     <motion.img 
                                         src={slide.image} 
                                         alt={slide.alt} 
-                                        className={`h-full w-full object-cover ${
+                                        className={`absolute inset-0 h-full w-full object-cover ${
                                             slide.position === 'top' ? 'object-top' : 
                                             slide.position === 'bottom' ? 'object-bottom' : 
                                             slide.position === 'left' ? 'object-left' : 
@@ -270,10 +285,11 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
                                 
                                 {/* Grain overlay for texture - optimized performance */}
                                 <div 
-                                    className="absolute inset-0 opacity-30" 
+                                    className="absolute inset-0 opacity-30 w-full h-full" 
                                     style={{ 
                                         backgroundImage: 'url("https://images.unsplash.com/photo-1595876210-50f6313738a4?q=80&w=300&auto=format&fit=crop&ixlib=rb-4.0.3")', 
                                         backgroundRepeat: 'repeat',
+                                        backgroundSize: 'auto',
                                         mixBlendMode: 'overlay',
                                         willChange: 'opacity',
                                         pointerEvents: 'none' // Prevents mouse events for better performance
@@ -282,7 +298,7 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
                                 ></div>
                                 
                                 {/* Gradient overlay - customizable per slide */}
-                                <div className={`absolute inset-0 ${slide.overlay || mergedConfig.overlayStyle}`}></div>
+                                <div className={`absolute inset-0 w-full h-full ${slide.overlay || mergedConfig.overlayStyle}`}></div>
                                 
                                 {/* Decorative elements - based on slide accent color with improved positioning and performance */}
                                 <motion.div 
@@ -431,13 +447,15 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
                         variant={mergedConfig.indicatorType as any}
                         size={mergedConfig.indicatorSize as any}
                         position="custom"
-                        customClass="absolute left-1/2 -translate-x-1/2 bottom-0 mb-8 sm:mb-12 z-20"
+                        customClass="absolute left-1/2 -translate-x-1/2 bottom-0 mb-8 sm:mb-12 z-20 w-full flex justify-center"
                     />
                 )}
             </div>
             
             {/* Content */}
-            <HeroContent {...heroContent} currentSlide={currentSlide} />
+            <div className="absolute inset-0 z-10 w-full h-full">
+                <HeroContent {...heroContent} currentSlide={currentSlide} />
+            </div>
             
             {/* Scroll indicator - optional based on config */}
             {mergedConfig.showScrollIndicator && (
