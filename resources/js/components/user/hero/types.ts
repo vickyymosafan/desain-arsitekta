@@ -18,8 +18,11 @@ export type TransitionType = 'tween' | 'spring' | 'inertia';
 export type EasingType = 'linear' | 'easeIn' | 'easeOut' | 'easeInOut' | 'circIn' | 'circOut' | 'circInOut' | 'backIn' | 'backOut' | 'backInOut' | 'anticipate';
 
 export type AnimationVariantProps = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   initial: Record<string, any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   animate: Record<string, any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   transition: Record<string, any>;
 };
 
