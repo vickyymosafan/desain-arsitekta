@@ -45,7 +45,7 @@ const SlideIndicators: FC<SlideIndicatorProps> = ({
                 transition: (index: number) => ({ delay: index * 0.1, type: 'spring', stiffness: 400 })
             },
             style: {},
-            content: (_index: number) => null
+            content: () => null
         },
         lines: {
             containerClass: 'flex space-x-4',
@@ -62,7 +62,7 @@ const SlideIndicators: FC<SlideIndicatorProps> = ({
                 transition: (index: number) => ({ delay: index * 0.1, type: 'spring', stiffness: 300 })
             },
             style: { borderRadius: '8px' },
-            content: (_index: number) => null
+            content: () => null
         },
         pills: {
             containerClass: 'flex space-x-2',
@@ -113,7 +113,7 @@ const SlideIndicators: FC<SlideIndicatorProps> = ({
                 transition: (index: number) => ({ delay: index * 0.05 })
             },
             style: {},
-            content: (_index: number) => null
+            content: () => null
         },
         numbers: {
             containerClass: 'flex space-x-2',

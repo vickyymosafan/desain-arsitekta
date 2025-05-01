@@ -18,9 +18,9 @@ export type TransitionType = 'tween' | 'spring' | 'inertia';
 export type EasingType = 'linear' | 'easeIn' | 'easeOut' | 'easeInOut' | 'circIn' | 'circOut' | 'circInOut' | 'backIn' | 'backOut' | 'backInOut' | 'anticipate';
 
 export type AnimationVariantProps = {
-    initial: Record<string, any>;
-    animate: Record<string, any>;
-    transition: Record<string, any>;
+  initial: Record<string, any>;
+  animate: Record<string, any>;
+  transition: Record<string, any>;
 };
 
 export interface Slide {
@@ -35,6 +35,8 @@ export interface Slide {
     effect?: 'none' | 'parallax' | 'blur' | 'zoom' | 'glitch' | 'grain'; // Visual effects
     accent?: string; // Accent color for slide-specific highlights
     tag?: string; // Optional tag (like 'New', 'Featured', etc.)
+    animation?: AnimationVariant;
+    alignment?: 'left' | 'center' | 'right';
 }
 
 export interface SlideIndicatorProps {
@@ -67,18 +69,24 @@ export interface HeroContentProps {
 }
 
 export type IndicatorMotionProps = {
-    whileTap: Record<string, any>;
-    whileHover: Record<string, any>;
-    initial: Record<string, any>;
-    animate: Record<string, any> | ((index: number) => Record<string, any>);
-    transition: (index: number) => Record<string, any>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  whileTap: Record<string, any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  whileHover: Record<string, any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  initial: Record<string, any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  animate: Record<string, any> | ((index: number) => Record<string, any>);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  transition: (index: number) => Record<string, any>;
 };
 
 export type IndicatorVariantConfig = {
     containerClass: string;
     itemClass: (index: number) => string;
     motionProps: IndicatorMotionProps;
-    style: Record<string, any>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  style: Record<string, any>;
     content: (index: number) => ReactNode;
 };
 

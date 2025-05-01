@@ -444,8 +444,8 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
                         slides={slides} 
                         currentSlide={currentSlide} 
                         goToSlide={goToSlide}
-                        variant={mergedConfig.indicatorType as any}
-                        size={mergedConfig.indicatorSize as any}
+                        variant={mergedConfig.indicatorType as 'dots' | 'lines' | 'numbers' | 'pills' | 'emoji' | 'minimal'}
+                        size={mergedConfig.indicatorSize as 'sm' | 'md' | 'lg' | 'xl'}
                         position="custom"
                         customClass="absolute left-1/2 -translate-x-1/2 bottom-0 mb-8 sm:mb-12 z-20 w-full flex justify-center"
                     />
@@ -462,7 +462,7 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
                 <ScrollIndicator
                     variant={mergedConfig.scrollIndicatorVariant}
                     color={mergedConfig.scrollIndicatorColor}
-                    size={mergedConfig.scrollIndicatorSize as any}
+                    size={mergedConfig.scrollIndicatorSize as 'sm' | 'md' | 'lg'}
                 />
             )}
         </div>

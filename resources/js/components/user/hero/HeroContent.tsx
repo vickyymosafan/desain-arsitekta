@@ -11,7 +11,6 @@ const HeroContent: FC<HeroContentProps> = ({
     description, 
     ctaPrimary, 
     ctaSecondary, 
-    currentSlide,
     animation = 'fadeIn',
     alignment = 'left' 
 }) => {
