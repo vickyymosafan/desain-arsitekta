@@ -42,7 +42,7 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
         scrollIndicatorColor: 'emerald',
         scrollIndicatorSize: 'md',
         navbarSpacing: true,
-        navbarHeight: 80
+        navbarHeight: 64
     };
     
     // Merge default config with provided config
@@ -184,7 +184,6 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
     const getContentPosition = useCallback(() => {
         if (mergedConfig.navbarSpacing) {
             return {
-                paddingTop: `${mergedConfig.navbarHeight}px`,
                 height: `calc(100vh - ${mergedConfig.navbarHeight}px)`
             };
         }
@@ -215,9 +214,8 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
         <div 
             className={`relative section-fullscreen overflow-hidden w-full`}
             style={{
-                marginTop: 0,
-                ...getHeightStyle(mergedConfig.height),
-                paddingTop: mergedConfig.navbarSpacing ? `${mergedConfig.navbarHeight}px` : '0'
+                marginTop: mergedConfig.navbarSpacing ? `${mergedConfig.navbarHeight}px` : 0,
+                ...getHeightStyle(mergedConfig.height)
             }}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
