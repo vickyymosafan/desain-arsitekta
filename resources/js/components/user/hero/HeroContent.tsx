@@ -29,12 +29,12 @@ const HeroContent: FC<HeroContentProps> = ({
     ctaPrimary, 
     ctaSecondary, 
     animation = 'fadeIn',
-    alignment = 'left' 
+    alignment = 'center' 
 }) => {
     // Generate text alignment classes based on alignment prop
     const alignmentClasses = {
         left: 'text-left justify-start',
-        center: 'text-center justify-center',
+        center: 'text-center justify-center mx-auto',
         right: 'text-right justify-end'
     };
     
@@ -122,8 +122,8 @@ const HeroContent: FC<HeroContentProps> = ({
                 >
                     <motion.div 
                         className="mb-3 inline-block bg-emerald-500/90 backdrop-blur-sm px-4 py-1 rounded-full"
-                        initial={{ opacity: 0, x: -30 }}
-                        animate={{ opacity: 1, x: 0 }}
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 }}
                     >
                         <span className="text-xs uppercase tracking-wider font-semibold text-white">Arsitekta Pro</span>
@@ -186,7 +186,7 @@ const HeroContent: FC<HeroContentProps> = ({
                         </motion.h1>
                         
                         <motion.p 
-                            className="text-base sm:text-lg md:text-xl text-white/90 mb-6 sm:mb-8 drop-shadow-lg max-w-full sm:max-w-lg bg-black/10 backdrop-blur-[2px] rounded-lg py-3 px-2 sm:px-3"
+                            className="text-base sm:text-lg md:text-xl text-white/90 mb-6 sm:mb-8 drop-shadow-lg mx-auto max-w-full sm:max-w-lg md:max-w-xl bg-black/10 backdrop-blur-[2px] rounded-lg py-3 px-2 sm:px-3"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: ANIMATION_TIMINGS.staggered.description, duration: ANIMATION_TIMINGS.durations.fast }}
@@ -206,7 +206,7 @@ const HeroContent: FC<HeroContentProps> = ({
                     </motion.div>
                     
                     <motion.div 
-                        className="flex flex-col sm:flex-row gap-4 sm:gap-5"
+                        className="flex flex-col sm:flex-row gap-4 sm:gap-5 justify-center"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: ANIMATION_TIMINGS.staggered.cta }}
