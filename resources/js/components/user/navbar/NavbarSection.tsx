@@ -5,17 +5,21 @@ import NavLink from './NavLink';
 import { PrimaryButton, SecondaryButton, OutlineButton } from './NavButtons';
 import MobileMenu from './MobileMenu';
 
+/**
+ * Komponen utama Navbar
+ * Menampilkan menu navigasi, logo, dan tombol aksi
+ */
 const NavbarSection = ({ user }: NavbarProps) => {
-    // Active link state for highlighting current page
+    // State untuk menyimpan link yang sedang aktif
     const [activeLink, setActiveLink] = useState<string>('#');
     
-    // Mobile menu state
+    // State untuk menu mobile (terbuka/tertutup)
     const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
     
-    // Scroll state for enhanced navbar effects
+    // State untuk efek scroll pada navbar
     const [scrolled, setScrolled] = useState<boolean>(false);
 
-    // Navigation items with icons
+    // Item navigasi dengan ikon
     const navItems: NavItem[] = [
         { href: '#', label: 'Beranda', icon: 'fa-home' },
         { href: '#services', label: 'Layanan', icon: 'fa-tools' },
@@ -24,7 +28,7 @@ const NavbarSection = ({ user }: NavbarProps) => {
         { href: '#contact', label: 'Kontak', icon: 'fa-envelope' }
     ];
 
-    // Handle scroll effects
+    // Menangani efek scroll
     useEffect(() => {
         const handleScroll = () => {
             const offset = window.scrollY;
@@ -34,7 +38,7 @@ const NavbarSection = ({ user }: NavbarProps) => {
                 setScrolled(false);
             }
 
-            // Set active section based on scroll position
+            // Mengatur section aktif berdasarkan posisi scroll
             const sections = document.querySelectorAll('section[id]');
             sections.forEach(section => {
                 const sectionTop = (section as HTMLElement).offsetTop;
@@ -67,7 +71,7 @@ const NavbarSection = ({ user }: NavbarProps) => {
                         </div>
                     </div>
 
-                    {/* Desktop Navigation */}
+                    {/* Navigasi Desktop */}
                     <nav className="hidden md:flex items-center space-x-8 ml-10">
                         {navItems.map((item) => (
                             <NavLink 
@@ -81,7 +85,7 @@ const NavbarSection = ({ user }: NavbarProps) => {
                         ))}
                     </nav>
 
-                    {/* Desktop Buttons */}
+                    {/* Tombol Desktop */}
                     <div className="hidden md:flex items-center space-x-4">
                         {user ? (
                             <PrimaryButton href={route('dashboard')} icon="fa-user-circle">
@@ -99,13 +103,13 @@ const NavbarSection = ({ user }: NavbarProps) => {
                         )}
                     </div>
 
-                    {/* Mobile Menu Button */}
+                    {/* Tombol Menu Mobile */}
                     <button 
                         type="button" 
                         className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 md:hidden hover:text-emerald-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-emerald-500 dark:hover:bg-gray-800 transition-all duration-200" 
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                     >
-                        <span className="sr-only">Open main menu</span>
+                        <span className="sr-only">Buka menu utama</span>
                         {!mobileMenuOpen ? (
                             <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -118,7 +122,7 @@ const NavbarSection = ({ user }: NavbarProps) => {
                     </button>
                 </div>
 
-                {/* Mobile Navigation Menu */}
+                {/* Menu Navigasi Mobile */}
                 <MobileMenu 
                     isOpen={mobileMenuOpen}
                     activeLink={activeLink}

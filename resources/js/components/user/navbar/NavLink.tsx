@@ -1,6 +1,15 @@
 import { Link } from '@inertiajs/react';
 import { NavLinkProps } from './types';
 
+/**
+ * Komponen NavLink
+ * Menampilkan tautan navigasi dengan efek hover dan status aktif
+ * 
+ * @param href - URL tujuan tautan
+ * @param children - Konten/isi tautan
+ * @param active - Status aktif tautan (default: false)
+ * @param icon - Kelas ikon FontAwesome (opsional)
+ */
 const NavLink = ({ href, children, active = false, icon }: NavLinkProps) => (
     <Link 
         href={href} 
@@ -11,6 +20,7 @@ const NavLink = ({ href, children, active = false, icon }: NavLinkProps) => (
             }`
         }
     >
+        {/* Ikon (jika ada) */}
         {icon && (
             <span className="mr-2 text-gray-400 group-hover:text-emerald-500 transition-colors duration-200">
                 <i className={`fas ${icon}`}></i>
@@ -18,6 +28,7 @@ const NavLink = ({ href, children, active = false, icon }: NavLinkProps) => (
         )}
         <span className="relative">
             {children}
+            {/* Indikator aktif - garis bawah */}
             {active && <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-emerald-500 rounded-full transition-all duration-300"></span>}
         </span>
     </Link>

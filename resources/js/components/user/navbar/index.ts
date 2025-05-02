@@ -1,10 +1,10 @@
-// Main component
+// Komponen utama
 export { default } from './NavbarSection';
 
-// Sub-components - export them in case they need to be used individually
+// Sub-komponen - diekspor untuk kemungkinan penggunaan secara individual
 export { default as NavLink } from './NavLink';
 export { default as MobileMenu } from './MobileMenu';
 export { PrimaryButton, SecondaryButton, OutlineButton } from './NavButtons';
 
-// Types
+// Tipe
 export * from './types';

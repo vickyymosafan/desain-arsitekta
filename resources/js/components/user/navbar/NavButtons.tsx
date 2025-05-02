@@ -1,6 +1,10 @@
 import { Link } from '@inertiajs/react';
 import { ButtonProps } from './types';
 
+/**
+ * Tombol Primer/Utama
+ * Digunakan untuk aksi utama dengan latar belakang warna emerald
+ */
 export const PrimaryButton = ({ href, children, icon, onClick }: ButtonProps) => (
     <Link
         href={href}
@@ -12,6 +16,10 @@ export const PrimaryButton = ({ href, children, icon, onClick }: ButtonProps) =>
     </Link>
 );
 
+/**
+ * Tombol Sekunder
+ * Digunakan untuk aksi sekunder dengan tampilan yang lebih ringan
+ */
 export const SecondaryButton = ({ href, children, icon, onClick }: ButtonProps) => (
     <Link
         href={href}
@@ -23,6 +31,10 @@ export const SecondaryButton = ({ href, children, icon, onClick }: ButtonProps) 
     </Link>
 );
 
+/**
+ * Tombol Outline
+ * Digunakan untuk aksi dengan border berwarna emerald dan efek hover mengubah latar belakang
+ */
 export const OutlineButton = ({ href, children, icon, onClick }: ButtonProps) => (
     <Link
         href={href}
