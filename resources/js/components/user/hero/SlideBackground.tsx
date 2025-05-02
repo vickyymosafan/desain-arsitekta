@@ -5,6 +5,7 @@ import { getSlideAnimationStyle } from './animationUtils';
 import SlideDecorations from './SlideDecorations';
 import SlideTag from './SlideTag';
 import SlideInfo from './SlideInfo';
+import LazyImage from '@/components/ui/lazy-image';
 
 interface SlideBackgroundProps {
     slides: Slide[];
@@ -28,18 +29,13 @@ const SlideBackground: FC<SlideBackgroundProps> = ({
                     >
                         {/* Gambar slide dengan efek berdasarkan properti slide.effect */}
                         <motion.div className="h-full w-full" style={{ overflow: 'hidden', position: 'relative' }}>
-                            <motion.img 
-                                src={slide.image} 
-                                alt={slide.alt} 
-                                className={`absolute inset-0 h-full w-full object-cover ${
+                            <motion.div 
+                                className={`absolute inset-0 h-full w-full ${
                                     slide.position === 'top' ? 'object-top' : 
                                     slide.position === 'bottom' ? 'object-bottom' : 
                                     slide.position === 'left' ? 'object-left' : 
                                     slide.position === 'right' ? 'object-right' : 'object-center'
                                 }`}
-                                loading={index === 0 ? "eager" : "lazy"}
-                                fetchPriority={index === 0 ? "high" : "auto"}
-                                decoding="async"
                                 animate={
                                     slide.effect === 'parallax' ? { scale: 1.1, y: [0, -15, 0], x: [0, 10, 0] } : 
                                     slide.effect === 'zoom' ? { scale: [1, 1.05, 1.02] } : 
@@ -57,10 +53,21 @@ const SlideBackground: FC<SlideBackgroundProps> = ({
                                     willChange: 'transform',
                                     transform: 'translateZ(0)' // Akselerasi hardware
                                 }}
-                            />
+                            >
+                                <LazyImage 
+                                    src={slide.image} 
+                                    alt={slide.alt}
+                                    className="h-full w-full object-cover"
+                                    threshold={0.1}
+                                    placeholderColor="bg-emerald-200/20"
+                                    blurEffect={true}
+                                    fetchPriority={index === 0 ? "high" : "auto"}
+                                    decoding="async"
+                                />
+                            </motion.div>
                         </motion.div>
                         
-                        {/* Overlay butiran untuk tekstur */}
+                        {/* Overlay butiran untuk tekstur - juga lazy loaded */}
                         <div 
                             className="absolute inset-0 opacity-30 w-full h-full" 
                             style={{ 
@@ -72,6 +79,7 @@ const SlideBackground: FC<SlideBackgroundProps> = ({
                                 pointerEvents: 'none'
                             }}
                             aria-hidden="true"
+                            data-lazy="true"
                         />
                         
                         {/* Overlay gradien */}
