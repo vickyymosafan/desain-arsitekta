@@ -5,8 +5,8 @@ import SectionHeader from '@/components/user/services/SectionHeader';
 
 const ServicesSection: React.FC = () => {
   return (
-    <section id="services" className="py-20 bg-gray-50">
-      <div className="container mx-auto px-4">
+    <section id="services" className="section-fullscreen bg-gray-50">
+      <div className="container mx-auto px-4 py-12 flex flex-col justify-center flex-1">
         <SectionHeader 
           title="Layanan Kami"
           description="Arsitekta menyediakan layanan lengkap dari desain hingga konstruksi bangunan dengan kualitas premium dan nilai estetika tinggi."
