@@ -1,11 +1,5 @@
 import { AnimationVariant, AnimationVariantProps } from './types';
 
-/**
- * Get animation properties for a specific animation variant
- * @param variant The animation variant to use
- * @param delay Optional delay for the animation
- * @returns Animation properties compatible with framer-motion
- */
 export const getAnimationVariant = (
   variant: AnimationVariant = 'fadeIn', 
   delay: number = 0
@@ -103,13 +97,6 @@ export const getAnimationVariant = (
   return variants[variant];
 };
 
-/**
- * Get 3D tilt effect based on mouse position
- * @param mousePosition Current mouse position
- * @param element HTML element to apply effect to
- * @param strength Strength of the tilt effect (lower is stronger)
- * @returns Style object with transform properties
- */
 export const get3DTiltEffect = (
   mousePosition: { x: number, y: number },
   element: HTMLElement | null,
