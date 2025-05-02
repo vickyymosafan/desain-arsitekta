@@ -7,21 +7,21 @@ const ScrollIndicator: FC<ScrollIndicatorProps> = ({
     color = 'white',
     size = 'md' 
 }) => {
-    // Size variants
+    // Variasi ukuran
     const sizeClasses = {
         sm: 'h-6 w-6 text-xs',
         md: 'h-8 w-8 text-sm',
         lg: 'h-10 w-10 text-base'
     };
     
-    // Color variants
+    // Variasi warna
     const colorClasses = {
         white: 'text-white/80',
         emerald: 'text-emerald-400',
         primary: 'text-emerald-500'
     };
     
-    // Animation variants
+    // Variasi animasi
     const getIconAnimation = () => {
         switch(variant) {
             case 'pulse':
@@ -59,7 +59,7 @@ const ScrollIndicator: FC<ScrollIndicatorProps> = ({
                         duration: 2.5
                     }
                 };
-            default: // Default scrolling animation
+            default: // Animasi gulir default
                 return {
                     animate: { y: [0, 8, 0] },
                     transition: { repeat: Infinity, duration: 1.5 }
@@ -67,7 +67,7 @@ const ScrollIndicator: FC<ScrollIndicatorProps> = ({
         }
     };
     
-    // Get color class based on color prop
+    // Mendapatkan kelas warna berdasarkan prop color
     const textColor = colorClasses[color as keyof typeof colorClasses] || 'text-white/80';
     const iconAnimation = getIconAnimation();
     
@@ -84,7 +84,7 @@ const ScrollIndicator: FC<ScrollIndicatorProps> = ({
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1.2 }}
             >
-                Scroll
+                Gulir
             </motion.div>
             <motion.div 
                 {...iconAnimation}

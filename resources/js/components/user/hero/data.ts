@@ -1,6 +1,6 @@
 import { Slide, HeroConfig, CTAButton, ButtonVariant, HeroContentProps, AnimationVariant } from './types';
 
-// Default configuration with enhanced animation options
+// Konfigurasi default dengan opsi animasi yang ditingkatkan
 export const defaultConfig: HeroConfig = {
     height: 'screen',
     autoplay: true,
@@ -22,12 +22,12 @@ export const defaultConfig: HeroConfig = {
     navbarHeight: 64
 };
 
-// Slide data
+// Data slide
 export const slides: Slide[] = [
     {
         id: 1,
         image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
-        alt: "Modern House Design",
+        alt: "Desain Rumah Modern",
         headline: "Desain Modern",
         subtext: "Arsitektur yang mengikuti tren terkini",
         position: 'center',
@@ -38,7 +38,7 @@ export const slides: Slide[] = [
     {
         id: 2,
         image: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80",
-        alt: "Contemporary Home",
+        alt: "Rumah Kontemporer",
         headline: "Inovasi Terdepan",
         subtext: "Solusi rumah impian yang futuristik",
         position: 'center',
@@ -49,7 +49,7 @@ export const slides: Slide[] = [
     {
         id: 3,
         image: "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
-        alt: "Luxury Residence",
+        alt: "Rumah Mewah",
         headline: "Kemewahan Exclusive",
         subtext: "Pengalaman hunian premium berkualitas",
         position: 'center',
@@ -60,7 +60,7 @@ export const slides: Slide[] = [
     }
 ];
 
-// Hero content data
+// Data konten hero
 export const getHeroContent = (contentAnimation: string | undefined): HeroContentProps => ({
     title: "Bangun Rumah",
     titleHighlight: "Impian Anda",

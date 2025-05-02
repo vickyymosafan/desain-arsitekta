@@ -1,12 +1,15 @@
 import { FC } from 'react';
 import { motion } from 'framer-motion';
 
+// Antarmuka untuk komponen SlideDecorations
 interface SlideDecorationsProps {
     accent?: string;
 }
 
+// Komponen SlideDecorations
 const SlideDecorations: FC<SlideDecorationsProps> = ({ accent = '#34d399' }) => (
     <>
+        {/* Elemen div pertama */}
         <motion.div 
             className="absolute opacity-20 mix-blend-screen hidden md:block" 
             style={{ 
@@ -29,6 +32,7 @@ const SlideDecorations: FC<SlideDecorationsProps> = ({ accent = '#34d399' }) => 
             aria-hidden="true"
         />
         
+        {/* Elemen div kedua */}
         <motion.div 
             className="absolute opacity-20 mix-blend-screen hidden md:block" 
             style={{ 
@@ -53,4 +57,5 @@ const SlideDecorations: FC<SlideDecorationsProps> = ({ accent = '#34d399' }) => 
     </>
 );
 
+// Ekspor komponen SlideDecorations sebagai default
 export default SlideDecorations;

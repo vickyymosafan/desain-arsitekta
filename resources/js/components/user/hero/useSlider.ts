@@ -34,14 +34,14 @@ const useSlider = ({
     autoplaySpeed,
     pauseOnHover
 }: UseSliderProps): UseSliderReturn => {
-    // State for current slide
+    // State untuk slide saat ini
     const [currentSlide, setCurrentSlide] = useState<number>(0);
     const [isPaused, setIsPaused] = useState<boolean>(false);
     
-    // Reference for the slider container
+    // Referensi untuk kontainer slider
     const sliderRef = useRef<HTMLDivElement | null>(null);
     
-    // Auto-advance slides
+    // Perpindahan slide otomatis
     useEffect(() => {
         if (!autoplay || isPaused) return;
         
@@ -52,7 +52,7 @@ const useSlider = ({
         return () => clearInterval(interval);
     }, [autoplay, autoplaySpeed, slides.length, isPaused]);
     
-    // Slide navigation handlers
+    // Handler navigasi slide
     const goToSlide = (index: number): void => {
         setCurrentSlide(index);
     };
@@ -65,7 +65,7 @@ const useSlider = ({
         setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length);
     };
     
-    // Pause autoplay on hover if configured
+    // Jeda pemutaran otomatis saat hover jika dikonfigurasi
     const handleMouseEnter = () => {
         if (pauseOnHover) {
             setIsPaused(true);
@@ -78,15 +78,15 @@ const useSlider = ({
         }
     };
     
-    // Touch swipe handling
+    // Penanganan sentuh geser (swipe)
     const [touchStart, setTouchStart] = useState<number | null>(null);
     const [touchEnd, setTouchEnd] = useState<number | null>(null);
     
-    // the required distance between touchStart and touchEnd to be detected as a swipe
+    // jarak minimal antara touchStart dan touchEnd untuk dideteksi sebagai swipe
     const minSwipeDistance = 50;
     
     const onTouchStart = (e: React.TouchEvent) => {
-        setTouchEnd(null); // otherwise the swipe is fired even with usual touch events
+        setTouchEnd(null); // mencegah swipe terpicu dengan interaksi sentuh biasa
         setTouchStart(e.targetTouches[0].clientX);
     };
     

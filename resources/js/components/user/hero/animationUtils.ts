@@ -1,6 +1,6 @@
 import { AnimationVariant, AnimationVariantProps, EasingType, TransitionType } from './types';
 
-// Animation utilities to reduce redundancy
+// Utilitas animasi untuk mengurangi redundansi
 export const transitions = {
     default: { duration: 0.6, ease: 'easeOut' as EasingType },
     slow: { duration: 1.2, ease: 'easeInOut' as EasingType },
@@ -10,9 +10,9 @@ export const transitions = {
     elastic: { type: 'spring' as TransitionType, stiffness: 200, damping: 8, mass: 0.8 }
 };
 
-// Reusable animation variants
+// Variasi animasi yang dapat digunakan kembali
 export const animationVariants: Record<string, AnimationVariantProps> = {
-    // Fade variants
+    // Variasi fade
     fadeIn: {
         initial: { opacity: 0 },
         animate: { opacity: 1 },
@@ -29,7 +29,7 @@ export const animationVariants: Record<string, AnimationVariantProps> = {
         transition: transitions.fast
     },
     
-    // Slide variants
+    // Variasi slide
     slideUp: {
         initial: { opacity: 0, y: 50 },
         animate: { opacity: 1, y: 0 },
@@ -57,7 +57,7 @@ export const animationVariants: Record<string, AnimationVariantProps> = {
     }
 };
 
-// Helper function to get animation variant with delay
+// Fungsi pembantu untuk mendapatkan variasi animasi dengan penundaan
 export const getAnimationWithDelay = (type: AnimationVariant, delay: number = 0): AnimationVariantProps => {
     const variant = animationVariants[type] || animationVariants.fadeIn;
     return {
@@ -69,7 +69,7 @@ export const getAnimationWithDelay = (type: AnimationVariant, delay: number = 0)
     };
 };
 
-// Create animation props with configurable options
+// Buat prop animasi dengan opsi yang dapat dikonfigurasi
 export const createAnimationProps = (type: AnimationVariant, delay: number = 0, once: boolean = false) => {
     const variant = getAnimationWithDelay(type, delay);
     
@@ -81,12 +81,12 @@ export const createAnimationProps = (type: AnimationVariant, delay: number = 0, 
     };
 };
 
-// Create slide animation variants based on type and current status
+// Buat variasi animasi slide berdasarkan jenis dan status saat ini
 export const getSlideAnimationStyle = (
     animationType: string, 
     isActive: boolean
 ) => {
-    // Define transition presets for slides
+    // Definisikan preset transisi untuk slide
     const slideTransitions = {
         default: { duration: 0.8, ease: 'easeOut' as EasingType },
         smooth: { duration: 1.2, ease: 'easeInOut' as EasingType },
@@ -94,7 +94,7 @@ export const getSlideAnimationStyle = (
         bounce: { type: 'spring' as TransitionType, stiffness: 200, damping: 15, velocity: 1 }
     };
 
-    // Define advanced animation presets for slides
+    // Definisikan preset animasi lanjutan untuk slide
     switch(animationType) {
         case 'fade':
             return {

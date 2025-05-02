@@ -1,4 +1,4 @@
-// CSS styles for the hero section
+// Gaya CSS untuk bagian hero
 export const globalCss = `
     @keyframes gradient-shift {
         0% { background-position: 0% 50% }
@@ -7,7 +7,7 @@ export const globalCss = `
     }
 `;
 
-// Apply global CSS to document
+// Menerapkan CSS global ke dokumen
 export const applyGlobalStyles = (): void => {
     if (typeof document !== 'undefined') {
         const style = document.createElement('style');

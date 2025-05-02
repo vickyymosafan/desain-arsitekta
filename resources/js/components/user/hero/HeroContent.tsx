@@ -4,7 +4,7 @@ import { HeroContentProps } from './types';
 import CTAButtonComponent from './CTAButton';
 import { createAnimationProps } from './animationUtils';
 
-// Animation timing constants for consistency
+// Konstanta waktu animasi untuk konsistensi
 const ANIMATION_TIMINGS = {
   staggered: {
     base: 0.1,
@@ -21,7 +21,7 @@ const ANIMATION_TIMINGS = {
   }
 };
 
-// Component for hero content (text and buttons)
+// Komponen untuk konten hero (teks dan tombol)
 const HeroContent: FC<HeroContentProps> = ({ 
     title, 
     titleHighlight = '', 
@@ -31,22 +31,22 @@ const HeroContent: FC<HeroContentProps> = ({
     animation = 'fadeIn',
     alignment = 'center' 
 }) => {
-    // Generate text alignment classes based on alignment prop
+    // Menghasilkan kelas penyelarasan teks berdasarkan prop alignment
     const alignmentClasses = {
         left: 'text-left justify-start',
         center: 'text-center justify-center mx-auto',
         right: 'text-right justify-end'
     };
     
-    // Get animation props for current component using our utility function
+    // Mendapatkan prop animasi untuk komponen saat ini menggunakan fungsi utilitas kita
     const animProps = createAnimationProps(animation, 0);
     
     return (
         <div className={`relative h-full w-full z-10 flex items-center ${alignmentClasses[alignment]}`}>
-            {/* Vertical side text */}
+            {/* Teks samping vertikal */}
             <div className="absolute top-0 right-6 md:right-8 h-full flex items-center z-10 hidden lg:block">
                 <div className="flex flex-col items-center">
-                    {/* Modern 3D-style rotating badge */}
+                    {/* Lencana putar gaya 3D modern */}
                     <motion.div
                         initial={{ opacity: 0, y: 20, rotateX: 90 }}
                         animate={{ opacity: 1, y: 0, rotateX: 0 }}
@@ -64,7 +64,7 @@ const HeroContent: FC<HeroContentProps> = ({
                         </div>
                     </motion.div>
                     
-                    {/* Animated line */}
+                    {/* Garis beranimasi */}
                     <motion.div 
                         className="h-40 w-px my-6 relative overflow-hidden"
                         style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)' }}
@@ -76,7 +76,7 @@ const HeroContent: FC<HeroContentProps> = ({
                         />
                     </motion.div>
                     
-                    {/* Modern social media icons with hover effects */}
+                    {/* Ikon media sosial modern dengan efek hover */}
                     <div className="flex flex-col space-y-4">
                         <motion.a 
                             href="#" 
@@ -135,7 +135,7 @@ const HeroContent: FC<HeroContentProps> = ({
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.5 }}
                     >
-                        {/* Decorative blob shape in background */}
+                        {/* Bentuk blob dekoratif di latar belakang */}
                         <motion.div
                             className="absolute -top-10 -left-10 w-32 h-32 sm:w-40 sm:h-40 bg-gradient-to-br from-emerald-400/30 to-emerald-600/20 rounded-full filter blur-3xl opacity-70 z-0"
                             animate={{ 
@@ -174,7 +174,7 @@ const HeroContent: FC<HeroContentProps> = ({
                                     >
                                         {titleHighlight}
                                     </span>
-                                    {/* Decorative underline with animation */}
+                                    {/* Garis bawah dekoratif dengan animasi */}
                                     <motion.span 
                                         className="absolute bottom-0 left-0 w-full h-1 md:h-1.5 bg-gradient-to-r from-emerald-300 to-emerald-500"
                                         initial={{ scaleX: 0, originX: 0 }}

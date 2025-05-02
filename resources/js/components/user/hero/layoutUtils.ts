@@ -1,9 +1,9 @@
 /**
- * Utility functions for layout and position calculations in the hero section
+ * Fungsi utilitas untuk perhitungan tata letak dan posisi di bagian hero
  */
 
 /**
- * Calculate content position based on navbar spacing configuration
+ * Menghitung posisi konten berdasarkan konfigurasi jarak navbar
  */
 export const getContentPosition = (navbarSpacing: boolean, navbarHeight: number): React.CSSProperties => {
     if (navbarSpacing) {
@@ -19,7 +19,7 @@ export const getContentPosition = (navbarSpacing: boolean, navbarHeight: number)
 };
 
 /**
- * Convert height configuration to precise CSS values
+ * Mengkonversi konfigurasi tinggi ke nilai CSS yang tepat
  */
 export const getHeightStyle = (
     height?: string, 
@@ -51,5 +51,6 @@ export const getHeightStyle = (
             minHeight: height.includes('vh') ? height : '100vh'
         };
     }
-    return {};
+    
+    return { height: '100vh' };
 };

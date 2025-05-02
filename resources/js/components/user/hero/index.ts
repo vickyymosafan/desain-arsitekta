@@ -1,7 +1,7 @@
-// Main component
+// Komponen utama
 export { default } from './HeroSection';
 
-// Sub-components - export them in case they need to be used individually
+// Sub-komponen - ekspor mereka jika perlu digunakan secara individual
 export { default as HeroContent } from './HeroContent';
 export { default as SlideIndicators } from './SlideIndicators';
 export { default as ScrollIndicator } from './ScrollIndicator';
@@ -12,11 +12,11 @@ export { default as SlideDecorations } from './SlideDecorations';
 export { default as SlideTag } from './SlideTag';
 export { default as SlideInfo } from './SlideInfo';
 
-// Types
+// Tipe
 export * from './types';
 
-// Animation utilities
+// Utilitas animasi
 export * from './animationUtils';
 
-// Layout utilities
+// Utilitas tata letak
 export * from './layoutUtils';

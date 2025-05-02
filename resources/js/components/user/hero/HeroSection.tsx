@@ -10,20 +10,20 @@ import SlideIndicators from './SlideIndicators';
 import ScrollIndicator from './ScrollIndicator';
 import useSlider from './useSlider';
 
-// Apply global styles when the component is imported
+// Menerapkan gaya global saat komponen diimpor
 applyGlobalStyles();
 
 /**
- * Hero Section component for displaying a fullscreen slider with content
+ * Komponen Hero Section untuk menampilkan slider layar penuh dengan konten
  */
 const HeroSection: FC<HeroSectionProps> = ({ config }) => {
-    // Merge default config with provided config
+    // Menggabungkan konfigurasi default dengan konfigurasi yang disediakan
     const mergedConfig = { ...defaultConfig, ...config };
     
-    // Get hero content data
+    // Mendapatkan data konten hero
     const heroContent = getHeroContent(mergedConfig.contentAnimation || 'slideUpSpring');
     
-    // Use our custom slider hook to handle slider functionality
+    // Menggunakan hook slider kustom untuk menangani fungsionalitas slider
     const {
         currentSlide, 
         sliderRef,
@@ -37,7 +37,7 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
         pauseOnHover: mergedConfig.pauseOnHover || true
     });
     
-    // Update current slide in hero content
+    // Memperbarui slide saat ini di konten hero
     heroContent.currentSlide = currentSlide;
 
     return (
@@ -55,7 +55,7 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
             {...touchHandlers}
             {...hoverHandlers}
         >
-            {/* Full-screen background slider */}
+            {/* Slider latar belakang layar penuh */}
             <div 
                 className="absolute inset-0 z-0 w-full" 
                 style={getHeightStyle(
@@ -65,14 +65,14 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
                 )}
                 ref={sliderRef}
             >
-                {/* Slide Backgrounds */}
+                {/* Latar belakang slide */}
                 <SlideBackground 
                     slides={slides} 
                     currentSlide={currentSlide} 
                     slidesAnimation={mergedConfig.slidesAnimation || 'fade'} 
                 />
                 
-                {/* Slide number indicator */}
+                {/* Indikator nomor slide */}
                 {mergedConfig.showNumber && (
                     <div 
                         className="absolute z-10 hidden md:block"
@@ -85,7 +85,7 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
                     </div>
                 )}
                 
-                {/* Navigation indicators */}
+                {/* Indikator navigasi */}
                 {mergedConfig.showIndicators && (
                     <SlideIndicators 
                         slides={slides} 
@@ -99,12 +99,12 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
                 )}
             </div>
             
-            {/* Content */}
+            {/* Konten */}
             <div className="absolute inset-0 z-10 w-full h-full">
                 <HeroContent {...heroContent} />
             </div>
             
-            {/* Scroll indicator */}
+            {/* Indikator scroll */}
             {mergedConfig.showScrollIndicator && (
                 <ScrollIndicator
                     variant={mergedConfig.scrollIndicatorVariant}

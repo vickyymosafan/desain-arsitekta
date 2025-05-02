@@ -3,14 +3,14 @@ import { motion } from 'framer-motion';
 import { Link } from '@inertiajs/react';
 import { ButtonVariant, CTAButton } from './types';
 
-// Button style variants
+// Variasi gaya tombol
 const buttonStyles: Record<ButtonVariant, string> = {
     primary: "rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-3.5 font-medium text-white shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:shadow-emerald-500/40 hover:scale-105 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 group flex items-center justify-center gap-2",
     secondary: "rounded-xl border border-white/70 backdrop-blur-md bg-white/10 px-6 py-3.5 font-medium text-white transition-all duration-300 hover:bg-white/20 hover:scale-105 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 flex items-center justify-center gap-2",
     outline: "rounded-xl border-2 border-emerald-500 px-6 py-3.5 font-medium text-white transition-all duration-300 hover:bg-emerald-500/20 hover:scale-105 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 flex items-center justify-center gap-2"
 };
 
-// Helper type for button icons
+// Tipe bantuan untuk ikon tombol
 const buttonIconMap: Record<string, React.ReactNode> = {
     contact: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>,
     portfolio: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>,
@@ -26,7 +26,7 @@ interface CTAButtonComponentProps {
 const CTAButtonComponent: FC<CTAButtonComponentProps> = ({ button, index }) => {
     const { text, href, variant = 'primary', icon = true, external = false } = button;
     
-    // Button icon based on text content - auto-detect for better UX
+    // Ikon tombol berdasarkan konten teks - deteksi otomatis untuk UX yang lebih baik
     const getButtonIcon = () => {
         const lowerText = text.toLowerCase();
         if (lowerText.includes('kontak') || lowerText.includes('konsultasi')) {
@@ -39,7 +39,7 @@ const CTAButtonComponent: FC<CTAButtonComponentProps> = ({ button, index }) => {
         return buttonIconMap.default;
     };
     
-    // Determine button component based on external flag
+    // Menentukan komponen tombol berdasarkan flag external
     const ButtonComponent = external ? 'a' : Link;
     const buttonProps = external ? { href, target: "_blank", rel: "noopener noreferrer" } : { href };
     

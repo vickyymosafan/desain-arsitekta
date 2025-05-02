@@ -26,7 +26,7 @@ const SlideBackground: FC<SlideBackgroundProps> = ({
                         className="absolute inset-0"
                         {...getSlideAnimationStyle(slidesAnimation || 'fade', index > currentSlide)}
                     >
-                        {/* Slide image with effect based on slide.effect property */}
+                        {/* Gambar slide dengan efek berdasarkan properti slide.effect */}
                         <motion.div className="h-full w-full" style={{ overflow: 'hidden', position: 'relative' }}>
                             <motion.img 
                                 src={slide.image} 
@@ -55,12 +55,12 @@ const SlideBackground: FC<SlideBackgroundProps> = ({
                                 }}
                                 style={{
                                     willChange: 'transform',
-                                    transform: 'translateZ(0)' // Hardware acceleration
+                                    transform: 'translateZ(0)' // Akselerasi hardware
                                 }}
                             />
                         </motion.div>
                         
-                        {/* Grain overlay for texture */}
+                        {/* Overlay butiran untuk tekstur */}
                         <div 
                             className="absolute inset-0 opacity-30 w-full h-full" 
                             style={{ 
@@ -74,16 +74,16 @@ const SlideBackground: FC<SlideBackgroundProps> = ({
                             aria-hidden="true"
                         />
                         
-                        {/* Gradient overlay */}
+                        {/* Overlay gradien */}
                         <div className={`absolute inset-0 w-full h-full ${slide.overlay || 'bg-gradient-to-b from-black/60 via-black/40 to-black/60'}`} />
                         
-                        {/* Decorative elements */}
+                        {/* Elemen dekoratif */}
                         <SlideDecorations accent={slide.accent} />
                         
-                        {/* Tag - New, Trending, Featured, etc. */}
+                        {/* Tag - Baru, Trending, Unggulan, dll. */}
                         {slide.tag && <SlideTag tag={slide.tag} accent={slide.accent} />}
                         
-                        {/* Enhanced slide info badge */}
+                        {/* Lencana info slide yang ditingkatkan */}
                         {(slide.headline || slide.subtext) && (
                             <SlideInfo headline={slide.headline} subtext={slide.subtext} accent={slide.accent} />
                         )}

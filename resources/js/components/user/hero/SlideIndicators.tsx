@@ -11,7 +11,7 @@ const SlideIndicators: FC<SlideIndicatorProps> = ({
     position = 'bottom',
     customClass = ''
 }) => {
-    // Size classes mapping
+    // Pemetaan kelas ukuran
     const sizeClasses = {
         sm: { dot: 'h-1.5 w-1.5', line: 'h-1.5 w-4', active: 'w-8', pill: 'h-6 px-2', emoji: 'text-xs' },
         md: { dot: 'h-2.5 w-2.5', line: 'h-2.5 w-6', active: 'w-12', pill: 'h-8 px-3', emoji: 'text-sm' },
@@ -19,7 +19,7 @@ const SlideIndicators: FC<SlideIndicatorProps> = ({
         xl: { dot: 'h-4 w-4', line: 'h-4 w-10', active: 'w-20', pill: 'h-12 px-5', emoji: 'text-lg' }
     };
     
-    // Position classes mapping
+    // Pemetaan kelas posisi
     const positionClasses = {
         bottom: 'bottom-16 left-1/2 -translate-x-1/2',
         top: 'top-24 left-1/2 -translate-x-1/2',
@@ -28,7 +28,7 @@ const SlideIndicators: FC<SlideIndicatorProps> = ({
         custom: customClass
     };
 
-    // Configuration for each indicator variant
+    // Konfigurasi untuk setiap varian indikator
     const variantConfig: Record<string, IndicatorVariantConfig> = {
         dots: {
             containerClass: 'flex space-x-3',
@@ -134,7 +134,7 @@ const SlideIndicators: FC<SlideIndicatorProps> = ({
         }
     };
 
-    // Get the current variant configuration, default to numbers
+    // Mendapatkan konfigurasi varian saat ini, default ke angka
     const config = variantConfig[variant as keyof typeof variantConfig] || variantConfig.numbers;
     
     return (
@@ -154,7 +154,7 @@ const SlideIndicators: FC<SlideIndicatorProps> = ({
                     }
                     transition={config.motionProps.transition(index)}
                     style={config.style}
-                    aria-label={`Go to slide ${index + 1}`}
+                    aria-label={`Pergi ke slide ${index + 1}`}
                 >
                     {config.content(index)}
                 </motion.button>
