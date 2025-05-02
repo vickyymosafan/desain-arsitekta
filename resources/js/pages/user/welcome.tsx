@@ -2,7 +2,7 @@ import { type SharedData } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
 import Navbar from '@/components/user/Navbar';
 import HeroSection from '@/components/user/hero/HeroSection';
-import ServicesSection from '@/components/user/ServicesSection';
+import ServicesSection from '@/components/user/services/ServicesSection';
 
 export default function Welcome() {
     const { auth } = usePage<SharedData>().props;

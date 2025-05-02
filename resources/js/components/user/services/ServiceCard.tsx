@@ -1,44 +1,46 @@
 import React, { useState, useRef } from 'react';
-import { motion } from 'framer-motion';
-import { ServiceData } from '../../constants/services';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ServiceCardProps } from './types';
+import { get3DTiltEffect, getAnimationVariant } from './animationUtils';
 
 /**
  * ServiceCard component displays an individual service with icon, title and description
- * Enhanced with modern Gen-Z styling, 3D effects, and interactive animations
+ * Enhanced with modern UI, 3D effects, and interactive animations
  */
-const ServiceCard: React.FC<ServiceData> = ({ title, description, icon }) => {
+const ServiceCard: React.FC<ServiceCardProps> = ({ 
+  title, 
+  description, 
+  icon,
+  index = 0,
+  animation = 'zoom'
+}) => {
   // Refs and state for interactive effects
   const cardRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
-  const [rotation, setRotation] = useState({ x: 0, y: 0 });
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   
   // Track mouse position for interactive 3D effect
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
-    
-    const rect = cardRef.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    const mouseX = e.clientX - centerX;
-    const mouseY = e.clientY - centerY;
-    
-    // Calculate rotation based on mouse position relative to card center
-    // Lower divisor values create more pronounced effect
-    const rotateY = mouseX / 20;
-    const rotateX = -mouseY / 20;
-    
-    setRotation({ x: rotateX, y: rotateY });
-    setPosition({ x: mouseX / 20, y: mouseY / 20 });
+    setMousePosition({
+      x: e.clientX,
+      y: e.clientY
+    });
   };
   
-  const resetCardEffects = () => {
-    setRotation({ x: 0, y: 0 });
-    setPosition({ x: 0, y: 0 });
-  };
-  
-  // Animation variants for Framer Motion
+  // Animation variants
   const cardVariants = {
+    hidden: { opacity: 0, y: 50, scale: 0.9 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        type: 'spring',
+        stiffness: 80,
+        delay: index * 0.1,
+        duration: 0.8
+      }
+    },
     hover: { 
       scale: 1.03,
       boxShadow: '0 20px 30px -10px rgba(16, 185, 129, 0.2)',
@@ -96,7 +98,7 @@ const ServiceCard: React.FC<ServiceData> = ({ title, description, icon }) => {
       'fa-pencil': 'M16.84 2.73c-.3 0-.62.1-.84.33l-1.8 1.8 3.58 3.58 1.8-1.8c.2-.2.33-.46.33-.74 0-.3-.13-.56-.33-.77l-2.04-2.04c-.22-.22-.5-.36-.7-.36z M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25z',
       'fa-drafting-compass': 'M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-3.5 6.5c1.378 0 2.5 1.122 2.5 2.5s-1.122 2.5-2.5 2.5-2.5-1.122-2.5-2.5 1.122-2.5 2.5-2.5zm7 0c1.378 0 2.5 1.122 2.5 2.5s-1.122 2.5-2.5 2.5-2.5-1.122-2.5-2.5 1.122-2.5 2.5-2.5z',
       'fa-tools': 'M3 3a2 2 0 0 1 1.46.43 2 2 0 0 1 .44 2.73L9.11 10l1.06-1.06-4.3-3.57a4 4 0 0 0-.97-5.24 4 4 0 0 0-5.7 0C-1.97 1.28-2.24 3.17-1.37 4.7a4 4 0 0 0 5.22.96l3.57 4.3 7.14-7.14a2 2 0 0 1 2.73.44 2 2 0 0 1-.44 2.73l-7.14 7.14 4.3 3.57a4 4 0 0 0 .96 5.22 4 4 0 0 0 5.7-5.7 4 4 0 0 0-5.23-.97l-3.57-4.3-1.06 1.06 3.57 4.3a2 2 0 0 1-3.17 2.3L3 13.06a2 2 0 0 1 0-2.83 2 2 0 0 1 1.41-.59h.03a2 2 0 0 1 1.39.59L9.11 12l1.06-1.06-3.37-3.38a4 4 0 0 0-2.91-1.17 4 4 0 0 0-2.66 6.95l2.31 2.32a4 4 0 0 0 2.83 1.17 4 4 0 0 0 2.83-1.17l3.38-3.38a4 4 0 0 0 1.11-3.94l-7.44 7.44a2 2 0 0 1-2.83 0L3 12.06a2 2 0 0 1 0-2.83L9.11 3.17a2 2 0 0 1 2.83 0l7.07-7.07a4 4 0 0 0-5.66 0l-3.87 3.87A4 4 0 0 0 8.6 1.38 4 4 0 0 0 3 3z',
-      // Add more icon mappings as needed
+      'fa-hard-hat': 'M15 7c-3.3 0-6 2.7-6 6H3c0-6.61 4.97-12 11-12h2c6.04 0 11 5.4 11 12h-6c0-3.3-2.7-6-6-6z M4 15v1c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-1H4z',
       // Default icon
       'default': 'M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z' 
     };
@@ -122,23 +124,15 @@ const ServiceCard: React.FC<ServiceData> = ({ title, description, icon }) => {
       variants={cardVariants}
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => {
-        setIsHovered(false);
-        resetCardEffects();
-      }}
-      style={{
-        perspective: '1000px',
-        transformStyle: 'preserve-3d',
-        transform: `perspective(1000px) rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`,
-        transition: 'transform 0.2s ease-out'
-      }}
+      onMouseLeave={() => setIsHovered(false)}
+      style={isHovered ? get3DTiltEffect(mousePosition, cardRef.current) : {}}
     >
       {/* Floating light effect that follows mouse movement */}
       <motion.div
         className="absolute w-40 h-40 rounded-full bg-gradient-to-br from-emerald-200/40 to-teal-200/30 blur-xl z-0" 
         animate={{
-          x: position.x * 1.5, 
-          y: position.y * 1.5,
+          x: isHovered ? (mousePosition.x - (cardRef.current?.getBoundingClientRect().left || 0)) / 3 : 0, 
+          y: isHovered ? (mousePosition.y - (cardRef.current?.getBoundingClientRect().top || 0)) / 3 : 0,
           opacity: isHovered ? 0.7 : 0.3
         }}
         transition={{ type: 'spring', stiffness: 150, damping: 15 }}

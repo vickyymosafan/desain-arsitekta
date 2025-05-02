@@ -1,13 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useAnimation, AnimatePresence, useInView } from 'framer-motion';
+import { ServicesSectionProps } from './types';
 import ServiceCard from './ServiceCard';
-import { SERVICES } from '../../constants/services';
+import { SERVICES } from '../../../constants/services';
+import { getAnimationVariant } from './animationUtils';
 
 /**
  * ServicesSection component displays a grid of services offered by Arsitekta
- * Enhanced with modern UI, animations, and 3D effects for a trendy Gen-Z aesthetic
+ * Enhanced with modern UI, animations, and 3D effects
  */
-const ServicesSection: React.FC = () => {
+const ServicesSection: React.FC<ServicesSectionProps> = ({
+  title = 'Layanan Kami',
+  subtitle = 'Layanan Premium',
+  description = 'Arsitekta menyediakan layanan komprehensif untuk kebutuhan desain dan konstruksi bangunan Anda dengan pendekatan modern dan inovatif.',
+  ctaText = 'Konsultasi Gratis',
+  ctaLink = '#contact'
+}) => {
   // References and animation hooks for scroll-based animations
   const sectionRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
@@ -125,28 +133,6 @@ const ServicesSection: React.FC = () => {
     }
   };
 
-  // Calculate 3D tilt effect based on mouse position and hovered service
-  const getTiltStyle = (index: number) => {
-    if (hoveredService !== index) return {};
-    
-    const card = document.getElementById(`service-card-${index}`);
-    if (!card) return {};
-    
-    const rect = card.getBoundingClientRect();
-    const x = mousePosition.x - rect.left;
-    const y = mousePosition.y - rect.top;
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    
-    const tiltX = (y - centerY) / 10;
-    const tiltY = (centerX - x) / 10;
-    
-    return {
-      transform: `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale3d(1.02, 1.02, 1.02)`,
-      transition: 'all 0.3s ease-out'
-    };
-  };
-
   return (
     <motion.section 
       ref={sectionRef}
@@ -214,7 +200,7 @@ const ServicesSection: React.FC = () => {
               className="text-xs md:text-sm uppercase tracking-widest text-emerald-700 font-bold bg-emerald-50/80 backdrop-blur-sm px-4 py-2 rounded-full border border-emerald-200/50 shadow-sm"
               animate={glowAnimation}
             >
-              Layanan Premium
+              {subtitle}
             </motion.span>
           </motion.div>
           
@@ -231,7 +217,7 @@ const ServicesSection: React.FC = () => {
               backgroundSize: '200% 100%',
               animation: 'gradient-shift 8s ease infinite'
             }}>
-              Layanan Kami
+              {title}
               <motion.span 
                 className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-600 to-emerald-400"
                 initial={{ scaleX: 0, originX: 0 }}
@@ -247,8 +233,7 @@ const ServicesSection: React.FC = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 1 }}
           >
-            Arsitekta menyediakan layanan komprehensif untuk kebutuhan desain dan konstruksi 
-            bangunan Anda dengan pendekatan modern dan inovatif.
+            {description}
           </motion.p>
         </motion.div>
         
@@ -264,7 +249,6 @@ const ServicesSection: React.FC = () => {
               id={`service-card-${index}`}
               custom={index}
               variants={cardVariants}
-              style={getTiltStyle(index)}
               whileHover={{ y: -10, transition: { type: 'spring', stiffness: 300 } }}
               onHoverStart={() => setHoveredService(index)}
               onHoverEnd={() => setHoveredService(null)}
@@ -287,6 +271,8 @@ const ServicesSection: React.FC = () => {
                 title={service.title}
                 description={service.description}
                 icon={service.icon}
+                index={index}
+                animation="zoom"
               />
             </motion.div>
           ))}
@@ -309,7 +295,7 @@ const ServicesSection: React.FC = () => {
             whileTap={{ scale: 0.95 }}
           >
             <motion.a 
-              href="#contact" 
+              href={ctaLink} 
               className="group relative overflow-hidden inline-flex items-center px-8 py-4 bg-gradient-to-r from-emerald-700 via-emerald-600 to-emerald-500 text-white font-medium text-lg rounded-xl shadow-lg hover:shadow-emerald-500/30 transition-all duration-300"
               whileHover={{
                 boxShadow: '0 20px 25px -5px rgba(16, 185, 129, 0.25)'
@@ -323,7 +309,7 @@ const ServicesSection: React.FC = () => {
                 transition={{ duration: 1, ease: 'easeInOut' }}
               />
               
-              <span className="mr-3 relative z-10">Konsultasi Gratis</span>
+              <span className="mr-3 relative z-10">{ctaText}</span>
               <span className="relative z-10 w-6 h-6 rounded-full bg-white/20 flex items-center justify-center group-hover:bg-white/30 transition-all duration-300">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 transform group-hover:translate-x-0.5 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -347,7 +333,7 @@ const ServicesSection: React.FC = () => {
         </motion.div>
       </div>
 
-      {/* Note: CSS animations are defined in global styles */}
+      {/* CSS animations */}
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes gradient-shift {
           0% { background-position: 0% 50%; }
