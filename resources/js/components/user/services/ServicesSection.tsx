@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, useAnimation, AnimatePresence, useInView } from 'framer-motion';
 import { ServicesSectionProps } from './types';
 import ServiceCard from './ServiceCard';
-import { SERVICES } from './services';
+import { SERVICES } from '../../../constanst/services';
 import { getAnimationVariant, sharedAnimations, commonStyles } from './animationUtils';
 
 // Decorative components for better organization
