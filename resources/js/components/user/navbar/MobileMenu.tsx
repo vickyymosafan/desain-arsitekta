@@ -1,6 +1,7 @@
 import { Link } from '@inertiajs/react';
 import { NavItem } from './types';
 import { type User } from '@/types';
+import { PrimaryButton, SecondaryButton } from './NavButtons';
 
 interface MobileMenuProps {
     isOpen: boolean;
@@ -32,35 +33,37 @@ const MobileMenu = ({ isOpen, activeLink, navItems, user, onClose }: MobileMenuP
                 
                 <hr className="border-gray-200 dark:border-gray-700 my-2" />
                 
-                {user ? (
-                    <Link 
-                        href={route('dashboard')} 
-                        className="flex items-center px-4 py-2 text-sm font-medium rounded-md text-emerald-600 bg-emerald-50 dark:text-emerald-500 dark:bg-gray-700 hover:bg-emerald-100 dark:hover:bg-gray-600 transition-all duration-200"
-                        onClick={onClose}
-                    >
-                        <i className="fas fa-user-circle mr-3 text-emerald-500"></i>
-                        Dashboard
-                    </Link>
-                ) : (
-                    <div className="flex flex-col space-y-2 px-2">
-                        <Link 
-                            href={route('login')} 
-                            className="flex items-center px-4 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-50 hover:text-emerald-600 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-emerald-500 transition-all duration-200"
-                            onClick={onClose}
-                        >
-                            <i className="fas fa-sign-in-alt mr-3 text-gray-400"></i>
-                            Masuk
-                        </Link>
-                        <Link 
-                            href={route('register')} 
-                            className="flex items-center px-4 py-2 text-sm font-medium rounded-md text-emerald-600 bg-emerald-50 dark:text-emerald-500 dark:bg-gray-700 hover:bg-emerald-100 dark:hover:bg-gray-600 transition-all duration-200"
-                            onClick={onClose}
-                        >
-                            <i className="fas fa-user-plus mr-3 text-emerald-500"></i>
-                            Daftar
-                        </Link>
-                    </div>
-                )}
+                <div className="px-2">
+                    {user ? (
+                        <div className="w-full" onClick={onClose}>
+                            <PrimaryButton 
+                                href={route('dashboard')} 
+                                icon="fa-user-circle"
+                            >
+                                Dashboard
+                            </PrimaryButton>
+                        </div>
+                    ) : (
+                        <div className="flex flex-col space-y-2">
+                            <div onClick={onClose}>
+                                <SecondaryButton 
+                                    href={route('login')} 
+                                    icon="fa-sign-in-alt"
+                                >
+                                    Masuk
+                                </SecondaryButton>
+                            </div>
+                            <div onClick={onClose}>
+                                <PrimaryButton 
+                                    href={route('register')} 
+                                    icon="fa-user-plus"
+                                >
+                                    Daftar
+                                </PrimaryButton>
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );

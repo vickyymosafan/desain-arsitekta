@@ -16,7 +16,7 @@ const NavLink = ({ href, children, active = false, icon }: NavLinkProps) => (
                 <i className={`fas ${icon}`}></i>
             </span>
         )}
-        <span className={`relative ${active ? 'after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-emerald-500 after:rounded' : ''}`}>
+        <span className="relative">
             {children}
             {active && <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-emerald-500 rounded-full transition-all duration-300"></span>}
         </span>
