@@ -1,9 +1,11 @@
 import { ReactNode } from 'react';
 
 export interface ServiceData {
+  id?: string;
   title: string;
   description: string;
   icon: string;
+  category?: string;
 }
 
 export type AnimationVariant = 

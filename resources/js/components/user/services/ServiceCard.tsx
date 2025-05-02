@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ServiceCardProps } from './types';
-import { get3DTiltEffect, getAnimationVariant } from './animationUtils';
+import { get3DTiltEffect, getAnimationVariant, sharedAnimations } from './animationUtils';
 
 /**
  * ServiceCard component displays an individual service with icon, title and description
@@ -27,64 +27,8 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
     });
   };
   
-  // Animation variants
-  const cardVariants = {
-    hidden: { opacity: 0, y: 50, scale: 0.9 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        type: 'spring',
-        stiffness: 80,
-        delay: index * 0.1,
-        duration: 0.8
-      }
-    },
-    hover: { 
-      scale: 1.03,
-      boxShadow: '0 20px 30px -10px rgba(16, 185, 129, 0.2)',
-      borderColor: 'rgba(16, 185, 129, 0.3)',
-      y: -8,
-      transition: { type: 'spring', stiffness: 300, damping: 15 }
-    },
-    initial: { 
-      scale: 1,
-      boxShadow: '0 10px 20px -5px rgba(16, 185, 129, 0.1)', 
-      borderColor: 'rgba(16, 185, 129, 0.1)',
-      y: 0,
-      transition: { type: 'spring', stiffness: 500, damping: 15 }
-    }
-  };
-  
-  const iconVariants = {
-    hover: { 
-      scale: 1.1, 
-      rotate: [0, -5, 5, 0],
-      transition: { 
-        rotate: {
-          repeat: Infinity, 
-          repeatType: 'mirror', 
-          duration: 2,
-          ease: 'easeInOut'
-        }
-      }
-    },
-    initial: { scale: 1 }
-  };
-  
-  const floatingBlobVariants = {
-    hover: {
-      scale: 1.2,
-      opacity: 0.9,
-      transition: { duration: 0.3 }
-    },
-    initial: {
-      scale: 1,
-      opacity: 0.7,
-      transition: { duration: 0.3 }
-    }
-  };
+  // Using shared animations
+  const { card, icon: iconVariants, floatingBlob } = sharedAnimations;
   
   // Convert FontAwesome icon class to SVG markup
   const renderIconAsSVG = () => {
@@ -121,7 +65,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
         border border-emerald-100/50 group p-8 flex flex-col justify-between"
       initial="initial"
       whileHover="hover"
-      variants={cardVariants}
+      variants={card}
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -142,7 +86,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
       {/* Background panel with gradient */}
       <motion.div 
         className="absolute inset-0 bg-gradient-to-br from-emerald-50 to-teal-50/80 rounded-2xl z-0"
-        variants={floatingBlobVariants}
+        variants={floatingBlob}
       />
       
       {/* Mesh grid for depth - modern Gen-Z trend */}
@@ -201,57 +145,59 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
           </div>
         </motion.div>
         
-        {/* Title with enhanced typography and 3D effect */}
+        {/* Title with animated underline on hover */}
         <motion.h3 
-          className="relative text-xl md:text-2xl font-bold mb-4 font-playfair z-20 line-clamp-2 text-center"
-          style={{ 
-            background: 'linear-gradient(90deg, #065f46, #10b981)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundSize: '200% 100%',
-            translateZ: isHovered ? '15px' : '0px'
-          }}
-          animate={{ 
-            backgroundPosition: isHovered ? ['0% 50%', '100% 50%', '0% 50%'] : '0% 50%', 
-            y: isHovered ? -3 : 0 
-          }}
-          transition={{ backgroundPosition: { duration: 6, repeat: Infinity } }}
+          className="text-xl md:text-2xl font-bold text-gray-800 mb-4 text-center"
+          style={{ translateZ: isHovered ? '15px' : '0px' }}
         >
-          {title}
+          <span className="relative inline-block">
+            {title}
+            <motion.span 
+              className="absolute bottom-0 left-0 w-full h-px bg-emerald-500"
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: isHovered ? 1 : 0 }}
+              exit={{ scaleX: 0 }}
+              transition={{ duration: 0.3 }}
+            />
+          </span>
         </motion.h3>
         
-        {/* Description with 3D effect */}
+        {/* Description with slight depth effect */}
         <motion.p 
-          className="relative text-gray-600 leading-relaxed z-20 line-clamp-4 min-h-[6rem] text-center"
+          className="text-gray-600 text-center flex-grow mb-6"
           style={{ translateZ: isHovered ? '10px' : '0px' }}
-          animate={{ y: isHovered ? -2 : 0 }}
+          animate={{ 
+            opacity: isHovered ? 1 : 0.8,
+            y: isHovered ? 0 : 5  
+          }}
+          transition={{ duration: 0.3 }}
         >
           {description}
         </motion.p>
         
-        {/* Hidden icon that reveals on hover - Gen-Z trend */}
-        <motion.div 
-          className="absolute bottom-6 right-6 text-emerald-500/0 w-8 h-8"
-          animate={{ 
-            opacity: isHovered ? 0.3 : 0,
-            rotate: isHovered ? 0 : 45
-          }}
-          transition={{ duration: 0.3 }}
+        {/* Learn More button with animations */}
+        <motion.div
+          className="mt-auto text-center"
+          style={{ translateZ: isHovered ? '25px' : '0px' }}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-          </svg>
+          <motion.button
+            className="px-5 py-2 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-md font-medium text-sm 
+              shadow-md hover:shadow-lg transform transition-all duration-300 overflow-hidden relative"
+            whileHover={{ 
+              scale: 1.05, 
+              boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.4)'
+            }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <motion.span 
+              className="absolute inset-0 bg-white"
+              initial={{ scale: 0, borderRadius: '100%', x: '50%', y: '50%' }}
+              whileHover={{ scale: 1.5, opacity: 0 }}
+              transition={{ duration: 0.5 }}
+            />
+            <span className="relative z-10">Pelajari Lebih Lanjut</span>
+          </motion.button>
         </motion.div>
-      </div>
-      
-      {/* Hover effect button */}
-      <div className={`relative mt-6 overflow-hidden transition-all duration-500 flex justify-center ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
-        <div className="inline-flex items-center text-emerald-600 font-semibold group-hover:underline">
-          Pelajari Lebih Lanjut
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </div>
       </div>
     </motion.div>
   );
