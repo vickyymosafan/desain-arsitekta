@@ -1,6 +1,6 @@
 import { type SharedData } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
-import Navbar from '@/components/user/Navbar';
+import Navbar from '@/components/user/navbar/index';
 import HeroSection from '@/components/user/hero/HeroSection';
 import ServicesSection from '@/components/user/services/ServicesSection';
 
