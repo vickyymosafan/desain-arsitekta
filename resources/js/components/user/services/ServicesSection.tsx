@@ -208,7 +208,7 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({
           </motion.div>
           
           <motion.h2 
-            className="text-4xl md:text-5xl lg:text-6xl font-bold font-playfair mb-6 drop-shadow-sm relative inline-block"
+            className="text-4xl md:text-5xl lg:text-6xl font-bold font-playfair mb-8 drop-shadow-sm relative inline-block"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.8 }}
@@ -231,7 +231,7 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({
           </motion.h2>
           
           <motion.p 
-            className="text-gray-700 max-w-3xl mx-auto text-lg md:text-xl"
+            className="text-gray-700 max-w-3xl mx-auto text-lg md:text-xl leading-relaxed"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 1 }}
@@ -255,7 +255,7 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({
               whileHover={{ y: -10, transition: { type: 'spring', stiffness: 300 } }}
               onHoverStart={() => setHoveredService(index)}
               onHoverEnd={() => setHoveredService(null)}
-              className="relative"
+              className="relative flex"
             >
               {/* Subtle highlight glow on hover */}
               <AnimatePresence>

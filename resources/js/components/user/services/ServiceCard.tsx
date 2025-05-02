@@ -92,7 +92,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
     const iconMap: {[key: string]: string} = {
       'fa-building': 'M3 16V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v12h1V6h2v10h1a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h1zm2-1h6V5H5v10zm2-8h2v2H7V7zm0 4h2v2H7v-2z',
       'fa-hammer': 'M15.7 5.3l-1.4 1.4L12 4.4l1.4-1.4c.6-.6 1.5-.6 2.1 0l1.4 1.4c.4.3.6 1 .2 1.3-.1.1-.5.6-.4.6zM11 5.9L5.9 11l-4.2 4.2c-.4.4-.4 1 0 1.4l1.4 1.4c.4.4 1 .4 1.4 0L19.1 7.5c.4-.4.4-1 0-1.4L15.7 2.7c-.4-.4-1-.4-1.4 0L11 5.9z',
-      'fa-paint-brush': 'M18 4V3h1V1H5v2h1v1H4a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9h1a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2zM8 4v11h1V4h1v11h1V4h1v11h1V4h1v11h1V4h2v11h1V4h1V3H6v1h2z',
+      'fa-paint-brush': 'M18 4V3h1V1H5v2h1v1H4a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9h1a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2zM8 4v11h1V4h1v11h1V4h1v11h1V4h2v11h1V4h1V3H6v1h2z',
       'fa-home': 'M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z',
       'fa-wrench': 'M6.64 6.46a8 8 0 0 1 11.89 11.89l-8.3 2.2-2.12 2.12-1.4-1.4 2.1-2.12 2.34-8.33L6.64 6.46zm2.83.7a5.87 5.87 0 0 0-1.41 1.4l2.12 2.13L9 15.36l1.41 1.41 4.66-1.4a6 6 0 0 0 1.4-1.41l-4.24-4.24-2.76-2.76z',
       'fa-pencil': 'M16.84 2.73c-.3 0-.62.1-.84.33l-1.8 1.8 3.58 3.58 1.8-1.8c.2-.2.33-.46.33-.74 0-.3-.13-.56-.33-.77l-2.04-2.04c-.22-.22-.5-.36-.7-.36z M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25z',
@@ -203,7 +203,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
         
         {/* Title with enhanced typography and 3D effect */}
         <motion.h3 
-          className="relative text-xl md:text-2xl font-bold mb-4 font-playfair z-20"
+          className="relative text-xl md:text-2xl font-bold mb-4 font-playfair z-20 line-clamp-2"
           style={{ 
             background: 'linear-gradient(90deg, #065f46, #10b981)',
             WebkitBackgroundClip: 'text',
@@ -222,7 +222,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
         
         {/* Description with 3D effect */}
         <motion.p 
-          className="relative text-gray-600 leading-relaxed z-20"
+          className="relative text-gray-600 leading-relaxed z-20 line-clamp-4 min-h-[6rem]"
           style={{ translateZ: isHovered ? '10px' : '0px' }}
           animate={{ y: isHovered ? -2 : 0 }}
         >
