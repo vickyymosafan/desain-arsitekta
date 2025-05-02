@@ -186,10 +186,10 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({
         <polygon points="50,10 90,35 90,65 50,90 10,65 10,35" fill="none" stroke="currentColor" strokeWidth="1" />
       </motion.svg>
       
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center">
         <motion.div 
           ref={titleRef}
-          className="text-center mb-16 md:mb-24"
+          className="text-center mb-16 md:mb-24 w-full max-w-4xl mx-auto"
           initial="hidden"
           animate={titleControls}
           variants={titleVariants}
@@ -241,7 +241,7 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({
         </motion.div>
         
         <motion.div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 xl:gap-12"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 xl:gap-12 w-full"
           variants={sectionVariants}
           initial="hidden"
           animate={controls}
@@ -284,7 +284,7 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({
         {/* Enhanced CTA section */}
         <motion.div 
           ref={ctaRef}
-          className="mt-20 text-center"
+          className="mt-20 text-center w-full max-w-2xl mx-auto"
           initial="hidden"
           animate={ctaControls}
           variants={{
@@ -323,7 +323,7 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({
           
           {/* Modern badge below CTA */}
           <motion.div 
-            className="mt-6 inline-flex items-center space-x-1 text-xs text-emerald-600"
+            className="mt-6 inline-flex items-center justify-center space-x-1 text-xs text-emerald-600"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9 }}

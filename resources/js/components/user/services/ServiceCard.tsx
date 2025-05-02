@@ -118,7 +118,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
     <motion.div 
       ref={cardRef}
       className="relative h-full overflow-hidden backdrop-blur-md bg-white/90 rounded-2xl
-        border border-emerald-100/50 group p-8"
+        border border-emerald-100/50 group p-8 flex flex-col justify-between"
       initial="initial"
       whileHover="hover"
       variants={cardVariants}
@@ -178,10 +178,10 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
       />
       
       {/* Content with relative positioning for 3D effect */}
-      <div className="relative z-10">
+      <div className="relative z-10 flex flex-col h-full">
         {/* Icon container with enhanced styling */}
         <motion.div 
-          className="relative w-16 h-16 mb-6 text-emerald-600"
+          className="relative w-16 h-16 mb-6 text-emerald-600 mx-auto"
           variants={iconVariants}
           animate={{ y: isHovered ? [-2, 2, -2] : 0 }}
           transition={{ y: { repeat: Infinity, duration: 2, ease: 'easeInOut' } }}
@@ -203,7 +203,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
         
         {/* Title with enhanced typography and 3D effect */}
         <motion.h3 
-          className="relative text-xl md:text-2xl font-bold mb-4 font-playfair z-20 line-clamp-2"
+          className="relative text-xl md:text-2xl font-bold mb-4 font-playfair z-20 line-clamp-2 text-center"
           style={{ 
             background: 'linear-gradient(90deg, #065f46, #10b981)',
             WebkitBackgroundClip: 'text',
@@ -222,7 +222,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
         
         {/* Description with 3D effect */}
         <motion.p 
-          className="relative text-gray-600 leading-relaxed z-20 line-clamp-4 min-h-[6rem]"
+          className="relative text-gray-600 leading-relaxed z-20 line-clamp-4 min-h-[6rem] text-center"
           style={{ translateZ: isHovered ? '10px' : '0px' }}
           animate={{ y: isHovered ? -2 : 0 }}
         >
@@ -245,7 +245,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
       </div>
       
       {/* Hover effect button */}
-      <div className={`relative mt-6 overflow-hidden transition-all duration-500 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
+      <div className={`relative mt-6 overflow-hidden transition-all duration-500 flex justify-center ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
         <div className="inline-flex items-center text-emerald-600 font-semibold group-hover:underline">
           Pelajari Lebih Lanjut
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
