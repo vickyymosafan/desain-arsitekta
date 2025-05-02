@@ -29,6 +29,7 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
         sliderRef,
         touchHandlers,
         hoverHandlers,
+        clickHandlers,
         slideControls
     } = useSlider({
         slides,
@@ -54,6 +55,7 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
             }}
             {...touchHandlers}
             {...hoverHandlers}
+            {...clickHandlers}
         >
             {/* Slider latar belakang layar penuh */}
             <div 

@@ -21,6 +21,9 @@ interface UseSliderReturn {
         onMouseEnter: () => void;
         onMouseLeave: () => void;
     };
+    clickHandlers: {
+        onClick: (e: React.MouseEvent) => void;
+    };
     slideControls: {
         goToSlide: (index: number) => void;
         goToPrevSlide: () => void;
@@ -78,6 +81,21 @@ const useSlider = ({
         }
     };
     
+    // Penanganan klik mouse untuk navigasi slide
+    const handleClick = (e: React.MouseEvent) => {
+        const { clientX } = e;
+        const sliderWidth = sliderRef.current?.clientWidth || 0;
+        const clickPosition = clientX / sliderWidth;
+        
+        // Jika klik pada sisi kiri slider (< 0.5 atau 50% lebar), navigasi ke slide sebelumnya
+        // Jika klik pada sisi kanan slider (> 0.5 atau 50% lebar), navigasi ke slide berikutnya
+        if (clickPosition < 0.5) {
+            goToPrevSlide();
+        } else {
+            goToNextSlide();
+        }
+    };
+    
     // Penanganan sentuh geser (swipe)
     const [touchStart, setTouchStart] = useState<number | null>(null);
     const [touchEnd, setTouchEnd] = useState<number | null>(null);
@@ -119,6 +137,9 @@ const useSlider = ({
         hoverHandlers: {
             onMouseEnter: handleMouseEnter,
             onMouseLeave: handleMouseLeave
+        },
+        clickHandlers: {
+            onClick: handleClick
         },
         slideControls: {
             goToSlide,
