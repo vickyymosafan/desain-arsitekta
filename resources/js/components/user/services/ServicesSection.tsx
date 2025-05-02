@@ -62,12 +62,17 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({
     }
   }, [isCtaInView, ctaControls]);
 
+  // Using imported animation variants from animationUtils
+  const fadeInVariant = getAnimationVariant('fadeIn');
+  const slideUpVariant = getAnimationVariant('slideUp');
+  
   // Animation variants for framer-motion
   const sectionVariants = {
-    hidden: { opacity: 0 },
+    hidden: fadeInVariant.initial,
     visible: {
-      opacity: 1,
+      ...fadeInVariant.animate,
       transition: {
+        ...fadeInVariant.transition,
         staggerChildren: 0.2,
         delayChildren: 0.3
       }
@@ -75,11 +80,11 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({
   };
 
   const titleVariants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { ...slideUpVariant.initial, y: 30 },
     visible: {
-      opacity: 1,
-      y: 0,
+      ...slideUpVariant.animate,
       transition: {
+        ...slideUpVariant.transition,
         duration: 0.8,
         ease: [0.25, 0.1, 0.25, 1.0]
       }
@@ -88,17 +93,15 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({
 
   const cardVariants = {
     hidden: { opacity: 0, y: 50, scale: 0.9 },
-    visible: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        type: 'spring',
-        stiffness: 80,
-        delay: i * 0.1,
-        duration: 0.8
-      }
-    })
+    visible: (i: number) => {
+      const variant = getAnimationVariant('slideUp', i * 0.1);
+      return {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        transition: variant.transition
+      };
+    }
   };
 
   const floatingAnimation = {
