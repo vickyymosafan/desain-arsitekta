@@ -10,6 +10,7 @@ interface SectionHeaderProps {
 
 /**
  * Komponen untuk menampilkan header section dengan animasi dan styling yang konsisten
+ * Didesain khusus untuk profesional di bidang arsitektur dan desain interior
  */
 const SectionHeader: React.FC<SectionHeaderProps> = ({ 
   title, 
@@ -18,32 +19,34 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
   titleId
 }) => {
   return (
-    <div className={`max-w-2xl mx-auto text-center mb-16 ${className}`}>
+    <div className={`mx-auto text-center ${className}`}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       >
         <h2 
           id={titleId} 
-          className="text-3xl md:text-4xl font-medium bg-gradient-to-r from-emerald-400 to-emerald-300 bg-clip-text text-transparent mb-4"
+          className="text-3xl md:text-4xl lg:text-5xl font-medium bg-gradient-to-r from-emerald-400 to-emerald-300 bg-clip-text text-transparent mb-6"
         >
           {title}
         </h2>
         
-        <div className="flex items-center justify-center space-x-2 mb-6" aria-hidden="true">
-          <div className="h-[2px] w-4 rounded-full bg-emerald-400/40"></div>
-          <div className="h-[2px] w-16 rounded-full bg-emerald-400/70"></div>
-          <div className="h-[2px] w-4 rounded-full bg-emerald-400/40"></div>
+        <div className="flex items-center justify-center space-x-3 mb-8" aria-hidden="true">
+          <div className="h-[1px] w-12 rounded-full bg-emerald-400/30"></div>
+          <div className="h-1.5 w-1.5 rounded-full bg-emerald-400/70"></div>
+          <div className="h-[3px] w-16 rounded-full bg-emerald-400/80"></div>
+          <div className="h-1.5 w-1.5 rounded-full bg-emerald-400/70"></div>
+          <div className="h-[1px] w-12 rounded-full bg-emerald-400/30"></div>
         </div>
 
         <motion.p 
-          className="text-gray-300 text-base md:text-lg"
+          className="text-gray-300 text-base md:text-lg leading-relaxed max-w-3xl mx-auto"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          transition={{ duration: 0.7, delay: 0.3 }}
         >
           {description}
         </motion.p>
