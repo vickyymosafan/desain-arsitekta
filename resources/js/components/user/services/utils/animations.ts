@@ -33,6 +33,13 @@ export const cardVariants = {
   }
 };
 
+// Definisi animasi untuk kartu layanan
+export const cardAnimations = {
+  initial: { opacity: 0, y: 20 },
+  inView: { opacity: 1, y: 0 },
+  hover: { y: -8 }
+};
+
 // Transition helpers
 export const springTransition = {
   type: "spring",
