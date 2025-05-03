@@ -157,15 +157,6 @@ const ServicesSection: React.FC = () => {
             </motion.div>
           ))}
         </motion.div>
-        
-        {/* Subtle design element at the bottom for professional look */}
-        <div className="flex justify-center mt-24">
-          <div className="flex space-x-4 items-center opacity-60">
-            <div className="w-10 h-[1px] bg-emerald-500/50"></div>
-            <div className="w-2 h-2 rounded-full bg-emerald-500/70"></div>
-            <div className="w-10 h-[1px] bg-emerald-500/50"></div>
-          </div>
-        </div>
       </div>
     </section>
   );
