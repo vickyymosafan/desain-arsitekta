@@ -13,25 +13,25 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
   className = ''
 }) => {
   return (
-    <div className={`max-w-3xl mx-auto text-center mb-16 ${className}`}>
+    <div className={`max-w-2xl mx-auto text-center mb-16 ${className}`}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.5 }}
       >
-        <h2 className="text-3xl md:text-4xl font-playfair font-bold bg-gradient-to-r from-emerald-600 to-emerald-400 bg-clip-text text-transparent mb-4">
+        <h2 className="text-3xl md:text-4xl font-medium bg-gradient-to-r from-emerald-400 to-emerald-300 bg-clip-text text-transparent mb-4">
           {title}
         </h2>
         
         <div className="flex items-center justify-center space-x-2 mb-6">
-          <div className="h-[3px] w-6 rounded-full bg-emerald-300"></div>
-          <div className="h-[3px] w-16 rounded-full bg-emerald-500"></div>
-          <div className="h-[3px] w-6 rounded-full bg-emerald-300"></div>
+          <div className="h-[2px] w-4 rounded-full bg-emerald-400/40"></div>
+          <div className="h-[2px] w-16 rounded-full bg-emerald-400/70"></div>
+          <div className="h-[2px] w-4 rounded-full bg-emerald-400/40"></div>
         </div>
 
         <motion.p 
-          className="text-gray-600 text-lg"
+          className="text-gray-300 text-base md:text-lg"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: "-100px" }}
