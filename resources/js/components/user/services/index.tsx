@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import ServiceCard from './ServiceCard';
-import { servicesData } from './data';
-import SectionHeader from '@/components/user/services/SectionHeader';
-import LazyComponent from '@/components/ui/lazy-component';
 import { motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
+import ServiceCard from './ServiceCard';
+import SectionHeader from './SectionHeader';
+import { servicesData } from './data';
+import LazyComponent from '@/components/ui/lazy-component';
 
-// Modern placeholder with shimmer effect
-const ServiceCardPlaceholder = () => (
+// Komponen placeholder untuk loading state
+const ServiceCardPlaceholder: React.FC = () => (
   <div className="flex flex-col h-full backdrop-blur-sm bg-navy-800/50 rounded-xl border border-navy-700/50 overflow-hidden relative">
     {/* Shimmer effect overlay */}
     <div className="absolute inset-0 overflow-hidden">
@@ -38,54 +38,87 @@ const ServiceCardPlaceholder = () => (
   </div>
 );
 
+// Background elements decoratif
+const BackgroundElements: React.FC = () => (
+  <div className="absolute inset-0 -z-10 overflow-hidden">
+    <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-emerald-500/5 rounded-full blur-3xl transform translate-x-1/3 -translate-y-1/3"></div>
+    <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-emerald-500/5 rounded-full blur-3xl transform -translate-x-1/3 translate-y-1/3"></div>
+    
+    {/* Grid pattern overlay */}
+    <div className="absolute inset-0 opacity-5">
+      <div className="h-full w-full" style={{ backgroundImage: 'radial-gradient(rgba(80, 230, 180, 0.8) 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
+    </div>
+  </div>
+);
+
+// Spotlight dinamis untuk mengikuti hover
+interface SpotlightProps {
+  hoveredIndex: number | null;
+}
+
+const DynamicSpotlight: React.FC<SpotlightProps> = ({ hoveredIndex }) => (
+  <motion.div 
+    className="absolute w-[500px] h-[500px] rounded-full blur-3xl bg-emerald-500/3 pointer-events-none"
+    animate={{ 
+      opacity: hoveredIndex !== null ? 1 : 0,
+      x: hoveredIndex !== null ? (hoveredIndex % 3) * 300 + 150 : 0,
+      y: hoveredIndex !== null ? Math.floor(hoveredIndex / 3) * 300 + 300 : 0,
+      scale: hoveredIndex !== null ? 1 : 0.5,
+      transition: { duration: 0.8, ease: "easeOut" }
+    }}
+  />
+);
+
+// Animasi sparkle pada judul
+interface SparkleIconProps {
+  isHovered: boolean;
+}
+
+const SparkleIcon: React.FC<SparkleIconProps> = ({ isHovered }) => (
+  <motion.div 
+    className="absolute -top-12 left-1/2 -translate-x-1/2 text-emerald-400 opacity-75 hidden sm:block"
+    animate={{ 
+      y: isHovered ? [0, -10, 0] : 0,
+      rotate: isHovered ? [0, 5, -5, 0] : 0,
+      scale: isHovered ? [1, 1.1, 1] : 1
+    }}
+    transition={{ duration: 1.5, repeat: isHovered ? Infinity : 0, repeatType: 'loop' }}
+  >
+    <Sparkles className="w-8 h-8" />
+  </motion.div>
+);
+
+// Variants untuk animasi container
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15
+    }
+  }
+};
+
+// Variants untuk animasi card
+const cardVariants = {
+  initial: { scale: 1 },
+  active: { scale: 1, zIndex: 20 }
+};
+
+/**
+ * Komponen utama untuk menampilkan section layanan
+ */
 const ServicesSection: React.FC = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-
-  // Container variants for staggered children animations
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15
-      }
-    }
-  };
-
-  // Card item variants for hover interactions
-  const cardVariants = {
-    initial: { scale: 1 },
-    active: { scale: 1, zIndex: 20 }
-  };
 
   return (
     <section 
       id="services" 
       className="section-fullscreen relative overflow-hidden bg-navy-900 text-white"
     >
-      {/* Decorative background elements */}
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-emerald-500/5 rounded-full blur-3xl transform translate-x-1/3 -translate-y-1/3"></div>
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-emerald-500/5 rounded-full blur-3xl transform -translate-x-1/3 translate-y-1/3"></div>
-        
-        {/* Grid pattern overlay */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="h-full w-full" style={{ backgroundImage: 'radial-gradient(rgba(80, 230, 180, 0.8) 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
-        </div>
-        
-        {/* Dynamic spotlight that follows hover */}
-        <motion.div 
-          className="absolute w-[500px] h-[500px] rounded-full blur-3xl bg-emerald-500/3 pointer-events-none"
-          animate={{ 
-            opacity: hoveredIndex !== null ? 1 : 0,
-            x: hoveredIndex !== null ? (hoveredIndex % 3) * 300 + 150 : 0,
-            y: hoveredIndex !== null ? Math.floor(hoveredIndex / 3) * 300 + 300 : 0,
-            scale: hoveredIndex !== null ? 1 : 0.5,
-            transition: { duration: 0.8, ease: "easeOut" }
-          }}
-        />
-      </div>
+      <BackgroundElements />
+      <DynamicSpotlight hoveredIndex={hoveredIndex} />
 
       <div 
         className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl h-full flex flex-col justify-center py-12"
@@ -96,18 +129,7 @@ const ServicesSection: React.FC = () => {
         }}
       >
         <div className="relative">
-          {/* Animated sparkle icon */}
-          <motion.div 
-            className="absolute -top-12 left-1/2 -translate-x-1/2 text-emerald-400 opacity-75 hidden sm:block"
-            animate={{ 
-              y: isHovered ? [0, -10, 0] : 0,
-              rotate: isHovered ? [0, 5, -5, 0] : 0,
-              scale: isHovered ? [1, 1.1, 1] : 1
-            }}
-            transition={{ duration: 1.5, repeat: isHovered ? Infinity : 0, repeatType: 'loop' }}
-          >
-            <Sparkles className="w-8 h-8" />
-          </motion.div>
+          <SparkleIcon isHovered={isHovered} />
           
           <SectionHeader 
             title="Layanan Kami"
