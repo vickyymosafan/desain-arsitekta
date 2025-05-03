@@ -40,6 +40,7 @@ const ServiceCardPlaceholder = () => (
 
 const ServicesSection: React.FC = () => {
   const [isHovered, setIsHovered] = useState(false);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   // Container variants for staggered children animations
   const containerVariants = {
@@ -50,6 +51,12 @@ const ServicesSection: React.FC = () => {
         staggerChildren: 0.15
       }
     }
+  };
+
+  // Card item variants for hover interactions
+  const cardVariants = {
+    initial: { scale: 1 },
+    active: { scale: 1, zIndex: 20 }
   };
 
   return (
@@ -66,12 +73,27 @@ const ServicesSection: React.FC = () => {
         <div className="absolute inset-0 opacity-5">
           <div className="h-full w-full" style={{ backgroundImage: 'radial-gradient(rgba(80, 230, 180, 0.8) 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
         </div>
+        
+        {/* Dynamic spotlight that follows hover */}
+        <motion.div 
+          className="absolute w-[500px] h-[500px] rounded-full blur-3xl bg-emerald-500/3 pointer-events-none"
+          animate={{ 
+            opacity: hoveredIndex !== null ? 1 : 0,
+            x: hoveredIndex !== null ? (hoveredIndex % 3) * 300 + 150 : 0,
+            y: hoveredIndex !== null ? Math.floor(hoveredIndex / 3) * 300 + 300 : 0,
+            scale: hoveredIndex !== null ? 1 : 0.5,
+            transition: { duration: 0.8, ease: "easeOut" }
+          }}
+        />
       </div>
 
       <div 
         className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl h-full flex flex-col justify-center py-12"
         onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        onMouseLeave={() => {
+          setIsHovered(false);
+          setHoveredIndex(null);
+        }}
       >
         <div className="relative">
           {/* Animated sparkle icon */}
@@ -100,16 +122,26 @@ const ServicesSection: React.FC = () => {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
         >
-          {servicesData.map((service) => (
-            <LazyComponent 
+          {servicesData.map((service, index) => (
+            <motion.div
               key={service.id}
-              threshold={0.1}
-              rootMargin="300px"
               className="h-full"
-              placeholder={<ServiceCardPlaceholder />}
+              variants={cardVariants}
+              initial="initial"
+              animate={hoveredIndex === index ? "active" : "initial"}
+              onMouseEnter={() => setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(null)}
+              transition={{ duration: 0.3 }}
             >
-              <ServiceCard service={service} />
-            </LazyComponent>
+              <LazyComponent 
+                threshold={0.1}
+                rootMargin="300px"
+                className="h-full"
+                placeholder={<ServiceCardPlaceholder />}
+              >
+                <ServiceCard service={service} />
+              </LazyComponent>
+            </motion.div>
           ))}
         </motion.div>
       </div>
