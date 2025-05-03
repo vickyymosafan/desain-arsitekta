@@ -39,20 +39,3 @@ export const cardAnimations = {
   inView: { opacity: 1, y: 0 },
   hover: { y: -8 }
 };
-
-// Transition helpers
-export const springTransition = {
-  type: "spring",
-  stiffness: 300,
-  damping: 20
-};
-
-export const smoothTransition = {
-  duration: 0.5,
-  ease: [0.22, 1, 0.36, 1]
-};
-
-export const elasticTransition = {
-  duration: 0.7,
-  ease: [0.34, 1.56, 0.64, 1]
-};
