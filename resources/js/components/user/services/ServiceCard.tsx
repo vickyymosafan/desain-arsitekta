@@ -1,36 +1,30 @@
 import React from 'react';
 import { Service } from './types';
 
-interface FeatureItemProps {
-  text: string;
-}
-
-const FeatureItem: React.FC<FeatureItemProps> = ({ text }) => (
-  <li className="flex items-start">
-    <span className="text-emerald-500 mr-2 mt-1">
-      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-      </svg>
-    </span>
-    <span className="text-sm text-gray-600">{text}</span>
-  </li>
-);
-
-interface ServiceIconProps {
-  icon: string;
-}
-
-const ServiceIcon: React.FC<ServiceIconProps> = ({ icon }) => (
-  <div className="w-16 h-16 mb-4 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-colors duration-300 transform group-hover:scale-110">
-    <i className={`${icon} text-2xl`}></i>
-  </div>
-);
-
 interface ServiceCardProps {
   service: Service;
 }
 
 const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
+  // Helper component for feature items
+  const FeatureItem = ({ text }: { text: string }) => (
+    <li className="flex items-start">
+      <span className="text-emerald-500 mr-2 mt-1">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+        </svg>
+      </span>
+      <span className="text-sm text-gray-600">{text}</span>
+    </li>
+  );
+
+  // Helper component for service icon
+  const ServiceIcon = ({ icon }: { icon: string }) => (
+    <div className="w-16 h-16 mb-4 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-colors duration-300 transform group-hover:scale-110">
+      <i className={`${icon} text-2xl`}></i>
+    </div>
+  );
+
   return (
     <div className="flex flex-col h-full bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden group transform hover:-translate-y-1">
       <div className="p-6 flex-1 flex flex-col">
