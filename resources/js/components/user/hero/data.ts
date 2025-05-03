@@ -26,10 +26,10 @@ export const defaultConfig: HeroConfig = {
 export const slides: Slide[] = [
     {
         id: 1,
-        image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
-        alt: "Desain Rumah Modern",
+        image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+        alt: "Modern Minimalist Architecture",
         headline: "Desain Modern",
-        subtext: "Arsitektur yang mengikuti tren terkini",
+        subtext: "Menciptakan ruang yang timeless dengan sentuhan inovatif",
         position: 'center',
         effect: 'parallax',
         accent: '#34d399',
@@ -37,26 +37,26 @@ export const slides: Slide[] = [
     },
     {
         id: 2,
-        image: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80",
-        alt: "Rumah Kontemporer",
-        headline: "Inovasi Terdepan",
-        subtext: "Solusi rumah impian yang futuristik",
+        image: "https://images.unsplash.com/photo-1600607688969-a5bfcd646154?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+        alt: "Contemporary Interior",
+        headline: "Aesthetic Space",
+        subtext: "Kenyamanan dan estetika dalam satu harmoni sempurna",
         position: 'center',
         effect: 'zoom',
         accent: '#3b82f6',
-        tag: 'Popular'
+        tag: 'Must See'
     },
     {
         id: 3,
-        image: "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
-        alt: "Rumah Mewah",
-        headline: "Kemewahan Exclusive",
-        subtext: "Pengalaman hunian premium berkualitas",
+        image: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2187&q=80",
+        alt: "Luxury Concept House",
+        headline: "Premium Living",
+        subtext: "Pengalaman hunian eksklusif dengan sentuhan luxury minimalist",
         position: 'center',
-        overlay: 'bg-gradient-to-t from-black/70 via-black/50 to-black/70',
+        overlay: 'bg-gradient-to-t from-black/60 via-black/40 to-black/60',
         effect: 'blur',
-        accent: '#ef4444',
-        tag: 'Featured'
+        accent: '#f59e0b',
+        tag: 'Exclusive'
     }
 ];
 
