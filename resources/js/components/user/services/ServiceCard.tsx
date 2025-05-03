@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Service } from './types';
 import { motion } from 'framer-motion';
 import { ChevronRight, CheckCircle2 } from 'lucide-react';
@@ -8,6 +8,8 @@ interface ServiceCardProps {
 }
 
 const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  
   // Helper component for feature items
   const FeatureItem = ({ text }: { text: string }) => (
     <motion.li 
@@ -24,22 +26,52 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
     </motion.li>
   );
 
-  // ServiceIcon with soft glow effect
-  const ServiceIcon = ({ IconComponent }: { IconComponent: Service['icon'] }) => (
-    <div className="relative mb-6 transition-all duration-500 group-hover:translate-y-1">
-      {/* Subtle glow effect */}
-      <div className="absolute -inset-1 bg-emerald-500/10 blur-xl rounded-full opacity-70 group-hover:bg-emerald-400/20 group-hover:blur-2xl transition-all duration-500"></div>
-      
-      {/* Icon container */}
-      <motion.div 
-        className="relative w-14 h-14 bg-navy-700/60 text-emerald-400 rounded-xl flex items-center justify-center backdrop-blur-sm border border-emerald-500/20 z-10 group-hover:bg-emerald-500 group-hover:text-navy-900 transition-all duration-500 group-hover:shadow-lg group-hover:shadow-emerald-500/20"
-        whileHover={{ scale: 1.05, rotate: 3 }}
-        transition={{ duration: 0.4 }}
+  // Simplified icon container with direct style control
+  const ServiceIcon = ({ IconComponent }: { IconComponent: Service['icon'] }) => {
+    return (
+      <div 
+        className="mb-6 relative"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
-        <IconComponent className="h-7 w-7" strokeWidth={1.5} />
-      </motion.div>
-    </div>
-  );
+        {/* Background glow effect */}
+        <div className={`absolute -inset-6 bg-emerald-400/10 blur-2xl rounded-full transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}></div>
+        
+        {/* Particle effects */}
+        <div className="absolute inset-0 overflow-hidden rounded-xl">
+          {isHovered && [...Array(5)].map((_, i) => (
+            <div 
+              key={i}
+              className="absolute w-1 h-1 rounded-full bg-emerald-400/40 animate-particle-float pointer-events-none"
+              style={{
+                left: `${10 + Math.random() * 80}%`,
+                top: `${20 + Math.random() * 60}%`,
+                animationDelay: `${Math.random() * 1.5}s`,
+                animationDuration: `${1 + Math.random() * 2}s`
+              }}
+            />
+          ))}
+        </div>
+        
+        {/* Icon container with explicit background color */}
+        <div
+          className={`relative w-14 h-14 flex items-center justify-center rounded-xl border transition-all duration-300 z-10 ${
+            isHovered 
+              ? 'bg-emerald-400 text-navy-900 border-transparent shadow-lg shadow-emerald-500/20' 
+              : 'bg-navy-700/60 text-emerald-400 border-emerald-500/20 backdrop-blur-sm'
+          }`}
+        >
+          {/* Pulse ring */}
+          <div className={`absolute inset-0 rounded-xl border border-emerald-400/30 ${isHovered ? 'animate-ping-slow opacity-100' : 'opacity-0'}`}></div>
+          
+          {/* Icon with explicit styling */}
+          <IconComponent 
+            className={`h-7 w-7 transition-all duration-300 ${isHovered ? 'stroke-[2px]' : 'stroke-[1.5px]'}`} 
+          />
+        </div>
+      </div>
+    );
+  };
 
   return (
     <motion.div 
