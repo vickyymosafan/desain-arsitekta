@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
 import ServiceCard from './ServiceCard';
@@ -8,7 +8,10 @@ import LazyComponent from '@/components/ui/lazy-component';
 
 // Komponen placeholder untuk loading state
 const ServiceCardPlaceholder: React.FC = () => (
-  <div className="flex flex-col h-full backdrop-blur-sm bg-navy-800/50 rounded-xl border border-navy-700/50 overflow-hidden relative">
+  <div 
+    className="flex flex-col h-full backdrop-blur-sm bg-navy-800/50 rounded-xl border border-navy-700/50 overflow-hidden relative"
+    aria-hidden="true"
+  >
     {/* Shimmer effect overlay */}
     <div className="absolute inset-0 overflow-hidden">
       <div className="shimmer-effect animate-shimmer absolute -inset-10 opacity-30"></div>
@@ -40,7 +43,7 @@ const ServiceCardPlaceholder: React.FC = () => (
 
 // Background elements decoratif
 const BackgroundElements: React.FC = () => (
-  <div className="absolute inset-0 -z-10 overflow-hidden">
+  <div className="absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
     <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-emerald-500/5 rounded-full blur-3xl transform translate-x-1/3 -translate-y-1/3"></div>
     <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-emerald-500/5 rounded-full blur-3xl transform -translate-x-1/3 translate-y-1/3"></div>
     
@@ -66,6 +69,7 @@ const DynamicSpotlight: React.FC<SpotlightProps> = ({ hoveredIndex }) => (
       scale: hoveredIndex !== null ? 1 : 0.5,
       transition: { duration: 0.8, ease: "easeOut" }
     }}
+    aria-hidden="true"
   />
 );
 
@@ -83,9 +87,43 @@ const SparkleIcon: React.FC<SparkleIconProps> = ({ isHovered }) => (
       scale: isHovered ? [1, 1.1, 1] : 1
     }}
     transition={{ duration: 1.5, repeat: isHovered ? Infinity : 0, repeatType: 'loop' }}
+    aria-hidden="true"
   >
     <Sparkles className="w-8 h-8" />
   </motion.div>
+);
+
+// Button untuk navigasi keyboard
+interface NavigationButtonProps {
+  direction: 'prev' | 'next';
+  onClick: () => void;
+  isVisible: boolean;
+}
+
+const NavigationButton: React.FC<NavigationButtonProps> = ({ direction, onClick, isVisible }) => (
+  <button
+    className={`absolute top-1/2 -translate-y-1/2 z-10 bg-navy-700/60 text-emerald-400 w-10 h-10 rounded-full flex items-center justify-center ${
+      direction === 'prev' ? 'left-2' : 'right-2'
+    } ${
+      isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
+    } transition-opacity duration-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 hover:bg-emerald-500 hover:text-navy-900`}
+    onClick={onClick}
+    aria-label={direction === 'prev' ? 'Layanan sebelumnya' : 'Layanan berikutnya'}
+  >
+    <svg 
+      xmlns="http://www.w3.org/2000/svg" 
+      className="h-5 w-5" 
+      fill="none" 
+      viewBox="0 0 24 24" 
+      stroke="currentColor"
+    >
+      {direction === 'prev' ? (
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+      ) : (
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+      )}
+    </svg>
+  </button>
 );
 
 // Variants untuk animasi container
@@ -111,17 +149,41 @@ const cardVariants = {
 const ServicesSection: React.FC = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
+  const serviceRefs = useRef<Array<HTMLDivElement | null>>([]);
+
+  // Menangani navigasi keyboard
+  const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      const nextIndex = (index + 1) % servicesData.length;
+      setFocusedIndex(nextIndex);
+      serviceRefs.current[nextIndex]?.focus();
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const prevIndex = (index - 1 + servicesData.length) % servicesData.length;
+      setFocusedIndex(prevIndex);
+      serviceRefs.current[prevIndex]?.focus();
+    }
+  };
+
+  // Navigasi dengan tombol
+  const navigateToService = (index: number) => {
+    setFocusedIndex(index);
+    serviceRefs.current[index]?.focus();
+  };
 
   return (
     <section 
       id="services" 
       className="section-fullscreen relative overflow-hidden bg-navy-900 text-white"
+      aria-labelledby="services-heading"
     >
       <BackgroundElements />
       <DynamicSpotlight hoveredIndex={hoveredIndex} />
 
       <div 
-        className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl h-full flex flex-col justify-center py-12"
+        className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl h-full flex flex-col justify-center py-12 relative"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => {
           setIsHovered(false);
@@ -134,8 +196,36 @@ const ServicesSection: React.FC = () => {
           <SectionHeader 
             title="Layanan Kami"
             description="Arsitekta menyediakan layanan lengkap dari desain hingga konstruksi bangunan dengan kualitas premium dan nilai estetika tinggi."
+            titleId="services-heading"
           />
         </div>
+
+        {/* Keyboard navigation instructions */}
+        <div className="sr-only">
+          Gunakan tombol panah kiri/kanan untuk navigasi antar layanan.
+        </div>
+
+        <NavigationButton 
+          direction="prev" 
+          onClick={() => {
+            const prevIndex = focusedIndex !== null
+              ? (focusedIndex - 1 + servicesData.length) % servicesData.length
+              : servicesData.length - 1;
+            navigateToService(prevIndex);
+          }}
+          isVisible={focusedIndex !== null}
+        />
+
+        <NavigationButton 
+          direction="next" 
+          onClick={() => {
+            const nextIndex = focusedIndex !== null
+              ? (focusedIndex + 1) % servicesData.length
+              : 0;
+            navigateToService(nextIndex);
+          }}
+          isVisible={focusedIndex !== null}
+        />
 
         <motion.div 
           className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 xl:gap-10"
@@ -143,6 +233,8 @@ const ServicesSection: React.FC = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
+          role="list"
+          aria-label="Daftar layanan kami"
         >
           {servicesData.map((service, index) => (
             <motion.div
@@ -150,10 +242,20 @@ const ServicesSection: React.FC = () => {
               className="h-full"
               variants={cardVariants}
               initial="initial"
-              animate={hoveredIndex === index ? "active" : "initial"}
+              animate={hoveredIndex === index || focusedIndex === index ? "active" : "initial"}
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
+              onFocus={() => setFocusedIndex(index)}
+              onBlur={() => setFocusedIndex(null)}
+              onKeyDown={(e) => handleKeyDown(e, index)}
+              ref={(el) => {
+                if (el) {
+                  serviceRefs.current[index] = el;
+                }
+              }}
+              tabIndex={-1}
               transition={{ duration: 0.3 }}
+              role="listitem"
             >
               <LazyComponent 
                 threshold={0.1}
