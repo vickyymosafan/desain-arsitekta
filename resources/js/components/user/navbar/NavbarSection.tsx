@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Link } from '@inertiajs/react';
 import { NavbarProps, NavItem } from './types';
 import NavLink from './NavLink';
 import { PrimaryButton, SecondaryButton, OutlineButton } from './NavButtons';
@@ -31,18 +30,14 @@ const NavbarSection = ({ user }: NavbarProps) => {
     // Menangani efek scroll
     useEffect(() => {
         const handleScroll = () => {
-            const offset = window.scrollY;
-            if (offset > 50) {
-                setScrolled(true);
-            } else {
-                setScrolled(false);
-            }
+            // Set scrolled status berdasarkan posisi scroll
+            setScrolled(window.scrollY > 50);
 
             // Mengatur section aktif berdasarkan posisi scroll
             const sections = document.querySelectorAll('section[id]');
             sections.forEach(section => {
                 const sectionTop = (section as HTMLElement).offsetTop;
-                if (offset >= sectionTop - 100) {
+                if (window.scrollY >= sectionTop - 100) {
                     setActiveLink(`#${section.id}`);
                 }
             });

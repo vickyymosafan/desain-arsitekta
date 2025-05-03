@@ -1,7 +1,7 @@
 import { Link } from '@inertiajs/react';
 import { NavItem } from './types';
 import { type User } from '@/types';
-import { PrimaryButton, SecondaryButton } from './NavButtons';
+import { PrimaryButton, SecondaryButton, OutlineButton } from './NavButtons';
 
 /**
  * Props untuk komponen menu mobile
@@ -68,12 +68,12 @@ const MobileMenu = ({ isOpen, activeLink, navItems, user, onClose }: MobileMenuP
                                 </SecondaryButton>
                             </div>
                             <div onClick={onClose}>
-                                <PrimaryButton 
+                                <OutlineButton 
                                     href={route('register')} 
                                     icon="fa-user-plus"
                                 >
                                     Daftar
-                                </PrimaryButton>
+                                </OutlineButton>
                             </div>
                         </div>
                     )}

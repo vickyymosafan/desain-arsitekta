@@ -22,7 +22,7 @@ const NavLink = ({ href, children, active = false, icon }: NavLinkProps) => (
     >
         {/* Ikon (jika ada) */}
         {icon && (
-            <span className="mr-2 text-gray-400 group-hover:text-emerald-500 transition-colors duration-200">
+            <span className={`mr-2 transition-colors duration-200 ${active ? 'text-emerald-500' : 'text-gray-400 group-hover:text-emerald-500'}`}>
                 <i className={`fas ${icon}`}></i>
             </span>
         )}
