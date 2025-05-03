@@ -55,7 +55,7 @@ const ServicesSection: React.FC = () => {
   return (
     <section 
       id="services" 
-      className="relative py-20 sm:py-24 md:py-28 overflow-hidden bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800"
+      className="section-fullscreen relative overflow-hidden bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800"
     >
       {/* Decorative background elements */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
@@ -69,7 +69,7 @@ const ServicesSection: React.FC = () => {
       </div>
 
       <div 
-        className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl"
+        className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl h-full flex flex-col justify-center py-12"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
