@@ -59,7 +59,7 @@ const ServicesSection: React.FC = () => {
   return (
     <section 
       id="services" 
-      className="section-fullscreen min-h-screen relative overflow-hidden bg-navy-900 text-white py-32"
+      className="section-fullscreen h-screen min-h-screen relative overflow-hidden bg-navy-900 text-white flex flex-col justify-center"
       aria-labelledby="services-heading"
       ref={sectionRef}
     >
@@ -67,7 +67,7 @@ const ServicesSection: React.FC = () => {
       <DynamicSpotlight hoveredIndex={hoveredIndex} />
 
       <div 
-        className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl flex flex-col justify-center py-12 relative"
+        className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl flex flex-col justify-center h-full py-8 lg:py-12 relative"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => {
           setIsHovered(false);
