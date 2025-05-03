@@ -67,21 +67,6 @@ const SlideBackground: FC<SlideBackgroundProps> = ({
                             </motion.div>
                         </motion.div>
                         
-                        {/* Overlay butiran untuk tekstur - juga lazy loaded */}
-                        <div 
-                            className="absolute inset-0 opacity-30 w-full h-full" 
-                            style={{ 
-                                backgroundImage: 'url("https://images.unsplash.com/photo-1595876210-50f6313738a4?q=80&w=300&auto=format&fit=crop&ixlib=rb-4.0.3")', 
-                                backgroundRepeat: 'repeat',
-                                backgroundSize: 'auto',
-                                mixBlendMode: 'overlay',
-                                willChange: 'opacity',
-                                pointerEvents: 'none'
-                            }}
-                            aria-hidden="true"
-                            data-lazy="true"
-                        />
-                        
                         {/* Overlay gradien */}
                         <div className={`absolute inset-0 w-full h-full ${slide.overlay || 'bg-gradient-to-b from-black/60 via-black/40 to-black/60'}`} />
                         

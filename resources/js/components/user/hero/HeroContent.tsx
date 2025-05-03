@@ -7,12 +7,10 @@ import { createAnimationProps } from './animationUtils';
 // Konstanta waktu animasi untuk konsistensi
 const ANIMATION_TIMINGS = {
   staggered: {
-    base: 0.1,
     title: 0.3,
     highlight: 0.4,
     description: 0.6,
-    cta: 0.8,
-    social: 0.7
+    cta: 0.8
   },
   durations: {
     fast: 0.5,

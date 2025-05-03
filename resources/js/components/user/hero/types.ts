@@ -11,14 +11,9 @@ export type ButtonVariant = 'primary' | 'secondary' | 'outline';
 export type AnimationVariant = 
     'fadeIn' | 'fadeInSlow' | 'fadeInFast' |
     'slideUp' | 'slideUpBounce' | 'slideUpSpring' |
-    'slideDown' | 'slideDownBounce' | 'slideDownSpring' |
-    'slideLeft' | 'slideLeftBounce' | 'slideLeftSpring' |
-    'slideRight' | 'slideRightBounce' | 'slideRightSpring' |
-    'zoom' | 'zoomBounce' | 'zoomSpring' |
-    'flip' | 'flipX' | 'flipY' |
-    'rotate' | 'pulse' | 'shake' | 'bounce' | 'stagger' | 'none' |
-    'glitch' | 'blur' | 'wave' | 'float' | 'morph' | '3dFlip' | 'neon' |
-    'textReveal' | 'textGradient' | 'textShadow' | 'prismaticText';
+    'slideDown' | 'slideLeft' | 'slideRight' | 
+    'zoom' | 'flip' | 'rotate' | 'none' | 
+    'blur' | 'fade';
 
 /**
  * Tipe transisi animasi

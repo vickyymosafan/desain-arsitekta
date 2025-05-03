@@ -160,14 +160,6 @@ export const getSlideAnimationStyle = (
                 transition: { ...slideTransitions.default, duration: 1.2 }
             };
             
-        case 'elastic':
-            return {
-                initial: { opacity: 0, x: isActive ? 100 : -100, scale: 0.8 },
-                animate: { opacity: 1, x: 0, scale: 1 },
-                exit: { opacity: 0, x: isActive ? -100 : 100, scale: 0.8 },
-                transition: slideTransitions.bounce
-            };
-            
         default: // 'none'
             return {
                 initial: { opacity: 1 },
