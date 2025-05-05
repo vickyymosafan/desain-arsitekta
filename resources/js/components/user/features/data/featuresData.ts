@@ -1,6 +1,6 @@
 import React from 'react';
 import { BiRuler, BiPaintRoll, BiHomeAlt } from 'react-icons/bi';
-import { FaBuilding, FaCalendarAlt, FaSmile } from 'react-icons/fa';
+import { FaBuilding, FaHardHat, FaTools, FaCheckCircle, FaDraftingCompass, FaRulerCombined } from 'react-icons/fa';
 
 export interface StatItemData {
     icon: React.ReactNode;
@@ -17,17 +17,17 @@ export interface ServiceCardData {
 // Stats data
 export const statsData: StatItemData[] = [
     {
-        icon: React.createElement(FaBuilding),
+        icon: React.createElement(FaCheckCircle),
         count: '239+',
         label: 'Proyek Selesai'
     },
     {
-        icon: React.createElement(FaCalendarAlt),
+        icon: React.createElement(FaDraftingCompass),
         count: '179+',
         label: 'Arsitektur'
     },
     {
-        icon: React.createElement(FaSmile),
+        icon: React.createElement(FaHardHat),
         count: '58+',
         label: 'Konstruksi'
     }
