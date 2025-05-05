@@ -62,13 +62,7 @@ const HeroContent: FC<HeroContentProps> = ({
                     className={`w-full max-w-xl md:max-w-2xl lg:max-w-3xl ${alignment === 'center' ? 'mx-auto' : ''} ${alignment === 'right' ? 'ml-auto' : ''}`}
                     {...animProps}
                 >
-                    {/* Subtle architectural element before label */}
-                    <motion.div 
-                        className="w-10 h-0.5 bg-white/40 hidden sm:inline-block absolute -ml-14 mt-3"
-                        initial={{ opacity: 0, scaleX: 0, originX: 1 }}
-                        animate={{ opacity: 1, scaleX: 1 }}
-                        transition={{ delay: 0.2, duration: 0.8, ease: 'easeOut' }}
-                    />
+                    {/* Subtle architectural element removed for cleaner design */}
                     
                     <motion.div 
                         className="mb-3 inline-block bg-black/20 backdrop-blur-lg border border-emerald-500/30 px-5 py-1.5 rounded-sm overflow-hidden relative"
@@ -170,12 +164,7 @@ const HeroContent: FC<HeroContentProps> = ({
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: ANIMATION_TIMINGS.staggered.description, duration: ANIMATION_TIMINGS.durations.fast }}
                         >
-                            <motion.span 
-                                className="block w-12 h-0.5 bg-emerald-500/50 mb-3"
-                                initial={{ opacity: 0, width: 0 }}
-                                animate={{ opacity: 1, width: 48 }}
-                                transition={{ delay: ANIMATION_TIMINGS.staggered.description + 0.3, duration: 0.8 }}
-                            />
+                            {/* Decorative line removed for cleaner design */}
                             
                             <motion.span
                                 className="italic"
