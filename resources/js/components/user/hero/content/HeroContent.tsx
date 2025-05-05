@@ -53,19 +53,9 @@ const HeroContent: FC<HeroContentProps> = ({
             />
             
             {/* Architectural line elements */}
-            <motion.div 
-                className="absolute top-10 right-10 w-32 h-32 border-r-2 border-t-2 border-white/20 rounded-tr-lg hidden md:block"
-                style={{ opacity: 0.6 }}
-                animate={{ rotate: [0, 5, 0], scale: [1, 1.02, 1] }}
-                transition={{ duration: 10, repeat: Infinity, repeatType: 'reverse' }}
-            />
+            {/* Top-right decorative border removed as requested */}
             
-            <motion.div 
-                className="absolute bottom-10 left-10 w-40 h-40 border-l-2 border-b-2 border-white/20 rounded-bl-lg hidden md:block"
-                style={{ opacity: 0.6 }}
-                animate={{ rotate: [0, -5, 0], scale: [1, 1.02, 1] }}
-                transition={{ duration: 10, repeat: Infinity, repeatType: 'reverse' }}
-            />
+            {/* Bottom-left decorative border removed as requested */}
             
             <div className="container mx-auto px-4 md:px-6 lg:px-8 w-full">
                 <motion.div 
@@ -208,33 +198,12 @@ const HeroContent: FC<HeroContentProps> = ({
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: ANIMATION_TIMINGS.staggered.cta }}
                     >
-                        {/* Subtle line connector for architectural feel */}
-                        <motion.div 
-                            className="absolute -left-20 top-1/2 w-16 h-px bg-white/30 hidden xl:block"
-                            initial={{ scaleX: 0, opacity: 0 }}
-                            animate={{ scaleX: 1, opacity: 0.7 }}
-                            transition={{ delay: ANIMATION_TIMINGS.staggered.cta + 0.5, duration: 0.8 }}
-                        />
-                        
                         <CTAButtonComponent button={ctaPrimary} index={0} />
                         {ctaSecondary && <CTAButtonComponent button={ctaSecondary} index={1} />}
                     </motion.div>
                 </motion.div>
                 
-                {/* Subtle architectural measuring lines */}
-                <motion.div 
-                    className="absolute bottom-10 right-10 hidden lg:block"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 0.6 }}
-                    transition={{ delay: 1.5, duration: 0.8 }}
-                >
-                    <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1 1H119V119" stroke="rgba(255,255,255,0.3)" strokeWidth="0.5" strokeDasharray="4 4"/>
-                        <path d="M1 40H80" stroke="rgba(255,255,255,0.3)" strokeWidth="0.5" strokeDasharray="4 4"/>
-                        <path d="M40 119V40" stroke="rgba(255,255,255,0.3)" strokeWidth="0.5" strokeDasharray="4 4"/>
-                        <circle cx="40" cy="40" r="2" fill="rgba(52,211,153,0.5)"/>
-                    </svg>
-                </motion.div>
+                {/* Curved measuring lines removed as requested */}
             </div>
         </div>
     );

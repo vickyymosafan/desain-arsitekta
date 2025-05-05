@@ -83,15 +83,7 @@ const CTAButtonComponent: FC<CTAButtonComponentProps> = ({ button, index }) => {
             transition={{ delay: 0.5 + (index * 0.15), type: 'spring', stiffness: 300, damping: 15 }}
             className="relative"
         >
-            {/* Subtle architectural dot marker only for primary variant */}
-            {variant === 'primary' && (
-                <motion.div 
-                    className="absolute -left-2 top-1/2 w-1.5 h-1.5 rounded-full bg-emerald-300/70 hidden xl:block"
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.8 + (index * 0.15) }}
-                />
-            )}
+            {/* Dot marker removed as requested */}
             
             <ButtonComponent
                 {...buttonProps}
