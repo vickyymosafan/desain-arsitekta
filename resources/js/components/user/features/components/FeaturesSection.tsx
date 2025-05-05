@@ -354,12 +354,14 @@ const FeaturesSection: React.FC = () => {
             <div className="container mx-auto px-4 relative z-10">
                 {/* Stats Section */}
                 <motion.div className="mb-16 md:mb-24 relative" {...sectionProps}>
-                    <LazyFullscreenButton 
-                        isFullscreen={false} 
-                        onClick={() => openFullscreen('stats')} 
-                        position="top-right"
-                        label={isMobile ? undefined : "Perbesar"}
-                    />
+                    {!isMobile && (
+                        <LazyFullscreenButton 
+                            isFullscreen={false} 
+                            onClick={() => openFullscreen('stats')} 
+                            position="top-right"
+                            label="Perbesar"
+                        />
+                    )}
                     
                     <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto px-4 md:px-0">
                         {statsData.map((stat, index) => (
@@ -413,14 +415,16 @@ const FeaturesSection: React.FC = () => {
                         ))}
                     </motion.div>
                     
-                    <div className="relative mt-4 md:mt-6 flex justify-end px-4 md:px-6">
-                        <LazyFullscreenButton 
-                            isFullscreen={false} 
-                            onClick={() => openFullscreen('services')} 
-                            position="bottom-right"
-                            label={isMobile ? undefined : "Perbesar"}
-                        />
-                    </div>
+                    {!isMobile && (
+                        <div className="relative mt-4 md:mt-6 flex justify-end px-4 md:px-6">
+                            <LazyFullscreenButton 
+                                isFullscreen={false} 
+                                onClick={() => openFullscreen('services')} 
+                                position="bottom-right"
+                                label="Perbesar"
+                            />
+                        </div>
+                    )}
                 </section>
             </div>
         </section>
