@@ -120,38 +120,6 @@ export const getSlideAnimationStyle = (
                 transition: slideTransitions.default
             };
             
-        case 'flip':
-            return {
-                initial: { opacity: 0, rotateY: isActive ? 90 : -90 },
-                animate: { opacity: 1, rotateY: 0 },
-                exit: { opacity: 0, rotateY: isActive ? -90 : 90 },
-                transition: { ...slideTransitions.default, duration: 1 }
-            };
-            
-        case 'rotate':
-            return {
-                initial: { opacity: 0, rotate: isActive ? 5 : -5, scale: 0.9 },
-                animate: { opacity: 1, rotate: 0, scale: 1 },
-                exit: { opacity: 0, rotate: isActive ? -5 : 5, scale: 0.9 },
-                transition: slideTransitions.spring
-            };
-            
-        case 'slideUp':
-            return {
-                initial: { opacity: 0, y: 50 },
-                animate: { opacity: 1, y: 0 },
-                exit: { opacity: 0, y: -50 },
-                transition: slideTransitions.spring
-            };
-            
-        case 'slideDown':
-            return {
-                initial: { opacity: 0, y: -50 },
-                animate: { opacity: 1, y: 0 },
-                exit: { opacity: 0, y: 50 },
-                transition: slideTransitions.spring
-            };
-            
         case 'crossFade':
             return {
                 initial: { opacity: 0, filter: 'blur(8px)' },

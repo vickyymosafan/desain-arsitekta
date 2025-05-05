@@ -13,11 +13,54 @@ interface SlideBackgroundProps {
     slidesAnimation: string;
 }
 
+// Type untuk efek yang didukung
+type SlideEffectType = 'parallax' | 'zoom' | 'blur' | 'glitch' | 'grain' | 'none';
+
+// Preset animasi untuk berbagai efek
+const SLIDE_EFFECTS: Record<SlideEffectType, {
+    animate: Record<string, any>;
+    transition: Record<string, any>;
+}> = {
+    parallax: { 
+        animate: { scale: 1.1, y: [0, -15, 0], x: [0, 10, 0] }, 
+        transition: { duration: 8, ease: 'easeInOut', repeat: Infinity, repeatType: 'reverse' }
+    },
+    zoom: { 
+        animate: { scale: [1, 1.05, 1.02] }, 
+        transition: { duration: 8, ease: 'easeInOut', repeat: Infinity, repeatType: 'reverse' }
+    },
+    blur: { 
+        animate: { filter: ['blur(0px)', 'blur(2px)', 'blur(0px)'] }, 
+        transition: { duration: 8, ease: 'easeInOut', repeat: Infinity, repeatType: 'reverse' }
+    },
+    glitch: {
+        animate: { x: [0, -2, 2, -1, 1, 0], y: [0, 1, -1, 0] },
+        transition: { duration: 5, ease: 'easeInOut', repeat: Infinity, repeatType: 'reverse' }
+    },
+    grain: {
+        animate: { opacity: [0.8, 0.9, 0.8], backgroundPosition: ['0% 0%', '100% 100%', '0% 0%'] },
+        transition: { duration: 8, ease: 'linear', repeat: Infinity }
+    },
+    none: { 
+        animate: { scale: 1 }, 
+        transition: { duration: 0 }
+    }
+};
+
 const SlideBackground: FC<SlideBackgroundProps> = ({ 
     slides, 
     currentSlide, 
     slidesAnimation 
 }) => {
+    const getSlideEffect = (effect?: string) => {
+        // Validasi apakah efek ada di SLIDE_EFFECTS, jika tidak gunakan 'none'
+        const validEffect = (effect && effect in SLIDE_EFFECTS) 
+            ? effect as SlideEffectType 
+            : 'none';
+            
+        return SLIDE_EFFECTS[validEffect];
+    };
+    
     return (
         <AnimatePresence initial={false}>
             {slides.map((slide, index) => (
@@ -36,19 +79,8 @@ const SlideBackground: FC<SlideBackgroundProps> = ({
                                     slide.position === 'left' ? 'object-left' : 
                                     slide.position === 'right' ? 'object-right' : 'object-center'
                                 }`}
-                                animate={
-                                    slide.effect === 'parallax' ? { scale: 1.1, y: [0, -15, 0], x: [0, 10, 0] } : 
-                                    slide.effect === 'zoom' ? { scale: [1, 1.05, 1.02] } : 
-                                    slide.effect === 'blur' ? { filter: ['blur(0px)', 'blur(2px)', 'blur(0px)'] } : 
-                                    slide.effect === 'glitch' ? { x: [0, -2, 2, -1, 1, 0], y: [0, 1, -1, 0] } : 
-                                    { scale: 1 }
-                                }
-                                transition={{ 
-                                    duration: 8, 
-                                    ease: 'easeInOut',
-                                    repeat: Infinity, 
-                                    repeatType: 'reverse' 
-                                }}
+                                animate={getSlideEffect(slide.effect).animate}
+                                transition={getSlideEffect(slide.effect).transition}
                                 style={{
                                     willChange: 'transform',
                                     transform: 'translateZ(0)' // Akselerasi hardware

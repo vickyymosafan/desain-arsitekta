@@ -12,8 +12,7 @@ export type AnimationVariant =
     'fadeIn' | 'fadeInSlow' | 'fadeInFast' |
     'slideUp' | 'slideUpBounce' | 'slideUpSpring' |
     'slideDown' | 'slideLeft' | 'slideRight' | 
-    'zoom' | 'flip' | 'rotate' | 'none' | 
-    'blur' | 'fade';
+    'zoom' | 'fade' | 'none' | 'blur';
 
 /**
  * Tipe transisi animasi
