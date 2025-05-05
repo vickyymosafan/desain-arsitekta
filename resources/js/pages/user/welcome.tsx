@@ -45,9 +45,9 @@ export default function Welcome() {
                 </main>
                 
                 {/* Simple footer to maintain layout structure */}
-                <footer className="mt-auto py-8 bg-black">
+                {/* <footer className="mt-auto py-8 bg-black">
                     <div className="container mx-auto"></div>
-                </footer>
+                </footer> */}
             </div>
         </>
     );
