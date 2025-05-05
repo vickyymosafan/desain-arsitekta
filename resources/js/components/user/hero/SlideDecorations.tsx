@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { motion } from 'framer-motion';
+import { DEFAULT_ACCENT_COLOR } from './constants';
 
 // Antarmuka untuk komponen SlideDecorations
 interface SlideDecorationsProps {
@@ -7,7 +8,7 @@ interface SlideDecorationsProps {
 }
 
 // Komponen SlideDecorations
-const SlideDecorations: FC<SlideDecorationsProps> = ({ accent = '#34d399' }) => (
+const SlideDecorations: FC<SlideDecorationsProps> = ({ accent = DEFAULT_ACCENT_COLOR }) => (
     <>
         {/* Elemen div pertama */}
         <motion.div 

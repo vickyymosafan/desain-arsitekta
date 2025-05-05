@@ -1,26 +1,13 @@
 import { FC } from 'react';
 import { motion } from 'framer-motion';
 import { ScrollIndicatorProps } from './types';
+import { COLOR_CLASSES, SIZE_CLASSES } from './constants';
 
 const ScrollIndicator: FC<ScrollIndicatorProps> = ({ 
     variant = 'default', 
     color = 'white',
     size = 'md' 
 }) => {
-    // Variasi ukuran
-    const sizeClasses = {
-        sm: 'h-6 w-6 text-xs',
-        md: 'h-8 w-8 text-sm',
-        lg: 'h-10 w-10 text-base'
-    };
-    
-    // Variasi warna
-    const colorClasses = {
-        white: 'text-white/80',
-        emerald: 'text-emerald-400',
-        primary: 'text-emerald-500'
-    };
-    
     // Variasi animasi
     const getIconAnimation = () => {
         switch(variant) {
@@ -68,7 +55,7 @@ const ScrollIndicator: FC<ScrollIndicatorProps> = ({
     };
     
     // Mendapatkan kelas warna berdasarkan prop color
-    const textColor = colorClasses[color as keyof typeof colorClasses] || 'text-white/80';
+    const textColor = COLOR_CLASSES[color as keyof typeof COLOR_CLASSES] || COLOR_CLASSES.white;
     const iconAnimation = getIconAnimation();
     
     return (
@@ -91,7 +78,7 @@ const ScrollIndicator: FC<ScrollIndicatorProps> = ({
             >
                 <svg 
                     xmlns="http://www.w3.org/2000/svg" 
-                    className={`${sizeClasses[size]} ${textColor}`} 
+                    className={`${SIZE_CLASSES[size].icon} ${textColor}`} 
                     fill="none" 
                     viewBox="0 0 24 24" 
                     stroke="currentColor"
@@ -100,7 +87,7 @@ const ScrollIndicator: FC<ScrollIndicatorProps> = ({
                         strokeLinecap="round" 
                         strokeLinejoin="round" 
                         strokeWidth={1.5} 
-                        d="M19 14l-7 7m0 0l-7-7m7 7V3" 
+                        d="M19 13l-7 7-7-7m14-8l-7 7-7-7" 
                     />
                 </svg>
             </motion.div>

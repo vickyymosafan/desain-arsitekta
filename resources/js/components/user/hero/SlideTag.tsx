@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { motion } from 'framer-motion';
+import { DEFAULT_ACCENT_COLOR, COMMON_STYLES } from './constants';
 
 /**
  * Interface untuk props komponen SlideTag
@@ -15,7 +16,7 @@ interface SlideTagProps {
  * Komponen untuk menampilkan tag pada slide
  * Memberikan indikasi visual tentang status atau kategori slide
  */
-const SlideTag: FC<SlideTagProps> = ({ tag, accent = '#34d399' }) => (
+const SlideTag: FC<SlideTagProps> = ({ tag, accent = DEFAULT_ACCENT_COLOR }) => (
     <motion.div 
         className="absolute z-20 sm:top-6 sm:right-6 top-4 right-4"
         initial={{ opacity: 0, y: -20, rotate: -5 }}
@@ -23,9 +24,9 @@ const SlideTag: FC<SlideTagProps> = ({ tag, accent = '#34d399' }) => (
         transition={{ delay: 0.7, type: 'spring', stiffness: 120, damping: 15 }}
     >
         <div 
-            className="flex items-center gap-1 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10" 
+            className={`flex items-center gap-1 ${COMMON_STYLES.backdropPanel} px-3 py-1.5 rounded-full`} 
             style={{ 
-                boxShadow: `0 0 20px ${accent}40`,
+                boxShadow: COMMON_STYLES.accentShadow(accent),
                 transform: 'translateZ(0)'
             }}
         >

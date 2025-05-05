@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { motion } from 'framer-motion';
 import { IndicatorVariantConfig, SlideIndicatorProps } from './types';
+import { SIZE_CLASSES } from './constants';
 
 const SlideIndicators: FC<SlideIndicatorProps> = ({ 
     slides, 
@@ -11,12 +12,12 @@ const SlideIndicators: FC<SlideIndicatorProps> = ({
     position = 'bottom',
     customClass = ''
 }) => {
-    // Pemetaan kelas ukuran
-    const sizeClasses = {
-        sm: { dot: 'h-1.5 w-1.5', line: 'h-1.5 w-4', active: 'w-8', pill: 'h-6 px-2', emoji: 'text-xs' },
-        md: { dot: 'h-2.5 w-2.5', line: 'h-2.5 w-6', active: 'w-12', pill: 'h-8 px-3', emoji: 'text-sm' },
-        lg: { dot: 'h-3 w-3', line: 'h-3 w-8', active: 'w-16', pill: 'h-10 px-4', emoji: 'text-base' },
-        xl: { dot: 'h-4 w-4', line: 'h-4 w-10', active: 'w-20', pill: 'h-12 px-5', emoji: 'text-lg' }
+    // Pemetaan kelas ukuran berdasarkan SIZE_CLASSES
+    const sizeVariants = {
+        sm: { dot: SIZE_CLASSES.sm.dot, line: SIZE_CLASSES.sm.line, active: 'w-8', pill: 'h-6 px-2', emoji: 'text-xs' },
+        md: { dot: SIZE_CLASSES.md.dot, line: SIZE_CLASSES.md.line, active: 'w-12', pill: 'h-8 px-3', emoji: 'text-sm' },
+        lg: { dot: SIZE_CLASSES.lg.dot, line: SIZE_CLASSES.lg.line, active: 'w-16', pill: 'h-10 px-4', emoji: 'text-base' },
+        xl: { dot: SIZE_CLASSES.xl.dot, line: SIZE_CLASSES.xl.line, active: 'w-20', pill: 'h-12 px-5', emoji: 'text-lg' }
     };
     
     // Pemetaan kelas posisi
@@ -28,11 +29,18 @@ const SlideIndicators: FC<SlideIndicatorProps> = ({
         custom: customClass
     };
 
+    // Properti motion dasar yang digunakan oleh beberapa varian
+    const baseMotionProps = {
+        initial: { opacity: 0, y: 20 },
+        animate: { opacity: 1, y: 0 },
+        transition: (index: number) => ({ delay: index * 0.1, type: 'spring' as const })
+    };
+
     // Konfigurasi untuk setiap varian indikator
     const variantConfig: Record<string, IndicatorVariantConfig> = {
         dots: {
             containerClass: 'flex space-x-3',
-            itemClass: (index: number) => `rounded-full backdrop-blur-sm transition-all duration-300 ${sizeClasses[size].dot} ${
+            itemClass: (index: number) => `rounded-full backdrop-blur-sm transition-all duration-300 ${sizeVariants[size].dot} ${
                 index === currentSlide 
                     ? 'bg-emerald-500 scale-125 shadow-lg shadow-emerald-500/20' 
                     : 'bg-white/60 hover:bg-white/90'
@@ -40,33 +48,31 @@ const SlideIndicators: FC<SlideIndicatorProps> = ({
             motionProps: {
                 whileTap: { scale: 0.9, rotate: -5 },
                 whileHover: { scale: 1.2, y: -2, boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.3)' },
-                initial: { opacity: 0, y: 20 },
-                animate: { opacity: 1, y: 0 },
-                transition: (index: number) => ({ delay: index * 0.1, type: 'spring', stiffness: 400 })
+                ...baseMotionProps,
+                transition: (index: number) => ({ ...baseMotionProps.transition(index), stiffness: 400 })
             },
             style: {},
             content: () => null
         },
         lines: {
             containerClass: 'flex space-x-4',
-            itemClass: (index: number) => `relative backdrop-blur-sm transition-all duration-300 ${sizeClasses[size].line} ${
+            itemClass: (index: number) => `relative backdrop-blur-sm transition-all duration-300 ${sizeVariants[size].line} ${
                 index === currentSlide 
-                    ? `${sizeClasses[size].active} bg-gradient-to-r from-emerald-400 to-emerald-600 shadow-lg shadow-emerald-500/20` 
+                    ? `${sizeVariants[size].active} bg-gradient-to-r from-emerald-400 to-emerald-600 shadow-lg shadow-emerald-500/20` 
                     : 'bg-white/60 hover:bg-white/90'
             }`,
             motionProps: {
                 whileTap: { scale: 0.9 },
                 whileHover: { y: -2, boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.3)' },
-                initial: { opacity: 0, y: 20 },
-                animate: { opacity: 1, y: 0 },
-                transition: (index: number) => ({ delay: index * 0.1, type: 'spring', stiffness: 300 })
+                ...baseMotionProps,
+                transition: (index: number) => ({ ...baseMotionProps.transition(index), stiffness: 300 })
             },
             style: { borderRadius: '8px' },
             content: () => null
         },
         pills: {
             containerClass: 'flex space-x-2',
-            itemClass: (index: number) => `rounded-full backdrop-blur-sm flex items-center justify-center ${sizeClasses[size].pill} ${
+            itemClass: (index: number) => `rounded-full backdrop-blur-sm flex items-center justify-center ${sizeVariants[size].pill} ${
                 index === currentSlide 
                     ? 'bg-gradient-to-r from-emerald-400 to-emerald-600 text-white font-medium shadow-lg shadow-emerald-500/30' 
                     : 'bg-white/20 text-white/80 hover:bg-white/30'
@@ -74,16 +80,14 @@ const SlideIndicators: FC<SlideIndicatorProps> = ({
             motionProps: {
                 whileTap: { scale: 0.9 },
                 whileHover: { scale: 1.05, y: -2 },
-                initial: { opacity: 0, y: 20 },
-                animate: { opacity: 1, y: 0 },
-                transition: (index: number) => ({ delay: index * 0.1, type: 'spring' })
+                ...baseMotionProps,
             },
             style: {},
             content: (index: number) => index + 1
         },
         emoji: {
             containerClass: 'flex space-x-3',
-            itemClass: (index: number) => `rounded-full flex items-center justify-center backdrop-blur-sm ${sizeClasses[size].emoji} p-2 ${
+            itemClass: (index: number) => `rounded-full flex items-center justify-center backdrop-blur-sm ${sizeVariants[size].emoji} p-2 ${
                 index === currentSlide 
                     ? 'bg-black/40 text-white scale-125' 
                     : 'bg-black/20 text-white/70 hover:bg-black/30 hover:text-white/90'
@@ -125,9 +129,7 @@ const SlideIndicators: FC<SlideIndicatorProps> = ({
             motionProps: {
                 whileTap: { scale: 0.9 },
                 whileHover: { scale: 1.1 },
-                initial: { opacity: 0, y: 20 },
-                animate: { opacity: 1, y: 0 },
-                transition: (index: number) => ({ delay: index * 0.1 })
+                ...baseMotionProps,
             },
             style: {},
             content: (index: number) => index + 1

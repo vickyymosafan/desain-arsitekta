@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { motion } from 'framer-motion';
+import { DEFAULT_ACCENT_COLOR, COMMON_STYLES } from './constants';
 
 interface SlideInfoProps {
     headline?: string;
@@ -7,11 +8,11 @@ interface SlideInfoProps {
     accent?: string;
 }
 
-const SlideInfo: FC<SlideInfoProps> = ({ headline, subtext, accent = '#34d399' }) => (
+const SlideInfo: FC<SlideInfoProps> = ({ headline, subtext, accent = DEFAULT_ACCENT_COLOR }) => (
     <motion.div 
-        className="absolute bg-black/40 backdrop-blur-md rounded-xl py-3 px-5 max-w-xs hidden md:block border border-white/10"
+        className={`absolute ${COMMON_STYLES.backdropPanel} rounded-xl py-3 px-5 max-w-xs hidden md:block`}
         style={{ 
-            boxShadow: `0 10px 30px -5px ${accent}20`,
+            boxShadow: COMMON_STYLES.accentShadow(accent),
             top: 'clamp(24px, 5vh, 40px)',
             left: 'clamp(24px, 5vw, 40px)',
             maxWidth: 'clamp(240px, 25vw, 320px)',
