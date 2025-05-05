@@ -24,6 +24,9 @@ export interface NavLinkProps {
     children: React.ReactNode;
     active?: boolean;
     icon?: string;
+    variant?: 'desktop' | 'mobile';
+    onClick?: () => void;
+    className?: string;
 }
 
 /**
@@ -34,4 +37,7 @@ export interface ButtonProps {
     children: React.ReactNode;
     icon?: string;
     onClick?: () => void;
+    variant?: 'primary' | 'secondary' | 'outline';
+    fullWidth?: boolean;
+    className?: string;
 }

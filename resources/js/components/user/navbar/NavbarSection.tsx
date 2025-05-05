@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { NavbarProps, NavItem } from './components/types';
 import NavLink from './components/NavLink';
-import { PrimaryButton, SecondaryButton, OutlineButton } from './components/NavButtons';
+import Button from './components/NavButtons';
 import MobileMenu from './components/MobileMenu';
 
 /**
@@ -83,17 +83,29 @@ const NavbarSection = ({ user }: NavbarProps) => {
                     {/* Tombol Desktop */}
                     <div className="hidden md:flex items-center space-x-4">
                         {user ? (
-                            <PrimaryButton href={route('dashboard')} icon="fa-user-circle">
+                            <Button 
+                                href={route('dashboard')} 
+                                icon="fa-user-circle" 
+                                variant="primary"
+                            >
                                 Dashboard
-                            </PrimaryButton>
+                            </Button>
                         ) : (
                             <>
-                                <SecondaryButton href={route('login')} icon="fa-sign-in-alt">
+                                <Button 
+                                    href={route('login')} 
+                                    icon="fa-sign-in-alt" 
+                                    variant="secondary"
+                                >
                                     Masuk
-                                </SecondaryButton>
-                                <OutlineButton href={route('register')} icon="fa-user-plus">
+                                </Button>
+                                <Button 
+                                    href={route('register')} 
+                                    icon="fa-user-plus" 
+                                    variant="outline"
+                                >
                                     Daftar
-                                </OutlineButton>
+                                </Button>
                             </>
                         )}
                     </div>
