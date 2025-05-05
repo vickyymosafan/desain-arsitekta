@@ -1,6 +1,7 @@
 import React from 'react';
-import { BiRuler, BiPaintRoll, BiHomeAlt } from 'react-icons/bi';
-import { FaBuilding, FaHardHat, FaTools, FaCheckCircle, FaDraftingCompass, FaRulerCombined } from 'react-icons/fa';
+import { FaPencilRuler, FaPaintRoller, FaHammer, FaTools, FaHardHat, FaWrench } from 'react-icons/fa';
+import { FaBuilding, FaCheckCircle, FaDraftingCompass, FaRulerCombined } from 'react-icons/fa';
+import { MdArchitecture, MdDesignServices } from 'react-icons/md';
 
 export interface StatItemData {
     icon: React.ReactNode;
@@ -36,17 +37,17 @@ export const statsData: StatItemData[] = [
 // Services data
 export const servicesData: ServiceCardData[] = [
     {
-        icon: React.createElement(BiRuler),
+        icon: React.createElement(MdDesignServices),
         title: "Desain",
         description: "Layanan desain arsitektur dan interior yang inovatif dan sesuai kebutuhan klien. Kami memadukan estetika dan fungsionalitas untuk menciptakan ruang yang sempurna."
     },
     {
-        icon: React.createElement(BiHomeAlt),
+        icon: React.createElement(FaHardHat),
         title: "Konstruksi",
         description: "Jasa konstruksi bangunan berkualitas tinggi dengan standar keamanan terbaik. Tim profesional kami memastikan proyek selesai tepat waktu dan sesuai anggaran."
     },
     {
-        icon: React.createElement(BiPaintRoll),
+        icon: React.createElement(FaHammer),
         title: "Renovasi",
         description: "Ubah ruang lama menjadi baru dengan layanan renovasi kami. Kami menangani segala jenis renovasi dari yang kecil hingga perubahan total struktur bangunan."
     }
