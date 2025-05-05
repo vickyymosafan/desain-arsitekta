@@ -76,7 +76,7 @@ const HeroContent: FC<HeroContentProps> = ({
                             animate={{ x: ["-100%", "100%"] }}
                             transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
                         />
-                        <span className="text-xs uppercase tracking-widest font-semibold text-white letter-spacing-2">Arsitekta Design Studio</span>
+                        <span className="text-xs uppercase tracking-widest font-semibold text-white letter-spacing-2">Antosa Architect</span>
                     </motion.div>
                     
                     <motion.div
