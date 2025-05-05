@@ -218,17 +218,6 @@ const HeroContent: FC<HeroContentProps> = ({
                         
                         <CTAButtonComponent button={ctaPrimary} index={0} />
                         {ctaSecondary && <CTAButtonComponent button={ctaSecondary} index={1} />}
-                        
-                        {/* Badge showing design expertise */}
-                        <motion.div 
-                            className="absolute -right-24 bottom-0 hidden xl:flex items-center gap-2"
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: ANIMATION_TIMINGS.staggered.cta + 0.7, duration: 0.5 }}
-                        >
-                            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
-                            <span className="text-xs text-white/70 tracking-wider font-light">Premium Design Services</span>
-                        </motion.div>
                     </motion.div>
                 </motion.div>
                 
