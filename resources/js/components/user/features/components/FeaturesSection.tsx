@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, useInView } from 'framer-motion';
 import StatItem from './StatItem';
 import ServiceCard from './ServiceCard';
 import FullscreenButton from './FullscreenButton';
@@ -104,6 +104,18 @@ const SectionTitle: React.FC<SectionTitleProps> = ({ title, subtitle, className 
             {subtitle}
         </motion.p>
     </motion.div>
+  );
+};
+
+// Lazy-loaded fullscreen button that only renders when in viewport
+const LazyFullscreenButton: React.FC<React.ComponentProps<typeof FullscreenButton>> = (props) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: false, amount: 0.1 });
+  
+  return (
+    <div ref={ref} className="absolute top-4 right-4 z-50">
+      {isInView && <FullscreenButton {...props} />}
+    </div>
   );
 };
 
@@ -342,7 +354,7 @@ const FeaturesSection: React.FC = () => {
             <div className="container mx-auto px-4 relative z-10">
                 {/* Stats Section */}
                 <motion.div className="mb-16 md:mb-24 relative" {...sectionProps}>
-                    <FullscreenButton 
+                    <LazyFullscreenButton 
                         isFullscreen={false} 
                         onClick={() => openFullscreen('stats')} 
                         position="top-right"
@@ -365,7 +377,8 @@ const FeaturesSection: React.FC = () => {
 
                 {/* Services Section */}
                 <section className="relative mt-8 md:mt-0">
-                    <FullscreenButton 
+                    {/* Services section reference for lazy loading */}
+                    <LazyFullscreenButton 
                         isFullscreen={false} 
                         onClick={() => openFullscreen('services')} 
                         position="top-right"
