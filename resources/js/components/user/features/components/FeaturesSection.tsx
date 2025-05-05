@@ -34,15 +34,15 @@ const SectionTitle: React.FC<{title: string, subtitle: string}> = ({ title, subt
         viewport={{ once: true }}
     >
         <h2 className="text-3xl md:text-5xl font-bold font-playfair text-white mb-4 relative">
-            <span className="relative inline-block">
-                <span className="absolute -top-6 -left-8 text-7xl text-emerald-500/10 font-playfair">"</span>
+            <span className="relative inline-block px-10"> {/* Added padding for quote marks */}
+                <span className="absolute -top-5 -left-2 text-7xl text-emerald-500/10 font-playfair">"</span>
                 {title.split(' ')[0]} <span className="text-emerald-500 relative">
                     {title.split(' ')[1]}
                     <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 100 15" width="100%" height="15">
                         <path d="M0,7.5 Q25,15 50,7.5 Q75,0 100,7.5" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round"/>
                     </svg>
                 </span>
-                <span className="absolute -bottom-5 -right-8 text-7xl text-emerald-500/10 font-playfair">"</span>
+                <span className="absolute -top-5 -right-2 text-7xl text-emerald-500/10 font-playfair">"</span>
             </span>
         </h2>
         <motion.p 
@@ -114,19 +114,30 @@ const FeaturesSection: React.FC = () => {
                 </motion.div>
 
                 {/* Services Section */}
-                <div>
+                <section>
                     <SectionTitle 
                         title="Layanan Kami"
                         subtitle="Kami menyediakan berbagai layanan profesional untuk mewujudkan ruang impian Anda dengan kualitas terbaik"
                     />
                     
                     <motion.div 
-                        className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto"
-                        {...sectionProps}
-                        viewport={{ once: true, margin: "-50px" }}
+                        className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto"
+                        initial="hidden"
+                        whileInView="visible"
+                        variants={{
+                            hidden: { opacity: 0 },
+                            visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+                        }}
+                        viewport={{ once: true }}
                     >
                         {servicesData.map((service, index) => (
-                            <motion.div key={index} variants={itemVariants}>
+                            <motion.div 
+                                key={index} 
+                                variants={{
+                                    hidden: { y: 20, opacity: 0 },
+                                    visible: { y: 0, opacity: 1 }
+                                }}
+                            >
                                 <ServiceCard
                                     icon={service.icon}
                                     title={service.title}
@@ -136,7 +147,7 @@ const FeaturesSection: React.FC = () => {
                             </motion.div>
                         ))}
                     </motion.div>
-                </div>
+                </section>
             </div>
         </section>
     );
