@@ -3,6 +3,7 @@ import { NavbarProps, NavItem } from './components/types';
 import NavLink from './components/NavLink';
 import Button from './components/NavButtons';
 import MobileMenu from './components/MobileMenu';
+import { motion, AnimatePresence } from 'framer-motion';
 
 /**
  * Komponen utama Navbar
@@ -50,43 +51,65 @@ const NavbarSection = ({ user }: NavbarProps) => {
     return (
         <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 
             ${scrolled 
-                ? 'bg-white/90 backdrop-blur-md shadow-md py-2 dark:bg-gray-900/90' 
+                ? 'bg-white/95 backdrop-blur-md shadow-lg py-2 dark:bg-gray-900/95' 
                 : 'bg-white/80 backdrop-blur-sm py-4 dark:bg-gray-950/80'}`}>
             <div className="container mx-auto px-4">
                 <div className="flex items-center justify-between">
                     {/* Logo */}
-                    <div className={`flex items-center
-                        ${scrolled ? 'scale-95' : 'scale-100'} transition-transform duration-300`}>
+                    <motion.div 
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className={`flex items-center
+                        ${scrolled ? 'scale-95' : 'scale-100'} transition-transform duration-300`}
+                    >
                         <div className={`relative flex items-center
                             ${scrolled ? 'text-xl' : 'text-2xl'} transition-all duration-300`}>
-                            <span className="text-emerald-600 font-bold dark:text-emerald-500">
+                            <span className="text-emerald-600 font-bold font-playfair dark:text-emerald-500">
                                 Arsitekta
                             </span>
-                            <div className="absolute -bottom-1.5 w-full h-0.5 bg-gradient-to-r from-emerald-500 to-transparent rounded-full"></div>
+                            <div className="absolute -bottom-1.5 w-full h-0.5 bg-gradient-to-r from-emerald-600 via-emerald-500 to-transparent rounded-full"></div>
                         </div>
-                    </div>
+                    </motion.div>
 
                     {/* Navigasi Desktop */}
-                    <nav className="hidden md:flex items-center space-x-8 ml-10">
-                        {navItems.map((item) => (
-                            <NavLink 
-                                key={item.label} 
-                                href={item.href} 
-                                active={activeLink === item.href}
-                                icon={item.icon}
+                    <motion.nav 
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.1 }}
+                        className="hidden md:flex items-center space-x-8 ml-10"
+                    >
+                        {navItems.map((item, index) => (
+                            <motion.div 
+                                key={item.label}
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.3, delay: 0.1 * (index + 1) }}
                             >
-                                {item.label}
-                            </NavLink>
+                                <NavLink 
+                                    href={item.href} 
+                                    active={activeLink === item.href}
+                                    icon={item.icon}
+                                >
+                                    {item.label}
+                                </NavLink>
+                            </motion.div>
                         ))}
-                    </nav>
+                    </motion.nav>
 
                     {/* Tombol Desktop */}
-                    <div className="hidden md:flex items-center space-x-4">
+                    <motion.div 
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.3 }}
+                        className="hidden md:flex items-center space-x-4"
+                    >
                         {user ? (
                             <Button 
                                 href={route('dashboard')} 
                                 icon="fa-user-circle" 
                                 variant="primary"
+                                className="hover:scale-105 transition-transform"
                             >
                                 Dashboard
                             </Button>
@@ -96,6 +119,7 @@ const NavbarSection = ({ user }: NavbarProps) => {
                                     href={route('login')} 
                                     icon="fa-sign-in-alt" 
                                     variant="secondary"
+                                    className="hover:scale-105 transition-transform"
                                 >
                                     Masuk
                                 </Button>
@@ -103,18 +127,22 @@ const NavbarSection = ({ user }: NavbarProps) => {
                                     href={route('register')} 
                                     icon="fa-user-plus" 
                                     variant="outline"
+                                    className="hover:scale-105 transition-transform"
                                 >
                                     Daftar
                                 </Button>
                             </>
                         )}
-                    </div>
+                    </motion.div>
 
                     {/* Tombol Menu Mobile */}
-                    <button 
+                    <motion.button 
+                        whileTap={{ scale: 0.95 }}
                         type="button" 
-                        className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 md:hidden hover:text-emerald-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-emerald-500 dark:hover:bg-gray-800 transition-all duration-200" 
+                        className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 md:hidden hover:text-emerald-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-emerald-500 dark:hover:bg-gray-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2" 
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        aria-expanded={mobileMenuOpen}
+                        aria-label="Buka menu utama"
                     >
                         <span className="sr-only">Buka menu utama</span>
                         {!mobileMenuOpen ? (
@@ -126,17 +154,19 @@ const NavbarSection = ({ user }: NavbarProps) => {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         )}
-                    </button>
+                    </motion.button>
                 </div>
 
                 {/* Menu Navigasi Mobile */}
-                <MobileMenu 
-                    isOpen={mobileMenuOpen}
-                    activeLink={activeLink}
-                    navItems={navItems}
-                    user={user}
-                    onClose={() => setMobileMenuOpen(false)}
-                />
+                <AnimatePresence>
+                    <MobileMenu 
+                        isOpen={mobileMenuOpen}
+                        activeLink={activeLink}
+                        navItems={navItems}
+                        user={user}
+                        onClose={() => setMobileMenuOpen(false)}
+                    />
+                </AnimatePresence>
             </div>
         </header>
     );
