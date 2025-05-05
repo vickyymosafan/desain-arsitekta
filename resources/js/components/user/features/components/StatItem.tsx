@@ -5,9 +5,10 @@ export interface StatItemProps {
     icon: React.ReactNode;
     count: string | number;
     label: string;
+    onClick?: () => void;
 }
 
-const StatItem: React.FC<StatItemProps> = ({ icon, count, label }) => {
+const StatItem: React.FC<StatItemProps> = ({ icon, count, label, onClick }) => {
     const [hovering, setHovering] = useState(false);
     const [countValue, setCountValue] = useState(0);
     const ref = useRef(null);
@@ -78,13 +79,23 @@ const StatItem: React.FC<StatItemProps> = ({ icon, count, label }) => {
     return (
         <motion.div 
             ref={ref}
-            className="flex flex-col items-center p-8 rounded-xl bg-neutral-800/30 backdrop-blur-sm border border-neutral-700 hover:border-emerald-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/5 relative overflow-hidden group"
+            className="flex flex-col items-center p-8 rounded-xl bg-neutral-800/30 backdrop-blur-sm border border-neutral-700 hover:border-emerald-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/5 relative overflow-hidden group focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-500/30 focus-within:ring-offset-2 focus-within:ring-offset-neutral-900"
             onHoverStart={() => setHovering(true)}
             onHoverEnd={() => setHovering(false)}
             variants={variants}
             initial="hidden"
             animate={controls}
             whileHover={{ scale: 1.02, y: -5 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={onClick}
+            role={onClick ? "button" : undefined}
+            tabIndex={onClick ? 0 : undefined}
+            onKeyDown={(e) => {
+                if (onClick && (e.key === 'Enter' || e.key === ' ')) {
+                    e.preventDefault();
+                    onClick();
+                }
+            }}
         >
             {/* Background effects */}
             <motion.div 
@@ -108,12 +119,14 @@ const StatItem: React.FC<StatItemProps> = ({ icon, count, label }) => {
                 className="text-emerald-400 text-4xl mb-6 bg-emerald-400/10 p-5 rounded-full relative z-10 group-hover:bg-emerald-400/20 transition-all duration-500"
                 animate={{ 
                     y: hovering ? [0, -5, 0] : 0,
-                    scale: hovering ? 1.05 : 1
+                    scale: hovering ? 1.05 : 1,
+                    rotateY: hovering ? [0, 10, 0, -10, 0] : 0 // Added subtle 3D rotation
                 }}
                 transition={{ 
-                    duration: 1.5, 
+                    duration: 2, 
                     repeat: hovering ? Infinity : 0,
-                    repeatType: "loop" 
+                    repeatType: "loop",
+                    ease: "easeInOut"
                 }}
             >
                 {icon}
@@ -156,13 +169,32 @@ const StatItem: React.FC<StatItemProps> = ({ icon, count, label }) => {
             </motion.p>
             
             {/* Bottom highlight line */}
+            {/* Progress indicator animation */}
             <motion.div 
-                className="h-1 bg-emerald-500/50 rounded-full mt-4 w-0 absolute bottom-0"
+                className="h-1 bg-gradient-to-r from-emerald-600 via-emerald-500 to-emerald-400 rounded-full mt-4 w-0 absolute bottom-0"
                 animate={{ 
-                    width: hovering ? '60%' : '0%'
+                    width: hovering ? '70%' : '0%',
+                    opacity: hovering ? 1 : 0.7
                 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
             />
+            
+            {/* Subtle pulse effect on hover */}
+            {hovering && (
+                <motion.div 
+                    className="absolute inset-0 rounded-xl border-2 border-emerald-500/30 z-0"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ 
+                        opacity: [0, 0.4, 0],
+                        scale: [0.8, 1.05, 1.1]
+                    }}
+                    transition={{ 
+                        duration: 1.5, 
+                        repeat: Infinity,
+                        ease: "easeInOut" 
+                    }}
+                />
+            )}
         </motion.div>
     );
 };

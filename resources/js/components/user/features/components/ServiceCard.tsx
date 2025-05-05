@@ -1,14 +1,31 @@
+import React from 'react';
 import { motion } from 'framer-motion';
 
-type Props = { icon: React.ReactNode; title: string; description: string; index?: number };
+type Props = { 
+    icon: React.ReactNode; 
+    title: string; 
+    description: string; 
+    index?: number; 
+    onClick?: () => void; 
+};
 
-export default function ServiceCard({ icon, title, description, index = 0 }: Props) {
+export default function ServiceCard({ icon, title, description, index = 0, onClick }: Props) {
     const d = index * 0.1; // Delay based on index
     
     return (
         <motion.div 
-            className="bg-neutral-900 p-8 rounded-xl group border border-neutral-800 hover:border-emerald-500/50 h-full relative"            
+            className="bg-neutral-900 p-8 rounded-xl group border border-neutral-800 hover:border-emerald-500/50 focus-within:border-emerald-500 h-full relative"            
             whileHover={{ y: -8, boxShadow: "0 20px 40px -12px rgba(16, 185, 129, 0.15)" }}
+            whileTap={{ scale: 0.98 }}
+            onClick={onClick}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onClick && onClick();
+                }
+            }}
         >
             {/* Background effect */}
             <motion.div 
@@ -53,10 +70,28 @@ export default function ServiceCard({ icon, title, description, index = 0 }: Pro
             </motion.p>
             
             {/* Link */}
-            <div className="relative z-10 mt-4 text-emerald-400 font-nunito flex items-center cursor-pointer">
+            <motion.div 
+                className="relative z-10 mt-4 text-emerald-400 font-nunito flex items-center cursor-pointer group/link"
+                whileHover={{ x: 2 }}
+                whileTap={{ scale: 0.95 }}
+            >
                 <span>Pelajari selengkapnya</span>
-                <motion.span className="ml-2" whileHover={{ x: 5 }}>→</motion.span>
-            </div>
+                <motion.span 
+                    className="ml-2 transition-transform duration-300 group-hover/link:translate-x-1" 
+                    animate={{ x: [0, 3, 0] }}
+                    transition={{ 
+                        repeat: Infinity, 
+                        repeatType: "reverse", 
+                        duration: 1.5,
+                        ease: "easeInOut" 
+                    }}
+                >
+                    →
+                </motion.span>
+            </motion.div>
+            
+            {/* Focus indicator for accessibility */}
+            <div className="absolute inset-0 rounded-xl ring-0 ring-emerald-500/50 ring-offset-2 ring-offset-neutral-900 group-focus-visible:ring-2 transition-all duration-300"></div>
         </motion.div>
     );
 }
