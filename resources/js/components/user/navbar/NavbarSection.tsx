@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { NavbarProps, NavItem } from './types';
-import NavLink from './NavLink';
-import { PrimaryButton, SecondaryButton, OutlineButton } from './NavButtons';
-import MobileMenu from './MobileMenu';
+import { NavbarProps, NavItem } from './components/types';
+import NavLink from './components/NavLink';
+import { PrimaryButton, SecondaryButton, OutlineButton } from './components/NavButtons';
+import MobileMenu from './components/MobileMenu';
 
 /**
  * Komponen utama Navbar

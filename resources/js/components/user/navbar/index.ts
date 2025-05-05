@@ -2,9 +2,7 @@
 export { default } from './NavbarSection';
 
 // Sub-komponen - diekspor untuk kemungkinan penggunaan secara individual
-export { default as NavLink } from './NavLink';
-export { default as MobileMenu } from './MobileMenu';
-export { PrimaryButton, SecondaryButton, OutlineButton } from './NavButtons';
+export { NavLink, MobileMenu, PrimaryButton, SecondaryButton, OutlineButton } from './components';
 
 // Tipe
-export * from './types';
+export * from './components/types';
