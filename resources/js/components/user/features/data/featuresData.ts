@@ -18,18 +18,18 @@ export interface ServiceCardData {
 export const statsData: StatItemData[] = [
     {
         icon: React.createElement(FaBuilding),
-        count: '250+',
+        count: '239+',
         label: 'Proyek Selesai'
     },
     {
         icon: React.createElement(FaCalendarAlt),
-        count: '15',
-        label: 'Tahun Beroperasi'
+        count: '179+',
+        label: 'Arsitektur'
     },
     {
         icon: React.createElement(FaSmile),
-        count: '420',
-        label: 'Testimoni Positif'
+        count: '58+',
+        label: 'Konstruksi'
     }
 ];
 
