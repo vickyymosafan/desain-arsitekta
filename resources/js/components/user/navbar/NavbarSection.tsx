@@ -63,11 +63,14 @@ const NavbarSection = ({ user }: NavbarProps) => {
                         className={`flex items-center
                         ${scrolled ? 'scale-95' : 'scale-100'} transition-transform duration-300`}
                     >
-                        <div className={`relative flex items-center
-                            ${scrolled ? 'text-xl' : 'text-2xl'} transition-all duration-300`}>
-                            <span className="text-emerald-600 font-bold font-playfair dark:text-emerald-500">
-                                Arsitekta
-                            </span>
+                        <div className="relative flex items-center transition-all duration-300">
+                            <div className="flex items-center gap-2">
+                                <img 
+                                    src="/storage/images/hero/4.webp" 
+                                    alt="Antosa Architect" 
+                                    className={`${scrolled ? 'h-8' : 'h-10'} transition-all duration-300 object-contain`} 
+                                />
+                            </div>
                             <div className="absolute -bottom-1.5 w-full h-0.5 bg-gradient-to-r from-emerald-600 via-emerald-500 to-transparent rounded-full"></div>
                         </div>
                     </motion.div>
