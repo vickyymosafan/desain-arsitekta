@@ -189,11 +189,16 @@ const FeaturesSection: React.FC = () => {
   const [activeFullscreen, setActiveFullscreen] = useState<'stats' | 'services' | null>(null);
   const [showKeyboardHint, setShowKeyboardHint] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isDesktopOnly, setIsDesktopOnly] = useState(false);
     
   // Handle scroll effect and detect viewport size
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
-    const handleResize = () => setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    const handleResize = () => {
+      const width = window.innerWidth;
+      setIsMobile(width < 768); // Mobile breakpoint
+      setIsDesktopOnly(width >= 1024); // Only show fullscreen buttons on desktop (>=1024px)
+    };
     
     // Initial check
     handleResize();
@@ -354,7 +359,7 @@ const FeaturesSection: React.FC = () => {
             <div className="container mx-auto px-4 relative z-10">
                 {/* Stats Section */}
                 <motion.div className="mb-16 md:mb-24 relative" {...sectionProps}>
-                    {!isMobile && (
+                    {isDesktopOnly && (
                         <LazyFullscreenButton 
                             isFullscreen={false} 
                             onClick={() => openFullscreen('stats')} 
@@ -415,7 +420,7 @@ const FeaturesSection: React.FC = () => {
                         ))}
                     </motion.div>
                     
-                    {!isMobile && (
+                    {isDesktopOnly && (
                         <div className="relative mt-4 md:mt-6 flex justify-end px-4 md:px-6">
                             <LazyFullscreenButton 
                                 isFullscreen={false} 
