@@ -38,13 +38,16 @@ const LazyComponent: React.FC<LazyComponentProps> = ({
       }
     );
 
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
+    // Store the current element in a variable for the cleanup function
+    const currentElement = containerRef.current;
+
+    if (currentElement) {
+      observer.observe(currentElement);
     }
 
     return () => {
-      if (containerRef.current) {
-        observer.unobserve(containerRef.current);
+      if (currentElement) {
+        observer.unobserve(currentElement);
       }
     };
   }, [threshold, rootMargin]);

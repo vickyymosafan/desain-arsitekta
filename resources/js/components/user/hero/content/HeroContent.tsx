@@ -14,7 +14,8 @@ const HeroContent: FC<HeroContentProps> = ({
     ctaSecondary, 
     animation = 'fadeIn',
     alignment = 'center',
-    currentSlide = 0
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    currentSlide = 0 // intentionally not used
 }) => {
     // Menghasilkan kelas penyelarasan teks berdasarkan prop alignment
     const alignmentClasses = {
@@ -27,9 +28,11 @@ const HeroContent: FC<HeroContentProps> = ({
     const animProps = createAnimationProps(animation, 0);
     
     // Architectural elements animation
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const time = useTime();
-    const rotate = useTransform(time, [0, 4000], [0, 360], { clamp: false });
-    const floatY = useTransform(time, [0, 2000, 4000], [0, -10, 0], { clamp: false });
+    // Removed unused transformations
+    // const rotate = useTransform(time, [0, 4000], [0, 360], { clamp: false });
+    // const floatY = useTransform(time, [0, 2000, 4000], [0, -10, 0], { clamp: false });
     
     // Grid animation values
     const gridMotion = useMotionValue(0);

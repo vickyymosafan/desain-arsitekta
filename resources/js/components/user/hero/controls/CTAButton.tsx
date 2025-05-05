@@ -63,7 +63,7 @@ const CTAButtonComponent: FC<CTAButtonComponentProps> = ({ button, index }) => {
         return buttonIconMap.default;
     };
 
-    const buttonIcon = button.icon ? getButtonIcon(button.text) : null;
+    // We'll use getButtonIcon directly in the render rather than storing in a variable
     
     // Menentukan komponen tombol berdasarkan flag external
     const ButtonComponent = external ? 'a' : Link;

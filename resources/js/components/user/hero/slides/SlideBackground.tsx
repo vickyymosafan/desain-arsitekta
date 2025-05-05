@@ -18,8 +18,8 @@ type SlideEffectType = 'parallax' | 'zoom' | 'blur' | 'glitch' | 'grain' | 'none
 
 // Preset animasi untuk berbagai efek
 const SLIDE_EFFECTS: Record<SlideEffectType, {
-    animate: Record<string, any>;
-    transition: Record<string, any>;
+    animate: Record<string, string | number | number[] | string[]>;
+    transition: Record<string, string | number | boolean>;
 }> = {
     parallax: { 
         animate: { scale: 1.1, y: [0, -15, 0], x: [0, 10, 0] }, 

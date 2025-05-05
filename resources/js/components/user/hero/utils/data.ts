@@ -1,4 +1,4 @@
-import { Slide, HeroConfig, CTAButton, ButtonVariant, HeroContentProps, AnimationVariant } from './types';
+import { Slide, HeroConfig, ButtonVariant, HeroContentProps, AnimationVariant } from './types';
 
 // Konfigurasi default dengan opsi animasi yang ditingkatkan
 export const defaultConfig: HeroConfig = {
