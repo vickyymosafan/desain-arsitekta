@@ -9,7 +9,6 @@
 import HeroSection from './content/HeroSection';
 export default HeroSection;
 
-// Re-export specific components to avoid naming conflicts
 // Content components
 export { default as HeroContent } from './content/HeroContent';
 
@@ -27,3 +26,7 @@ export { default as SlideTag } from './slides/SlideTag';
 
 // Utils
 export { default as useSlider } from './utils/useSlider';
+export * from './utils/constants';
+export * from './utils/types';
+export * from './utils/animationUtils';
+export * from './utils/layoutUtils';
