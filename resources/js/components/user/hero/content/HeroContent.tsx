@@ -115,7 +115,7 @@ const HeroContent: FC<HeroContentProps> = ({
                         />
 
                         <motion.h1 
-                            className="font-playfair text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-normal leading-tight sm:leading-tight md:leading-tight lg:leading-tight text-white drop-shadow-xl relative z-10 mb-3 md:mb-4 tracking-tight"
+                            className="font-playfair text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-tight sm:leading-tight md:leading-tight lg:leading-tight text-white drop-shadow-xl relative z-10 mb-3 md:mb-4 tracking-tight"
                             initial={{ opacity: 0, y: 30, clipPath: 'inset(0 0 100% 0)' }}
                             animate={{ opacity: 1, y: 0, clipPath: 'inset(0 0 0% 0)' }}
                             transition={{ delay: ANIMATION_TIMINGS.staggered.title, duration: ANIMATION_TIMINGS.durations.medium, ease: 'circOut' }}
@@ -136,7 +136,7 @@ const HeroContent: FC<HeroContentProps> = ({
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: ANIMATION_TIMINGS.staggered.highlight, type: 'spring', stiffness: 100 }}
                                 >
-                                    <span className="relative"
+                                    <span className="relative font-bold"
                                         style={{
                                             background: 'linear-gradient(90deg, #34d399 0%, #047857 100%)',
                                             WebkitBackgroundClip: 'text',
