@@ -25,7 +25,7 @@ export interface NavLinkProps {
     children: React.ReactNode;
     active?: boolean;
     icon?: string;
-    variant?: 'desktop' | 'mobile';
+    variant?: 'desktop' | 'mobile' | 'tablet';
     onClick?: () => void;
     className?: string;
 }

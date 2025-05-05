@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { NavbarProps, NavItem } from './components/types';
 import NavLink from './components/NavLink';
 import Button from './components/NavButtons';
 import MobileMenu from './components/MobileMenu';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 
 /**
  * Komponen utama Navbar
@@ -16,6 +16,18 @@ const NavbarSection = ({ user, activeLink = '#' }: NavbarProps) => {
     
     // State untuk efek scroll pada navbar
     const [scrolled, setScrolled] = useState<boolean>(false);
+    
+    // State untuk breakpoint tampilan tablet
+    const [isTablet, setIsTablet] = useState<boolean>(false);
+    
+    // State untuk menampilkan dropdown tablet
+    const [tabletDropdownOpen, setTabletDropdownOpen] = useState<boolean>(false);
+    
+    // Ref untuk dropdown menu pada tampilan tablet
+    const tabletDropdownRef = useRef<HTMLDivElement>(null);
+    
+    // Cek jika user memilih reduced motion preference
+    const prefersReducedMotion = useReducedMotion();
 
     // Item navigasi dengan ikon
     const navItems: NavItem[] = [
@@ -36,6 +48,42 @@ const NavbarSection = ({ user, activeLink = '#' }: NavbarProps) => {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+    
+    // Mendeteksi breakpoint untuk tablet dan menyesuaikan tampilan
+    useEffect(() => {
+        const checkTabletBreakpoint = () => {
+            // Sesuaikan breakpoint untuk tablet (768px - 1024px)
+            setIsTablet(window.innerWidth >= 768 && window.innerWidth < 1024);
+        };
+        
+        // Cek saat komponen dimuat
+        checkTabletBreakpoint();
+        
+        // Tambahkan event listener untuk resize
+        window.addEventListener('resize', checkTabletBreakpoint);
+        
+        // Cleanup event listener saat komponen unmount
+        return () => window.removeEventListener('resize', checkTabletBreakpoint);
+    }, []);
+    
+    // Menangani klik di luar dropdown untuk menutup dropdown tablet
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (tabletDropdownRef.current && !tabletDropdownRef.current.contains(event.target as Node)) {
+                setTabletDropdownOpen(false);
+            }
+        };
+        
+        // Tambahkan event listener saat dropdown terbuka
+        if (tabletDropdownOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+        
+        // Cleanup event listener
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [tabletDropdownOpen]);
 
     return (
         <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 
@@ -64,36 +112,85 @@ const NavbarSection = ({ user, activeLink = '#' }: NavbarProps) => {
                         </div>
                     </motion.div>
 
-                    {/* Navigasi Desktop */}
-                    <motion.nav 
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.1 }}
-                        className="hidden md:flex items-center space-x-8 ml-10"
-                    >
-                        {navItems.map((item, index) => (
-                            <motion.div 
-                                key={item.label}
-                                initial={{ opacity: 0, y: -10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.3, delay: 0.1 * (index + 1) }}
-                            >
-                                <NavLink 
-                                    href={item.href} 
-                                    active={activeLink === item.href}
-                                    icon={item.icon}
+                    {/* Navigasi Desktop dan Tablet */}
+                    {!isTablet ? (
+                        /* Navigasi Desktop (lebar 1024px ke atas) */
+                        <motion.nav 
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: prefersReducedMotion ? 0 : 0.5, delay: prefersReducedMotion ? 0 : 0.1 }}
+                            className="hidden lg:flex items-center space-x-8 ml-10"
+                        >
+                            {navItems.map((item, index) => (
+                                <motion.div 
+                                    key={item.label}
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ 
+                                        duration: prefersReducedMotion ? 0 : 0.3, 
+                                        delay: prefersReducedMotion ? 0 : 0.1 * (index + 1) 
+                                    }}
                                 >
-                                    {item.label}
-                                </NavLink>
-                            </motion.div>
-                        ))}
-                    </motion.nav>
+                                    <NavLink 
+                                        href={item.href} 
+                                        active={activeLink === item.href}
+                                        icon={item.icon}
+                                    >
+                                        {item.label}
+                                    </NavLink>
+                                </motion.div>
+                            ))}
+                        </motion.nav>
+                    ) : (
+                        /* Navigasi Tablet (768px - 1024px) */
+                        <div className="hidden md:flex lg:hidden items-center ml-4 relative" ref={tabletDropdownRef}>
+                            {/* Button untuk menu dropdown tablet */}
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.98 }}
+                                onClick={() => setTabletDropdownOpen(!tabletDropdownOpen)}
+                                className="py-2 px-4 flex items-center space-x-2 bg-emerald-50 hover:bg-emerald-100 dark:bg-gray-800 dark:hover:bg-gray-700 text-emerald-600 dark:text-emerald-500 rounded-lg font-medium transition-all duration-200 shadow-sm border border-emerald-200/30 dark:border-gray-700/50"
+                            >
+                                <span>Menu</span>
+                                <i className={`fas fa-chevron-${tabletDropdownOpen ? 'up' : 'down'} transition-transform duration-200`}></i>
+                            </motion.button>
+                            
+                            {/* Dropdown menu untuk tablet */}
+                            <AnimatePresence>
+                                {tabletDropdownOpen && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="absolute right-0 left-0 top-full mt-2 z-50 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 py-3 max-w-xs w-60"
+                                    >
+                                        <div className="flex flex-col">
+                                            {navItems.map((item) => (
+                                                <NavLink
+                                                    key={item.label}
+                                                    href={item.href}
+                                                    active={activeLink === item.href}
+                                                    icon={item.icon}
+                                                    variant="tablet"
+                                                    onClick={() => setTabletDropdownOpen(false)}
+                                                    className="hover:translate-x-1 px-4 py-2"
+                                                >
+                                                    {item.label}
+                                                </NavLink>
+                                            ))}
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    )}
 
-                    {/* Tombol Desktop */}
+                    {/* Tombol Desktop & Tablet */}
                     <motion.div 
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.3 }}
+                        transition={{ duration: prefersReducedMotion ? 0 : 0.5, delay: prefersReducedMotion ? 0 : 0.3 }}
                         className="hidden md:flex items-center space-x-4"
                     >
                         {user ? (
@@ -131,7 +228,7 @@ const NavbarSection = ({ user, activeLink = '#' }: NavbarProps) => {
                     <motion.button 
                         whileTap={{ scale: 0.95 }}
                         type="button" 
-                        className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 md:hidden hover:text-emerald-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-emerald-500 dark:hover:bg-gray-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2" 
+                        className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 lg:hidden md:hidden hover:text-emerald-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-emerald-500 dark:hover:bg-gray-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2" 
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                         aria-expanded={mobileMenuOpen}
                         aria-label="Buka menu utama"
@@ -149,15 +246,17 @@ const NavbarSection = ({ user, activeLink = '#' }: NavbarProps) => {
                     </motion.button>
                 </div>
 
-                {/* Menu Navigasi Mobile */}
+                {/* Menu Navigasi Mobile - Hanya ditampilkan pada ukuran mobile hingga tablet kecil (< 768px) */}
                 <AnimatePresence>
-                    <MobileMenu 
-                        isOpen={mobileMenuOpen}
-                        activeLink={activeLink}
-                        navItems={navItems}
-                        user={user}
-                        onClose={() => setMobileMenuOpen(false)}
-                    />
+                    {!isTablet && (
+                        <MobileMenu 
+                            isOpen={mobileMenuOpen}
+                            activeLink={activeLink}
+                            navItems={navItems}
+                            user={user}
+                            onClose={() => setMobileMenuOpen(false)}
+                        />
+                    )}
                 </AnimatePresence>
             </div>
         </header>
