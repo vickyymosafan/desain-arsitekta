@@ -136,20 +136,17 @@ const HeroContent: FC<HeroContentProps> = ({
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: ANIMATION_TIMINGS.staggered.highlight, type: 'spring', stiffness: 100 }}
                                 >
-                                    <span className="relative font-bold"
+                                    <span 
+                                        className="relative font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-emerald-400 to-green-500"
                                         style={{
-                                            background: 'linear-gradient(90deg, #34d399 0%, #047857 100%)',
-                                            WebkitBackgroundClip: 'text',
-                                            WebkitTextFillColor: 'transparent',
-                                            backgroundSize: '200% 100%',
-                                            animation: 'gradient-shift 5s ease infinite'
+                                            textShadow: '0 0 6px rgba(255, 255, 255, 0.69)'
                                         }}
                                     >
                                         {titleHighlight}
                                     </span>
                                     {/* Elegant underline decoration with refined animation */}
                                     <motion.span 
-                                        className="absolute bottom-0 left-0 w-full h-1 md:h-1.5 bg-gradient-to-r from-emerald-300/70 via-emerald-500/90 to-emerald-700/70"
+                                        className="absolute bottom-0 left-0 w-full h-1 md:h-1.5 bg-gradient-to-r from-emerald-300/80 via-emerald-500/90 to-green-600/80"
                                         initial={{ scaleX: 0, originX: 0 }}
                                         animate={{ scaleX: 1 }}
                                         transition={{ delay: ANIMATION_TIMINGS.staggered.highlight + 0.3, duration: 0.9, ease: 'circOut' }}
@@ -159,10 +156,16 @@ const HeroContent: FC<HeroContentProps> = ({
                         </motion.h1>
                         
                         <motion.p 
-                            className="text-base sm:text-lg md:text-xl text-white/90 mb-8 sm:mb-10 drop-shadow-lg mx-auto max-w-full sm:max-w-lg md:max-w-xl bg-black/20 backdrop-blur-md rounded-md py-4 px-4 sm:px-5 border-l-2 border-emerald-500/30 font-light leading-relaxed tracking-wide"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: ANIMATION_TIMINGS.staggered.description, duration: ANIMATION_TIMINGS.durations.fast }}
+                            className="text-base sm:text-lg md:text-xl text-white/95 mb-8 sm:mb-10 drop-shadow-lg mx-auto max-w-full sm:max-w-lg md:max-w-xl bg-black/15 backdrop-blur-xl rounded-xl py-5 px-6 border border-white/10 font-light leading-relaxed tracking-wide"
+                            initial={{ opacity: 0, y: 30, clipPath: 'inset(0 0 100% 0)' }}
+                            animate={{ opacity: 1, y: 0, clipPath: 'inset(0 0 0% 0)' }}
+                            transition={{ 
+                                delay: ANIMATION_TIMINGS.staggered.description, 
+                                duration: ANIMATION_TIMINGS.durations.medium,
+                                type: 'spring',
+                                stiffness: 100,
+                                damping: 20
+                            }}
                         >
                             {/* Decorative line removed for cleaner design */}
                             

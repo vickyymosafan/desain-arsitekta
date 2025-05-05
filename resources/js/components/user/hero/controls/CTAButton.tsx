@@ -3,11 +3,11 @@ import { motion } from 'framer-motion';
 import { Link } from '@inertiajs/react';
 import { ButtonVariant, CTAButton } from '../utils/types';
 
-// Variasi gaya tombol dengan estetika arsitektur yang lebih terdefinisi
+// Variasi gaya tombol dengan estetika modern untuk Gen-Z dan profesional arsitektur
 const buttonStyles: Record<ButtonVariant, string> = {
-    primary: "relative group overflow-hidden rounded-md bg-gradient-to-r from-emerald-600 to-emerald-700 px-7 py-3.5 font-medium text-white shadow-lg shadow-emerald-600/20 transition-all duration-500 hover:shadow-emerald-500/40 hover:scale-[1.03] focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 flex items-center justify-center gap-3",
-    secondary: "relative group overflow-hidden rounded-md border border-white/30 backdrop-blur-lg bg-white/5 px-7 py-3.5 font-medium text-white transition-all duration-500 hover:bg-white/10 hover:scale-[1.03] hover:border-white/50 focus:outline-none focus:ring-2 focus:ring-white/30 focus:ring-offset-2 flex items-center justify-center gap-3",
-    outline: "relative group overflow-hidden rounded-md border border-emerald-500/70 px-7 py-3.5 font-medium text-white transition-all duration-500 hover:bg-emerald-500/10 hover:scale-[1.03] focus:outline-none focus:ring-2 focus:ring-emerald-400/50 focus:ring-offset-2 flex items-center justify-center gap-3"
+    primary: "relative group overflow-hidden rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 px-7 py-3.5 font-medium text-white shadow-lg shadow-emerald-500/30 transition-all duration-300 hover:shadow-emerald-400/50 hover:translate-y-[-3px] active:translate-y-[1px] focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 flex items-center justify-center gap-3",
+    secondary: "relative group overflow-hidden rounded-xl border border-white/20 backdrop-blur-xl bg-white/10 px-7 py-3.5 font-medium text-white transition-all duration-300 hover:bg-white/15 hover:translate-y-[-3px] active:translate-y-[1px] hover:border-white/40 focus:outline-none focus:ring-2 focus:ring-white/30 focus:ring-offset-2 flex items-center justify-center gap-3",
+    outline: "relative group overflow-hidden rounded-xl border border-emerald-400/70 px-7 py-3.5 font-medium text-white transition-all duration-300 hover:bg-emerald-500/10 hover:translate-y-[-3px] active:translate-y-[1px] focus:outline-none focus:ring-2 focus:ring-emerald-400/50 focus:ring-offset-2 flex items-center justify-center gap-3"
 };
 
 // Ikon tombol yang diolah dengan detail dan estetika arsitektur
@@ -52,30 +52,25 @@ interface CTAButtonComponentProps {
 const CTAButtonComponent: FC<CTAButtonComponentProps> = ({ button, index }) => {
     const { text, href, variant = 'primary', icon = true, external = false } = button;
     
-    // Deteksi otomatis ikon berdasarkan konten teks - dioptimalkan untuk desain dan arsitektur
-    const getButtonIcon = () => {
-        const lowerText = text.toLowerCase();
-        if (lowerText.includes('kontak') || lowerText.includes('konsultasi')) {
-            return buttonIconMap.contact;
-        } else if (lowerText.includes('portfolio') || lowerText.includes('projek') || lowerText.includes('galeri')) {
-            return buttonIconMap.portfolio;
-        } else if (lowerText.includes('mulai') || lowerText.includes('order') || lowerText.includes('pesan')) {
-            return buttonIconMap.order;
-        } else if (lowerText.includes('desain') || lowerText.includes('design')) {
-            return buttonIconMap.design;
-        } else if (lowerText.includes('arsitek') || lowerText.includes('architecture')) {
-            return buttonIconMap.architecture;
-        }
+    // Mendapatkan ikon berdasarkan teks tombol atau menggunakan default
+    const getButtonIcon = (buttonText: string) => {
+        const lowerText = buttonText.toLowerCase();
+        if (lowerText.includes('konsultasi') || lowerText.includes('hubung')) return buttonIconMap.contact;
+        if (lowerText.includes('portofolio') || lowerText.includes('karya')) return buttonIconMap.portfolio;
+        if (lowerText.includes('desain')) return buttonIconMap.design;
+        if (lowerText.includes('arsitektur')) return buttonIconMap.architecture;
+        if (lowerText.includes('pesan') || lowerText.includes('order')) return buttonIconMap.order;
         return buttonIconMap.default;
     };
+
+    const buttonIcon = button.icon ? getButtonIcon(button.text) : null;
     
     // Menentukan komponen tombol berdasarkan flag external
     const ButtonComponent = external ? 'a' : Link;
     const buttonProps = external ? { href, target: "_blank", rel: "noopener noreferrer" } : { href };
     
     return (
-        <motion.div 
-            key={`btn-${index}`}
+        <motion.div
             whileHover={{ scale: 1.03, y: -2 }} 
             whileTap={{ scale: 0.97 }}
             initial={{ opacity: 0, y: 20 }}
@@ -101,7 +96,7 @@ const CTAButtonComponent: FC<CTAButtonComponentProps> = ({ button, index }) => {
                         animate={{ x: [0, 2, 0] }}
                         transition={{ duration: 2, repeat: Infinity, repeatType: 'reverse', repeatDelay: 5 }}
                     >
-                        {getButtonIcon()}
+                        {getButtonIcon(text)}
                     </motion.span>
                 )}
                 

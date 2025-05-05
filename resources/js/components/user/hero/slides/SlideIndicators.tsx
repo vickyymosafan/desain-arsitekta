@@ -42,12 +42,12 @@ const SlideIndicators: FC<SlideIndicatorProps> = ({
             containerClass: 'flex space-x-3',
             itemClass: (index: number) => `rounded-full backdrop-blur-sm transition-all duration-300 ${sizeVariants[size].dot} ${
                 index === currentSlide 
-                    ? 'bg-emerald-500 scale-125 shadow-lg shadow-emerald-500/20' 
-                    : 'bg-white/60 hover:bg-white/90'
+                    ? 'bg-gradient-to-r from-emerald-400 to-green-500 scale-125 shadow-lg shadow-emerald-400/30' 
+                    : 'bg-white/50 hover:bg-white/80'
             }`,
             motionProps: {
                 whileTap: { scale: 0.9, rotate: -5 },
-                whileHover: { scale: 1.2, y: -2, boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.3)' },
+                whileHover: { scale: 1.2, y: -2, boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.4)' },
                 ...baseMotionProps,
                 transition: (index: number) => ({ ...baseMotionProps.transition(index), stiffness: 400 })
             },
@@ -58,12 +58,12 @@ const SlideIndicators: FC<SlideIndicatorProps> = ({
             containerClass: 'flex space-x-4',
             itemClass: (index: number) => `relative backdrop-blur-sm transition-all duration-300 ${sizeVariants[size].line} ${
                 index === currentSlide 
-                    ? `${sizeVariants[size].active} bg-gradient-to-r from-emerald-400 to-emerald-600 shadow-lg shadow-emerald-500/20` 
+                    ? `${sizeVariants[size].active} bg-gradient-to-r from-emerald-400 to-green-500 shadow-lg shadow-emerald-400/20` 
                     : 'bg-white/60 hover:bg-white/90'
             }`,
             motionProps: {
                 whileTap: { scale: 0.9 },
-                whileHover: { y: -2, boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.3)' },
+                whileHover: { width: sizeVariants[size].active.replace('w-', ''), boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.3)' },
                 ...baseMotionProps,
                 transition: (index: number) => ({ ...baseMotionProps.transition(index), stiffness: 300 })
             },
