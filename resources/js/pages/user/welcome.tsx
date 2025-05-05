@@ -13,15 +13,6 @@ const LoadingSpinner = ({ minHeight = '50vh' }: { minHeight?: string }) => (
     </div>
 );
 
-// Placeholder for the removed services section
-const ServicesPlaceholder = () => {
-    return (
-        <section className="bg-black py-20">
-            {/* This empty section maintains layout spacing where services used to be */}
-        </section>
-    );
-};
-
 export default function Welcome() {
     const { auth } = usePage<SharedData>().props;
 
@@ -41,14 +32,18 @@ export default function Welcome() {
             
             <Navbar user={auth.user} />
             
-            <main>
-                <Suspense fallback={<LoadingSpinner minHeight="50vh" />}>
-                    <HeroSection />
-                </Suspense>
+            <div className="flex flex-col min-h-screen bg-black">
+                <main>
+                    <Suspense fallback={<LoadingSpinner minHeight="100vh" />}>
+                        <HeroSection />
+                    </Suspense>
+                </main>
                 
-                {/* Placeholder to maintain layout structure */}
-                <ServicesPlaceholder />
-            </main>
+                {/* Simple footer to maintain layout structure */}
+                <footer className="mt-auto py-8 bg-black">
+                    <div className="container mx-auto"></div>
+                </footer>
+            </div>
         </>
     );
 }
