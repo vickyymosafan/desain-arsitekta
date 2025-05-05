@@ -22,41 +22,43 @@ export const defaultConfig: HeroConfig = {
     navbarHeight: 64
 };
 
-// Data slide
+// Data slide dengan gambar dan konten yang lebih relevan untuk target audience
 export const slides: Slide[] = [
     {
         id: 1,
-        image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-        alt: "Modern Minimalist Architecture",
-        headline: "Desain Modern",
-        subtext: "Menciptakan ruang yang timeless dengan sentuhan inovatif",
+        image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+        alt: "Progressive Architecture Design",
+        headline: "Spatial Vision",
+        subtext: "Menghadirkan keseimbangan sempurna antara estetika dan fungsionalitas ruang",
         position: 'center',
+        overlay: 'bg-gradient-to-r from-black/80 via-transparent to-black/80',
         effect: 'parallax',
-        accent: '#34d399',
-        tag: 'Trending'
+        accent: '#10b981',
+        tag: 'Featured'
     },
     {
         id: 2,
-        image: "https://images.unsplash.com/photo-1600607688969-a5bfcd646154?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-        alt: "Contemporary Interior",
-        headline: "Aesthetic Space",
-        subtext: "Kenyamanan dan estetika dalam satu harmoni sempurna",
+        image: "https://images.unsplash.com/photo-1616137466211-f939a420be84?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2532&q=80",
+        alt: "Luxury Interior Design",
+        headline: "Material Harmony",
+        subtext: "Kurasi material premium yang menghadirkan dimensi dan tekstur tak terlupakan",
         position: 'center',
+        overlay: 'bg-gradient-to-r from-black/80 via-transparent to-black/80',
         effect: 'zoom',
-        accent: '#3b82f6',
-        tag: 'Must See'
+        accent: '#8b5cf6',
+        tag: 'Exclusive'
     },
     {
         id: 3,
-        image: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2187&q=80",
-        alt: "Luxury Concept House",
-        headline: "Premium Living",
-        subtext: "Pengalaman hunian eksklusif dengan sentuhan luxury minimalist",
+        image: "https://images.unsplash.com/photo-1600210491892-03d54c0aaf87?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80",
+        alt: "Sustainable Architecture",
+        headline: "Green Innovation",
+        subtext: "Desain berkelanjutan yang memadukan kecanggihan teknologi dengan sentuhan alam",
         position: 'center',
-        overlay: 'bg-gradient-to-t from-black/60 via-black/40 to-black/60',
-        effect: 'blur',
-        accent: '#f59e0b',
-        tag: 'Exclusive'
+        overlay: 'bg-gradient-to-r from-black/80 via-transparent to-black/80',
+        effect: 'zoom',
+        accent: '#059669',
+        tag: 'Sustainable'
     }
 ];
 

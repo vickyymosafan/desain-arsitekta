@@ -5,7 +5,6 @@ import Navbar from '@/components/user/navbar/index';
 
 // Lazy load components
 const HeroSection = lazy(() => import('@/components/user/hero/index'));
-const ServicesSection = lazy(() => import('@/components/user/services/index'));
 
 // Loading spinner component
 const LoadingSpinner = ({ minHeight = '50vh' }: { minHeight?: string }) => (
@@ -13,6 +12,15 @@ const LoadingSpinner = ({ minHeight = '50vh' }: { minHeight?: string }) => (
         <div className="animate-pulse w-12 h-12 rounded-full bg-emerald-300/40"></div>
     </div>
 );
+
+// Placeholder for the removed services section
+const ServicesPlaceholder = () => {
+    return (
+        <section className="bg-black py-20">
+            {/* This empty section maintains layout spacing where services used to be */}
+        </section>
+    );
+};
 
 export default function Welcome() {
     const { auth } = usePage<SharedData>().props;
@@ -38,9 +46,8 @@ export default function Welcome() {
                     <HeroSection />
                 </Suspense>
                 
-                <Suspense fallback={<LoadingSpinner minHeight="30vh" />}>
-                    <ServicesSection />
-                </Suspense>
+                {/* Placeholder to maintain layout structure */}
+                <ServicesPlaceholder />
             </main>
         </>
     );

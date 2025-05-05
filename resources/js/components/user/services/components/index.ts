@@ -1,9 +1,0 @@
-export { default as BackgroundElements } from './BackgroundElements';
-export { default as DynamicSpotlight } from './DynamicSpotlight';
-export { default as SparkleIcon } from './SparkleIcon';
-export { default as NavigationButton } from './NavigationButton';
-export { default as ServiceCardPlaceholder } from './ServiceCardPlaceholder';
-export { default as FeatureItem } from './FeatureItem';
-export { default as ServiceIcon } from './ServiceIcon';
-export { default as LearnMoreLink } from './LearnMoreLink';
-export { default as CardDecorations } from './CardDecorations';
