@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Slide } from './types';
-import { getSlideAnimationStyle } from './animationUtils';
+import { Slide } from '../utils/types';
+import { getSlideAnimationStyle } from '../utils/animationUtils';
 import SlideDecorations from './SlideDecorations';
 import SlideTag from './SlideTag';
 import SlideInfo from './SlideInfo';

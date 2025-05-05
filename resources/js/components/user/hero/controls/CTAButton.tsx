@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from '@inertiajs/react';
-import { ButtonVariant, CTAButton } from './types';
+import { ButtonVariant, CTAButton } from '../utils/types';
 
 // Variasi gaya tombol
 const buttonStyles: Record<ButtonVariant, string> = {

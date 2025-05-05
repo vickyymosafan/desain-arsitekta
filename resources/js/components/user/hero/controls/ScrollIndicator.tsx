@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { motion } from 'framer-motion';
-import { ScrollIndicatorProps } from './types';
-import { COLOR_CLASSES, SIZE_CLASSES } from './constants';
+import { ScrollIndicatorProps } from '../utils/types';
+import { COLOR_CLASSES, SIZE_CLASSES } from '../utils/constants';
 
 const ScrollIndicator: FC<ScrollIndicatorProps> = ({ 
     variant = 'default', 

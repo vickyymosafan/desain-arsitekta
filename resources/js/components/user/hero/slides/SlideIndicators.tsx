@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { motion } from 'framer-motion';
-import { IndicatorVariantConfig, SlideIndicatorProps } from './types';
-import { SIZE_CLASSES } from './constants';
+import { IndicatorVariantConfig, SlideIndicatorProps } from '../utils/types';
+import { SIZE_CLASSES } from '../utils/constants';
 
 const SlideIndicators: FC<SlideIndicatorProps> = ({ 
     slides, 

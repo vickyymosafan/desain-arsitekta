@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { motion } from 'framer-motion';
-import { DEFAULT_ACCENT_COLOR, COMMON_STYLES } from './constants';
+import { DEFAULT_ACCENT_COLOR, COMMON_STYLES } from '../utils/constants';
 
 /**
  * Interface untuk props komponen SlideTag

@@ -1,14 +1,14 @@
 import { FC } from 'react';
-import { HeroSectionProps } from './types';
-import { applyGlobalStyles } from './styles';
-import { defaultConfig, slides, getHeroContent } from './data';
-import { getHeightStyle } from './layoutUtils';
-import SlideBackground from './SlideBackground';
-import SlideNumber from './SlideNumber';
+import { HeroSectionProps } from '../utils/types';
+import { applyGlobalStyles } from '../utils/styles';
+import { defaultConfig, slides, getHeroContent } from '../utils/data';
+import { getHeightStyle } from '../utils/layoutUtils';
+import SlideBackground from '../slides/SlideBackground';
+import SlideNumber from '../slides/SlideNumber';
 import HeroContent from './HeroContent';
-import SlideIndicators from './SlideIndicators';
-import ScrollIndicator from './ScrollIndicator';
-import useSlider from './useSlider';
+import SlideIndicators from '../slides/SlideIndicators';
+import ScrollIndicator from '../controls/ScrollIndicator';
+import useSlider from '../utils/useSlider';
 import { motion, useScroll, useTransform } from 'framer-motion';
 
 

@@ -1,8 +1,8 @@
 import { FC } from 'react';
 import { motion } from 'framer-motion';
-import { HeroContentProps } from './types';
-import CTAButtonComponent from './CTAButton';
-import { createAnimationProps } from './animationUtils';
+import { HeroContentProps } from '../utils/types';
+import CTAButtonComponent from '../controls/CTAButton';
+import { createAnimationProps } from '../utils/animationUtils';
 
 // Konstanta waktu animasi untuk konsistensi
 const ANIMATION_TIMINGS = {
