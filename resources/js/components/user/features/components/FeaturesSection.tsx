@@ -378,13 +378,6 @@ const FeaturesSection: React.FC = () => {
                 {/* Services Section */}
                 <section className="relative mt-8 md:mt-0">
                     {/* Services section reference for lazy loading */}
-                    <LazyFullscreenButton 
-                        isFullscreen={false} 
-                        onClick={() => openFullscreen('services')} 
-                        position="top-right"
-                        label={isMobile ? undefined : "Perbesar"}
-                    />
-                    
                     <SectionTitle 
                         title="Layanan Kami"
                         subtitle="Kami menyediakan berbagai layanan profesional untuk mewujudkan ruang impian Anda dengan kualitas terbaik"
@@ -419,6 +412,15 @@ const FeaturesSection: React.FC = () => {
                             </motion.div>
                         ))}
                     </motion.div>
+                    
+                    <div className="relative mt-4 md:mt-6 flex justify-end px-4 md:px-6">
+                        <LazyFullscreenButton 
+                            isFullscreen={false} 
+                            onClick={() => openFullscreen('services')} 
+                            position="bottom-right"
+                            label={isMobile ? undefined : "Perbesar"}
+                        />
+                    </div>
                 </section>
             </div>
         </section>
