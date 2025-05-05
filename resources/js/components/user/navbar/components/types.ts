@@ -5,6 +5,7 @@ import { type User } from '@/types';
  */
 export interface NavbarProps {
     user: User | null;
+    activeLink?: string; // Section yang sedang aktif
 }
 
 /**

@@ -1,6 +1,6 @@
 import { type SharedData } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect, useState, useRef } from 'react';
 import Navbar from '@/components/user/navbar/index';
 
 // Lazy load components
@@ -16,6 +16,41 @@ const LoadingSpinner = ({ minHeight = '50vh' }: { minHeight?: string }) => (
 
 export default function Welcome() {
     const { auth } = usePage<SharedData>().props;
+    const [activeSection, setActiveSection] = useState<string>('#');
+    
+    // Reference untuk semua section
+    const sectionsRef = useRef<HTMLElement[]>([]);
+    
+    // Mendeteksi section yang aktif saat scroll
+    useEffect(() => {
+        const handleScroll = () => {
+            const scrollPosition = window.scrollY + 100; // Offset untuk header
+            
+            // Temukan section yang sedang aktif
+            for (const section of sectionsRef.current) {
+                if (!section) continue;
+                
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    setActiveSection(`#${section.id}`);
+                    break;
+                }
+            }
+        };
+        
+        window.addEventListener('scroll', handleScroll);
+        // Panggil sekali untuk setup awal
+        handleScroll();
+        
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+    
+    // Efek untuk merefresh referensi section setelah render
+    useEffect(() => {
+        sectionsRef.current = Array.from(document.querySelectorAll('section[id]'));
+    }, []);
 
     return (
         <>
@@ -31,17 +66,21 @@ export default function Welcome() {
                 />
             </Head>
             
-            <Navbar user={auth.user} />
+            <Navbar user={auth.user} activeLink={activeSection} />
             
             <div className="flex flex-col min-h-screen bg-black">
                 <main>
-                    <Suspense fallback={<LoadingSpinner minHeight="100vh" />}>
-                        <HeroSection />
-                    </Suspense>
+                    <section id="" className="section-wrapper">
+                        <Suspense fallback={<LoadingSpinner minHeight="100vh" />}>
+                            <HeroSection />
+                        </Suspense>
+                    </section>
                     
-                    <Suspense fallback={<LoadingSpinner minHeight="100vh" />}>
-                        <FeaturesSection />
-                    </Suspense>
+                    <section id="services" className="section-wrapper">
+                        <Suspense fallback={<LoadingSpinner minHeight="100vh" />}>
+                            <FeaturesSection />
+                        </Suspense>
+                    </section>
                 </main>
                 
                 {/* Simple footer to maintain layout structure */}

@@ -9,9 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
  * Komponen utama Navbar
  * Menampilkan menu navigasi, logo, dan tombol aksi
  */
-const NavbarSection = ({ user }: NavbarProps) => {
-    // State untuk menyimpan link yang sedang aktif
-    const [activeLink, setActiveLink] = useState<string>('#');
+const NavbarSection = ({ user, activeLink = '#' }: NavbarProps) => {
     
     // State untuk menu mobile (terbuka/tertutup)
     const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
@@ -28,20 +26,11 @@ const NavbarSection = ({ user }: NavbarProps) => {
         { href: '#contact', label: 'Kontak', icon: 'fa-envelope' }
     ];
 
-    // Menangani efek scroll
+    // Menangani efek scroll hanya untuk efek visual navbar
     useEffect(() => {
         const handleScroll = () => {
             // Set scrolled status berdasarkan posisi scroll
             setScrolled(window.scrollY > 50);
-
-            // Mengatur section aktif berdasarkan posisi scroll
-            const sections = document.querySelectorAll('section[id]');
-            sections.forEach(section => {
-                const sectionTop = (section as HTMLElement).offsetTop;
-                if (window.scrollY >= sectionTop - 100) {
-                    setActiveLink(`#${section.id}`);
-                }
-            });
         };
 
         window.addEventListener('scroll', handleScroll);
