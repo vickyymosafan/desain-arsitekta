@@ -1,7 +1,6 @@
 import React from 'react';
-import { FaPencilRuler, FaPaintRoller, FaHammer, FaTools, FaHardHat, FaWrench } from 'react-icons/fa';
-import { FaBuilding, FaCheckCircle, FaDraftingCompass, FaRulerCombined } from 'react-icons/fa';
-import { MdArchitecture, MdDesignServices } from 'react-icons/md';
+import { FaBuilding, FaCheckCircle, FaDraftingCompass, FaRulerCombined, FaHardHat } from 'react-icons/fa';
+import { MdArchitecture, MdDesignServices, MdDomainVerification } from 'react-icons/md';
 
 export interface StatItemData {
     icon: React.ReactNode;
@@ -19,18 +18,18 @@ export interface ServiceCardData {
 export const statsData: StatItemData[] = [
     {
         icon: React.createElement(FaCheckCircle),
-        count: '500+',
+        count: '239+',
         label: 'Proyek Selesai'
     },
     {
-        icon: React.createElement(FaBuilding),
-        count: '12',
-        label: 'Tahun Pengalaman'
+        icon: React.createElement(MdArchitecture),
+        count: '179',
+        label: 'Arsitektur'
     },
     {
-        icon: React.createElement(MdArchitecture),
+        icon: React.createElement(FaHardHat),
         count: '50+',
-        label: 'Arsitek Ahli'
+        label: 'Konstruksi'
     }
 ];
 
