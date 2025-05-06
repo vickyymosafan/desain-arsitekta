@@ -393,6 +393,7 @@ const NavbarSection = ({ user, activeLink = '#' }: NavbarProps) => {
                             navItems={navItems}
                             user={user}
                             onClose={() => setMobileMenuOpen(false)}
+                            onNavLinkClick={handleNavLinkClick}
                         />
                     )}
                 </AnimatePresence>
