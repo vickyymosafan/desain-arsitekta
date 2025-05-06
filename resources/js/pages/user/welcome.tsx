@@ -5,7 +5,7 @@ import Navbar from '@/components/user/navbar/index';
 
 // Lazy load components
 const HeroSection = lazy(() => import('@/components/user/hero/index'));
-const FeaturesSection = lazy(() => import('@/components/user/features/index'));
+const FeaturesSection = lazy(() => import('@/components/user/servicesstat/index'));
 
 // Loading spinner component
 const LoadingSpinner = ({ minHeight = '50vh' }: { minHeight?: string }) => (

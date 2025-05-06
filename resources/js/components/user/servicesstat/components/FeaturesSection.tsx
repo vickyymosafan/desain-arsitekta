@@ -3,7 +3,7 @@ import { motion, AnimatePresence, useInView } from 'framer-motion';
 import StatItem from './StatItem';
 import ServiceCard from './ServiceCard';
 import FullscreenButton from './FullscreenButton';
-import { statsData, servicesData } from '../data/featuresData';
+import { statsData, servicesData } from '../data/servicesStatData';
 
 // Types
 interface SectionTitleProps {
