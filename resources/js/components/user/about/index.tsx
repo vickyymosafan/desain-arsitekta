@@ -23,7 +23,7 @@ export default function AboutSection() {
                     <div className="w-full lg:w-1/2 relative">
                         <div className="rounded-xl overflow-hidden shadow-2xl relative z-10">
                             <img 
-                                src="/images/about-main.jpg" 
+                                src="/storage/images/hero/2.webp" 
                                 alt="Tim Antosa Architect" 
                                 className="w-full h-[400px] md:h-[500px] object-cover"
                             />
