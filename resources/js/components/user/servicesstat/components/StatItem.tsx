@@ -8,9 +8,7 @@ import { motion, useInView, useAnimation, Variants } from 'framer-motion';
  * Features include entrance animations, hover effects, and count-up animation when the component comes into view.
  */
 
-// Types and Interfaces
-// -------------------
-export interface StatItemProps {
+interface StatItemProps {
   /** Icon component to display at the top of the stat card */
   icon: React.ReactNode;
   /** The count value to display (can be a number or string with a plus sign) */
@@ -22,7 +20,6 @@ export interface StatItemProps {
 }
 
 // Animation Variants
-// -----------------
 const animations = {
   container: {
     hidden: { 
@@ -195,14 +192,19 @@ const classes = {
   ].join(' '),
 
   iconContainer: [
-    "text-emerald-400 text-4xl mb-6 bg-emerald-400/10 p-5 rounded-full", 
-    "relative z-10 group-hover:bg-emerald-400/20 transition-all duration-500"
+    "relative text-emerald-500 mb-5 p-4 rounded-full", 
+    "bg-emerald-500/10 w-20 h-20 flex items-center justify-center", 
+    "border border-emerald-500/30"
   ].join(' '),
 
-  iconRing: "absolute inset-0 rounded-full border border-emerald-400/0 z-0",
+  iconRing: [
+    "absolute inset-0 rounded-full border-2 border-emerald-500/0", 
+    "transition-all duration-500"
+  ].join(' '),
 
   countValue: [
-    "text-white font-playfair text-3xl md:text-5xl lg:text-6xl font-bold mb-3", 
+    "font-bold text-4xl lg:text-5xl mb-4 font-playfair", 
+    "bg-gradient-to-r from-white to-white bg-clip-text", 
     "relative z-10"
   ].join(' '),
 
@@ -219,15 +221,14 @@ const classes = {
   pulseEffect: "absolute inset-0 rounded-xl border-2 border-emerald-500/30 z-0"
 };
 
-/**
- * Utility to format a count value with appropriate suffix
- */
-const formatCountValue = (rawCount: string | number, currentValue: number): string | number => {
+// Utility to format a count value with appropriate suffix
+function formatCountValue(rawCount: string | number, currentValue: number): string | number {
+  // If original count has a plus sign, we need to add it back
   if (typeof rawCount === 'string' && rawCount.includes('+')) {
     return `${currentValue}+`;
   }
   return currentValue;
-};
+}
 
 /**
  * StatItem Component
@@ -236,8 +237,11 @@ const formatCountValue = (rawCount: string | number, currentValue: number): stri
  * and a descriptive label. Includes hover animations and optional click interaction.
  */
 const StatItem: React.FC<StatItemProps> = ({ icon, count, label, onClick }) => {
-  const [hovering, setHovering] = useState<boolean>(false);
-  const [countValue, setCountValue] = useState<number>(0);
+  // State for managing animations
+  const [countValue, setCountValue] = useState(0);
+  const [hovering, setHovering] = useState(false);
+  
+  // Ref & animation hooks for scroll detection
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0.3 });
   const controls = useAnimation();

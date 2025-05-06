@@ -8,8 +8,6 @@ import { motion, Variants } from 'framer-motion';
  * Features include hover effects, sequential animations, and accessibility support.
  */
 
-// Types and Interfaces
-// --------------------
 interface ServiceCardProps { 
   /** Icon component to display at the top of the card */
   icon: React.ReactNode; 
@@ -24,7 +22,6 @@ interface ServiceCardProps {
 }
 
 // Animation Variants
-// -----------------
 const animations = {
   card: {
     hover: { 
