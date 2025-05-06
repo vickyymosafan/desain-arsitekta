@@ -1,9 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
-import { NavbarProps, NavItem } from './components/types';
+import { NavbarProps } from './components/types';
 import NavLink from './components/NavLink';
 import Button from './components/NavButtons';
 import MobileMenu from './components/MobileMenu';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { navItems } from './components/navigationItems';
 
 /**
  * Komponen utama Navbar
@@ -32,14 +33,7 @@ const NavbarSection = ({ user, activeLink = '#' }: NavbarProps) => {
     // Cek jika user memilih reduced motion preference
     const prefersReducedMotion = useReducedMotion();
 
-    // Item navigasi dengan ikon
-    const navItems: NavItem[] = [
-        { href: '#', label: 'Beranda', icon: 'fa-home' },
-        { href: '#services', label: 'Layanan', icon: 'fa-tools' },
-        { href: '#portfolio', label: 'Portofolio', icon: 'fa-image' },
-        { href: '#blog', label: 'Blog', icon: 'fa-newspaper' },
-        { href: '#contact', label: 'Kontak', icon: 'fa-envelope' }
-    ];
+    // Menggunakan navItems dari file centralized
 
     // Menangani efek scroll hanya untuk efek visual navbar
     useEffect(() => {
@@ -143,7 +137,6 @@ const NavbarSection = ({ user, activeLink = '#' }: NavbarProps) => {
                                     <NavLink 
                                         href={item.href} 
                                         active={activeLink === item.href}
-                                        icon={item.icon}
                                     >
                                         {item.label}
                                     </NavLink>
@@ -168,7 +161,6 @@ const NavbarSection = ({ user, activeLink = '#' }: NavbarProps) => {
                                         <NavLink 
                                             href={item.href} 
                                             active={activeLink === item.href}
-                                            icon={item.icon}
                                             variant="desktop"
                                             className="text-sm px-3"
                                         >
@@ -213,7 +205,6 @@ const NavbarSection = ({ user, activeLink = '#' }: NavbarProps) => {
                                                     key={item.label}
                                                     href={item.href}
                                                     active={activeLink === item.href}
-                                                    icon={item.icon}
                                                     variant="tablet"
                                                     onClick={() => setTabletDropdownOpen(false)}
                                                     className="hover:translate-x-1 px-4 py-3"

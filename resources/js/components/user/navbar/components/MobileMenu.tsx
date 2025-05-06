@@ -80,7 +80,6 @@ const MobileMenu = ({ isOpen, activeLink, navItems, user, onClose }: MobileMenuP
                                 <NavLink
                                     href={item.href}
                                     active={activeLink === item.href}
-                                    icon={item.icon}
                                     variant="mobile"
                                     onClick={onClose}
                                     className="hover:translate-x-1"

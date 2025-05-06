@@ -1,8 +1,7 @@
 import { type SharedData } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
 import { lazy, Suspense, useEffect, useState } from 'react';
-import Navbar from '@/components/user/navbar/index';
-import { NavItem } from '@/components/user/navbar';
+import Navbar, { navItems } from '@/components/user/navbar';
 
 // Lazy load components
 const HeroSection = lazy(() => import('@/components/user/hero/index'));
@@ -15,14 +14,7 @@ const LoadingSpinner = ({ minHeight = '50vh' }: { minHeight?: string }) => (
     </div>
 );
 
-// Navigation items yang sama dengan yang digunakan di NavbarSection
-const navItems: NavItem[] = [
-    { href: '#', label: 'Beranda', icon: 'fa-home' },
-    { href: '#services', label: 'Layanan', icon: 'fa-tools' },
-    { href: '#portfolio', label: 'Portofolio', icon: 'fa-image' },
-    { href: '#blog', label: 'Blog', icon: 'fa-newspaper' },
-    { href: '#contact', label: 'Kontak', icon: 'fa-envelope' }
-];
+// Menggunakan navItems dari komponen navbar (single source of truth)
 
 export default function Welcome() {
     const { auth } = usePage<SharedData>().props;
