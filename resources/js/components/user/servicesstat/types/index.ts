@@ -1,24 +1,7 @@
 // Common types used across components
-export interface SectionTitleProps {
-  title: string;
-  subtitle: string;
-  className?: string;
-}
-
 export interface AnimatedBackgroundProps {
   scrollY: number;
   density?: number;
-}
-
-export interface KeyboardIndicatorProps {
-  show: boolean;
-}
-
-export interface FullscreenSectionProps {
-  title: string;
-  scrollY: number;
-  onClose: () => void;
-  children: React.ReactNode;
 }
 
 // Stat and Service item types

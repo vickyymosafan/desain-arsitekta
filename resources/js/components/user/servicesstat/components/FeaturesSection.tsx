@@ -3,15 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 // UI Components
 import AnimatedBackground from './ui/AnimatedBackground';
-import KeyboardIndicator from './ui/KeyboardIndicator';
-import FullscreenSection from './ui/FullscreenSection';
 
 // Section Components
-import StatsSection, { StatsFullscreenContent } from './StatsSection';
-import ServicesSection, { ServicesFullscreenContent } from './ServicesSection';
-
-// Animation constants
-import { DESKTOP_BREAKPOINT } from '../types';
+import StatsFullscreenContent from './StatsSection';
+import ServicesFullscreenContent from './ServicesSection';
 
 /**
  * Main FeaturesSection component
@@ -21,7 +16,6 @@ const FeaturesSection: React.FC = () => {
   // State management
   const [scrollY, setScrollY] = useState(0);
   const [activeView, setActiveView] = useState<'stats' | 'services'>('services');
-  const [showKeyboardHint, setShowKeyboardHint] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
     
@@ -29,8 +23,7 @@ const FeaturesSection: React.FC = () => {
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
     const handleResize = () => {
-      const width = window.innerWidth;
-      setIsMobile(width < 768); // Mobile breakpoint
+      setIsMobile(window.innerWidth < 768); // Mobile breakpoint
     };
     
     // Initial check
@@ -61,9 +54,6 @@ const FeaturesSection: React.FC = () => {
   // Toggle between stats and services views
   const toggleView = () => {
     setActiveView(prev => prev === 'stats' ? 'services' : 'stats');
-    // Show keyboard hint when view changes
-    setShowKeyboardHint(true);
-    setTimeout(() => setShowKeyboardHint(false), 3000);
   };
     
   return (
@@ -74,9 +64,6 @@ const FeaturesSection: React.FC = () => {
       style={{ scrollMarginTop: '80px' }} // Add offset for fixed header
     >
       <AnimatedBackground scrollY={scrollY} />
-      
-      {/* Keyboard navigation indicator */}
-      <KeyboardIndicator show={showKeyboardHint} />
       
       <div className="container mx-auto px-4 relative z-10 py-16">
         {/* Section Header */}
