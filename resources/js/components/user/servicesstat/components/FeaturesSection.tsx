@@ -190,6 +190,7 @@ const FeaturesSection: React.FC = () => {
   const [showKeyboardHint, setShowKeyboardHint] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isDesktopOnly, setIsDesktopOnly] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
     
   // Handle scroll effect and detect viewport size
   useEffect(() => {
@@ -210,6 +211,17 @@ const FeaturesSection: React.FC = () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleResize);
     };
+  }, []);
+  
+  // Add smooth scrolling for navigation hash links
+  useEffect(() => {
+    // Check if URL contains hash for this section
+    if (window.location.hash === '#services' && sectionRef.current) {
+      // Add a slight delay to ensure the DOM is fully rendered
+      setTimeout(() => {
+        sectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
   }, []);
     
   // Handle escape key to exit fullscreen
@@ -327,7 +339,12 @@ const FeaturesSection: React.FC = () => {
   );
     
     return (
-        <section id="services" className="min-h-screen bg-gradient-to-b from-black to-neutral-900 pt-16 pb-16 md:pt-20 md:pb-20 flex flex-col justify-center relative overflow-hidden">
+        <section 
+            ref={sectionRef}
+            id="services" 
+            className="min-h-screen bg-gradient-to-b from-black to-neutral-900 pt-16 pb-16 md:pt-20 md:pb-20 flex flex-col justify-center relative overflow-hidden"
+            style={{ scrollMarginTop: '80px' }} // Add offset for fixed header
+        >
             <AnimatedBackground scrollY={scrollY} />
             
             {/* Keyboard navigation indicator */}
