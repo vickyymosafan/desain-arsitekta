@@ -327,7 +327,7 @@ const FeaturesSection: React.FC = () => {
   );
     
     return (
-        <section className="min-h-screen bg-gradient-to-b from-black to-neutral-900 py-16 md:py-24 flex flex-col justify-center items-center relative overflow-hidden">
+        <section className="min-h-screen bg-gradient-to-b from-black to-neutral-900 py-16 md:py-24 flex flex-col justify-center relative overflow-hidden">
             <AnimatedBackground scrollY={scrollY} />
             
             {/* Keyboard navigation indicator */}
@@ -356,10 +356,10 @@ const FeaturesSection: React.FC = () => {
                 )}
             </AnimatePresence>
             
-            <div className="w-full max-w-7xl mx-auto px-4 relative z-10 flex flex-col items-center">
+            <div className="container mx-auto px-4 relative z-10">
                 {/* Stats Section */}
                 <motion.div 
-                    className="relative mb-16 md:mb-24 w-full flex justify-center"
+                    className="relative mb-16 md:mb-24 flex justify-center items-center w-full"
                     {...sectionProps}
                 >
                     {isDesktopOnly && (
@@ -373,7 +373,7 @@ const FeaturesSection: React.FC = () => {
                         </div>
                     )}
                     
-                    <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 w-full max-w-5xl">
+                    <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto px-4 md:px-0 w-full">
                         {statsData.map((stat, index) => (
                             <motion.div key={index} variants={itemVariants}>
                                 <StatItem 
@@ -388,7 +388,7 @@ const FeaturesSection: React.FC = () => {
                 </motion.div>
 
                 {/* Services Section */}
-                <section className="relative mt-8 md:mt-0 w-full flex flex-col items-center">
+                <section className="relative mt-8 md:mt-0 flex flex-col items-center">
                     {/* Services section reference for lazy loading */}
                     <div className="relative w-full">
                         <SectionTitle 
@@ -399,7 +399,7 @@ const FeaturesSection: React.FC = () => {
                     </div>
                     
                     <motion.div 
-                        className="relative mb-16 md:mb-24 w-full flex justify-center"
+                        className="relative mb-16 md:mb-24 flex justify-center items-center w-full"
                         {...sectionProps}
                     >
                         {isDesktopOnly && (
@@ -414,7 +414,7 @@ const FeaturesSection: React.FC = () => {
                         )}
                         
                         <motion.div 
-                            className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-6xl"
+                            className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto px-4 md:px-6 lg:px-4 w-full"
                             initial="hidden"
                             whileInView="visible"
                             variants={{
