@@ -373,10 +373,10 @@ const FeaturesSection: React.FC = () => {
                 )}
             </AnimatePresence>
             
-            <div className="container mx-auto px-4 relative z-10 mt-0 md:mt-4">
+            <div className="container mx-auto px-4 relative z-10 mt-0 md:-mt-8">
                 {/* Stats Section */}
                 <motion.div 
-                    className="relative mb-12 md:mb-16 flex justify-center items-center w-full"
+                    className="relative mb-12 md:mb-20 flex justify-center items-center w-full"
                     {...sectionProps}
                 >
                     {isDesktopOnly && (
@@ -416,7 +416,7 @@ const FeaturesSection: React.FC = () => {
                     </div>
                     
                     <motion.div 
-                        className="relative mb-16 md:mb-24 flex justify-center items-center w-full"
+                        className="relative flex justify-center items-center w-full"
                         {...sectionProps}
                     >
                         {isDesktopOnly && (
