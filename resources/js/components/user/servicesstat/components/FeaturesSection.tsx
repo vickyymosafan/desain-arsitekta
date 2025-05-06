@@ -8,65 +8,52 @@ import AnimatedBackground from './ui/AnimatedBackground';
 import StatsFullscreenContent from './StatsSection';
 import ServicesFullscreenContent from './ServicesSection';
 
-/**
- * Main FeaturesSection component
- * Orchestrates the sections display in a fullscreen layout
- */
 const FeaturesSection: React.FC = () => {
-  // State management
   const [scrollY, setScrollY] = useState(0);
   const [activeView, setActiveView] = useState<'stats' | 'services'>('services');
   const [isMobile, setIsMobile] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
-    
-  // Handle scroll effect and detect viewport size
+
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768); // Mobile breakpoint
+      setIsMobile(window.innerWidth < 768);
     };
-    
-    // Initial check
+
     handleResize();
-    
+
     window.addEventListener('scroll', handleScroll);
     window.addEventListener('resize', handleResize);
-    
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-  
-  // Add smooth scrolling for navigation hash links
+
   useEffect(() => {
-    // Check if URL contains hash for this section
     if (window.location.hash === '#services' && sectionRef.current) {
-      // Add a slight delay to ensure the DOM is fully rendered
       setTimeout(() => {
         sectionRef.current?.scrollIntoView({ behavior: 'smooth' });
-        // Auto-select services view when navigated via hash
         setActiveView('services');
       }, 100);
     }
   }, []);
-    
-  // Toggle between stats and services views
+
   const toggleView = () => {
     setActiveView(prev => prev === 'stats' ? 'services' : 'stats');
   };
-    
+
   return (
     <section 
       ref={sectionRef}
       id="services" 
       className="min-h-screen flex items-center justify-center relative overflow-hidden bg-black"
-      style={{ scrollMarginTop: '80px' }} // Add offset for fixed header
+      style={{ scrollMarginTop: '80px' }}
     >
       <AnimatedBackground scrollY={scrollY} />
       
       <div className="container mx-auto px-4 relative z-10 py-16">
-        {/* Section Header */}
         <div className="text-center mb-8">
           <h2 className="mb-2 text-emerald-500 text-sm font-bold tracking-widest uppercase">
             {activeView === 'services' ? 'Layanan Kami' : 'Pencapaian Kami'}
@@ -84,7 +71,6 @@ const FeaturesSection: React.FC = () => {
               : 'Angka-angka yang menunjukkan dedikasi dan kualitas kami dalam dunia arsitektur dan konstruksi.'}
           </p>
           
-          {/* Toggle Button */}
           <button 
             onClick={toggleView}
             className="inline-flex items-center py-2 px-4 bg-emerald-500/10 text-emerald-500 rounded-lg transition duration-300 mb-12 mx-auto hover:bg-emerald-500/20"
@@ -96,7 +82,6 @@ const FeaturesSection: React.FC = () => {
           </button>
         </div>
 
-        {/* Content Area */}
         <AnimatePresence mode="wait">
           {activeView === 'stats' ? (
             <motion.div

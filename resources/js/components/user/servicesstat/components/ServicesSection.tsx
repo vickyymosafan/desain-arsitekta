@@ -4,11 +4,7 @@ import ServiceCard from './ServiceCard';
 import { serviceContainerVariants, serviceItemVariants } from '../animations/variants';
 import { servicesData } from '../data/servicesStatData';
 
-/**
- * Services Fullscreen content
- * Used in fullscreen display mode
- */
-export const ServicesFullscreenContent: React.FC = () => (
+const ServicesFullscreenContent: React.FC = () => (
   <>
     <motion.p 
       className="text-neutral-300 max-w-2xl mx-auto font-nunito text-lg mb-16 text-center"

@@ -4,11 +4,7 @@ import StatItem from './StatItem';
 import { containerVariants, itemVariants } from '../animations/variants';
 import { statsData } from '../data/servicesStatData';
 
-/**
- * Stats Fullscreen content component
- * Used in fullscreen display mode
- */
-export const StatsFullscreenContent: React.FC = () => (
+const StatsFullscreenContent: React.FC = () => (
   <motion.div 
     className="grid grid-cols-1 md:grid-cols-3 gap-12"
     variants={containerVariants}

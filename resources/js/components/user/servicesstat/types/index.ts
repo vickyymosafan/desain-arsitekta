@@ -7,7 +7,7 @@ export interface AnimatedBackgroundProps {
 // Stat and Service item types
 export interface StatItemProps {
   icon: React.ReactNode;
-  count: string;
+  count: string | number;
   label: string;
   onClick?: () => void;
 }
@@ -16,7 +16,7 @@ export interface ServiceCardProps {
   icon: React.ReactNode;
   title: string;
   description: string;
-  index: number;
+  index?: number;
   onClick?: () => void;
 }
 

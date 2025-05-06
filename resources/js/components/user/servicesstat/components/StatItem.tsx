@@ -1,23 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useInView, useAnimation, Variants } from 'framer-motion';
-
-/**
- * StatItem Component
- * 
- * An animated statistics card component that displays a statistic with an icon, count, and label.
- * Features include entrance animations, hover effects, and count-up animation when the component comes into view.
- */
-
-interface StatItemProps {
-  /** Icon component to display at the top of the stat card */
-  icon: React.ReactNode;
-  /** The count value to display (can be a number or string with a plus sign) */
-  count: string | number;
-  /** Label describing what the count represents */
-  label: string;
-  /** Optional click handler */
-  onClick?: () => void;
-}
+import { StatItemProps } from '../types';
 
 // Animation Variants
 const animations = {
@@ -167,63 +150,8 @@ const animations = {
   } as Variants
 };
 
-/**
- * CSS class strings used in the component
- */
-const classes = {
-  container: [
-    "flex flex-col items-center p-8 rounded-xl",
-    "bg-neutral-800/30 backdrop-blur-sm border border-neutral-700", 
-    "hover:border-emerald-500/50 transition-all duration-300", 
-    "hover:shadow-xl hover:shadow-emerald-500/5 relative overflow-hidden group",
-    "focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-500/30", 
-    "focus-within:ring-offset-2 focus-within:ring-offset-neutral-900"
-  ].join(' '),
-
-  backgroundGradient: [
-    "absolute inset-0 bg-gradient-to-tr from-emerald-500/10 to-transparent", 
-    "opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-0"
-  ].join(' '),
-
-  backgroundGlow: [
-    "absolute -right-10 -bottom-10 w-40 h-40 rounded-full", 
-    "bg-emerald-500/10 blur-xl z-0 opacity-0 group-hover:opacity-100", 
-    "transition-opacity duration-700"
-  ].join(' '),
-
-  iconContainer: [
-    "relative text-emerald-500 mb-5 p-4 rounded-full", 
-    "bg-emerald-500/10 w-20 h-20 flex items-center justify-center", 
-    "border border-emerald-500/30"
-  ].join(' '),
-
-  iconRing: [
-    "absolute inset-0 rounded-full border-2 border-emerald-500/0", 
-    "transition-all duration-500"
-  ].join(' '),
-
-  countValue: [
-    "font-bold text-4xl lg:text-5xl mb-4 font-playfair", 
-    "bg-gradient-to-r from-white to-white bg-clip-text", 
-    "relative z-10"
-  ].join(' '),
-
-  label: [
-    "text-neutral-300 font-nunito text-center text-lg relative z-10", 
-    "bg-gradient-to-r from-neutral-300 to-neutral-300 bg-clip-text"
-  ].join(' '),
-
-  highlightLine: [
-    "h-1 bg-gradient-to-r from-emerald-600 via-emerald-500 to-emerald-400", 
-    "rounded-full mt-4 w-0 absolute bottom-0"
-  ].join(' '),
-
-  pulseEffect: "absolute inset-0 rounded-xl border-2 border-emerald-500/30 z-0"
-};
-
 // Utility to format a count value with appropriate suffix
 function formatCountValue(rawCount: string | number, currentValue: number): string | number {
-  // If original count has a plus sign, we need to add it back
   if (typeof rawCount === 'string' && rawCount.includes('+')) {
     return `${currentValue}+`;
   }
@@ -251,9 +179,7 @@ const StatItem: React.FC<StatItemProps> = ({ icon, count, label, onClick }) => {
     ? count 
     : parseInt(count.toString().replace(/\D/g, ''));
   
-  /**
-   * Count-up animation effect when element enters viewport
-   */
+  // Count-up animation effect when element enters viewport
   useEffect(() => {
     if (isInView) {
       controls.start('visible');
@@ -285,16 +211,66 @@ const StatItem: React.FC<StatItemProps> = ({ icon, count, label, onClick }) => {
     }
   }, [isInView, numericCount, controls]);
   
-  /**
-   * Keyboard handler for accessibility
-   */
+  // Keyboard handler for accessibility
   const handleKeyDown = (e: React.KeyboardEvent): void => {
     if (onClick && (e.key === 'Enter' || e.key === ' ')) {
       e.preventDefault();
       onClick();
     }
   };
-    
+
+  // CSS class strings used in the component
+  const classes = {
+    container: [
+      "flex flex-col items-center p-8 rounded-xl",
+      "bg-neutral-800/30 backdrop-blur-sm border border-neutral-700", 
+      "hover:border-emerald-500/50 transition-all duration-300", 
+      "hover:shadow-xl hover:shadow-emerald-500/5 relative overflow-hidden group",
+      "focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-500/30", 
+      "focus-within:ring-offset-2 focus-within:ring-offset-neutral-900"
+    ].join(' '),
+
+    backgroundGradient: [
+      "absolute inset-0 bg-gradient-to-tr from-emerald-500/10 to-transparent", 
+      "opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-0"
+    ].join(' '),
+
+    backgroundGlow: [
+      "absolute -right-10 -bottom-10 w-40 h-40 rounded-full", 
+      "bg-emerald-500/10 blur-xl z-0 opacity-0 group-hover:opacity-100", 
+      "transition-opacity duration-700"
+    ].join(' '),
+
+    iconContainer: [
+      "relative text-emerald-500 mb-5 p-4 rounded-full", 
+      "bg-emerald-500/10 w-20 h-20 flex items-center justify-center", 
+      "border border-emerald-500/30"
+    ].join(' '),
+
+    iconRing: [
+      "absolute inset-0 rounded-full border-2 border-emerald-500/0", 
+      "transition-all duration-500"
+    ].join(' '),
+
+    countValue: [
+      "font-bold text-4xl lg:text-5xl mb-4 font-playfair", 
+      "bg-gradient-to-r from-white to-white bg-clip-text", 
+      "relative z-10"
+    ].join(' '),
+
+    label: [
+      "text-neutral-300 font-nunito text-center text-lg relative z-10", 
+      "bg-gradient-to-r from-neutral-300 to-neutral-300 bg-clip-text"
+    ].join(' '),
+
+    highlightLine: [
+      "h-1 bg-gradient-to-r from-emerald-600 via-emerald-500 to-emerald-400", 
+      "rounded-full mt-4 w-0 absolute bottom-0"
+    ].join(' '),
+
+    pulseEffect: "absolute inset-0 rounded-xl border-2 border-emerald-500/30 z-0"
+  };
+
   return (
     <motion.div 
       ref={ref}
