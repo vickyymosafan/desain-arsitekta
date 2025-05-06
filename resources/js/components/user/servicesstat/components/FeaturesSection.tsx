@@ -15,15 +15,14 @@ import { DESKTOP_BREAKPOINT } from '../types';
 
 /**
  * Main FeaturesSection component
- * Orchestrates the sections display and fullscreen functionality
+ * Orchestrates the sections display in a fullscreen layout
  */
 const FeaturesSection: React.FC = () => {
   // State management
   const [scrollY, setScrollY] = useState(0);
-  const [activeFullscreen, setActiveFullscreen] = useState<'stats' | 'services' | null>(null);
+  const [activeView, setActiveView] = useState<'stats' | 'services'>('services');
   const [showKeyboardHint, setShowKeyboardHint] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [isDesktopOnly, setIsDesktopOnly] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
     
   // Handle scroll effect and detect viewport size
@@ -32,7 +31,6 @@ const FeaturesSection: React.FC = () => {
     const handleResize = () => {
       const width = window.innerWidth;
       setIsMobile(width < 768); // Mobile breakpoint
-      setIsDesktopOnly(width >= DESKTOP_BREAKPOINT); // Only show fullscreen buttons on desktop
     };
     
     // Initial check
@@ -54,51 +52,25 @@ const FeaturesSection: React.FC = () => {
       // Add a slight delay to ensure the DOM is fully rendered
       setTimeout(() => {
         sectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+        // Auto-select services view when navigated via hash
+        setActiveView('services');
       }, 100);
     }
   }, []);
     
-  // Handle escape key to exit fullscreen
-  useEffect(() => {
-    const handleEscKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && activeFullscreen) {
-        closeFullscreen();
-      }
-    };
-    
-    document.addEventListener('keydown', handleEscKey);
-    return () => document.removeEventListener('keydown', handleEscKey);
-  }, [activeFullscreen]);
-  
-  // Toggle body scrolling and keyboard hint based on fullscreen state
-  useEffect(() => {
-    if (activeFullscreen) {
-      document.body.style.overflow = 'hidden';
-      setShowKeyboardHint(true);
-    } else {
-      document.body.style.overflow = '';
-      setShowKeyboardHint(false);
-    }
-    
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [activeFullscreen]);
-    
-  // Fullscreen toggle handlers
-  const openFullscreen = (section: 'stats' | 'services') => {
-    setActiveFullscreen(section);
-  };
-  
-  const closeFullscreen = () => {
-    setActiveFullscreen(null);
+  // Toggle between stats and services views
+  const toggleView = () => {
+    setActiveView(prev => prev === 'stats' ? 'services' : 'stats');
+    // Show keyboard hint when view changes
+    setShowKeyboardHint(true);
+    setTimeout(() => setShowKeyboardHint(false), 3000);
   };
     
   return (
     <section 
       ref={sectionRef}
       id="services" 
-      className="min-h-screen bg-gradient-to-b from-black to-neutral-900 pt-16 md:pt-0 flex flex-col justify-center relative overflow-hidden"
+      className="min-h-screen flex items-center justify-center relative overflow-hidden bg-black"
       style={{ scrollMarginTop: '80px' }} // Add offset for fixed header
     >
       <AnimatedBackground scrollY={scrollY} />
@@ -106,41 +78,61 @@ const FeaturesSection: React.FC = () => {
       {/* Keyboard navigation indicator */}
       <KeyboardIndicator show={showKeyboardHint} />
       
-      {/* Fullscreen components */}
-      <AnimatePresence>
-        {activeFullscreen === 'stats' && (
-          <FullscreenSection 
-            title="Pencapaian Kami" 
-            scrollY={scrollY} 
-            onClose={closeFullscreen}
+      <div className="container mx-auto px-4 relative z-10 py-16">
+        {/* Section Header */}
+        <div className="text-center mb-8">
+          <h2 className="mb-2 text-emerald-500 text-sm font-bold tracking-widest uppercase">
+            {activeView === 'services' ? 'Layanan Kami' : 'Pencapaian Kami'}
+          </h2>
+          <h3 className="mb-6 text-4xl md:text-5xl font-playfair font-bold text-white">
+            {activeView === 'services' ? (
+              <>Solusi <span className="text-emerald-500">Arsitektur</span> Terbaik</>
+            ) : (
+              <>Pencapaian <span className="text-emerald-500">Antosa Architect</span></>
+            )}
+          </h3>
+          <p className="max-w-3xl mx-auto text-gray-300 text-lg mb-8">
+            {activeView === 'services' 
+              ? 'Kami menyediakan berbagai layanan profesional untuk mewujudkan ruang impian Anda dengan kualitas terbaik.' 
+              : 'Angka-angka yang menunjukkan dedikasi dan kualitas kami dalam dunia arsitektur dan konstruksi.'}
+          </p>
+          
+          {/* Toggle Button */}
+          <button 
+            onClick={toggleView}
+            className="inline-flex items-center py-2 px-4 bg-emerald-500/10 text-emerald-500 rounded-lg transition duration-300 mb-12 mx-auto hover:bg-emerald-500/20"
           >
-            <StatsFullscreenContent />
-          </FullscreenSection>
-        )}
-        
-        {activeFullscreen === 'services' && (
-          <FullscreenSection 
-            title="Layanan Kami" 
-            scrollY={scrollY} 
-            onClose={closeFullscreen}
-          >
-            <ServicesFullscreenContent />
-          </FullscreenSection>
-        )}
-      </AnimatePresence>
-      
-      <div className="container mx-auto px-4 relative z-10 mt-0 md:-mt-10">
-        {/* Stats Section */}
-        <StatsSection 
-          openFullscreen={() => openFullscreen('stats')} 
-          isDesktopOnly={isDesktopOnly} 
-        />
+            {activeView === 'services' ? 'Lihat Pencapaian' : 'Lihat Layanan'}
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        </div>
 
-        {/* Services Section */}
-        <ServicesSection 
-          openFullscreen={() => openFullscreen('services')} 
-          isDesktopOnly={isDesktopOnly} 
-        />
+        {/* Content Area */}
+        <AnimatePresence mode="wait">
+          {activeView === 'stats' ? (
+            <motion.div
+              key="stats"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5 }}
+            >
+              <StatsFullscreenContent />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="services"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5 }}
+            >
+              <ServicesFullscreenContent />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </section>
   );
