@@ -7,7 +7,7 @@ import { statsData } from '../data/servicesStatData';
 const StatsFullscreenContent: React.FC = () => (
   <div className="w-full max-w-6xl mx-auto">
     <motion.p 
-      className="text-neutral-300 max-w-3xl mx-auto font-nunito text-lg mb-16 text-center"
+      className="text-neutral-300 max-w-3xl mx-auto font-nunito text-lg mb-35 text-center"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 0.2, duration: 0.6 }}
