@@ -10,7 +10,7 @@ import { navItems } from './components/navigationItems';
  * Komponen utama Navbar
  * Menampilkan menu navigasi, logo, dan tombol aksi
  */
-const NavbarSection = ({ user, activeLink = '#' }: NavbarProps) => {
+const NavbarSection = ({ user, activeLink }: NavbarProps) => {
     
     // State untuk menu mobile (terbuka/tertutup)
     const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);

@@ -1,7 +1,7 @@
 import { type SharedData } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
-import { lazy, Suspense, useEffect, useState } from 'react';
-import Navbar, { navItems } from '@/components/user/navbar';
+import { lazy, Suspense } from 'react';
+import Navbar from '@/components/user/navbar';
 
 // Lazy load components
 const HeroSection = lazy(() => import('@/components/user/hero/index'));
@@ -14,48 +14,8 @@ const LoadingSpinner = ({ minHeight = '50vh' }: { minHeight?: string }) => (
     </div>
 );
 
-// Menggunakan navItems dari komponen navbar (single source of truth)
-
 export default function Welcome() {
     const { auth } = usePage<SharedData>().props;
-    const [activeSection, setActiveSection] = useState<string>('#');
-    
-    // Mendeteksi section yang aktif saat scroll
-    useEffect(() => {
-        const handleScroll = () => {
-            const scrollPosition = window.scrollY + 100; // Offset untuk header
-            
-            // Default section adalah home ketika di bagian paling atas
-            if (scrollPosition < 300) {
-                setActiveSection('#');
-                return;
-            }
-            
-            // Cek setiap section berdasarkan ID yang sesuai dengan navItems href
-            for (const item of navItems) {
-                if (item.href === '#') continue; // Skip home section
-                
-                const sectionId = item.href.replace('#', '');
-                const section = document.getElementById(sectionId);
-                
-                if (section) {
-                    const sectionTop = section.offsetTop;
-                    const sectionHeight = section.offsetHeight;
-                    
-                    if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-                        setActiveSection(item.href);
-                        break;
-                    }
-                }
-            }
-        };
-        
-        window.addEventListener('scroll', handleScroll);
-        // Panggil sekali untuk setup awal
-        handleScroll();
-        
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
 
     return (
         <>
@@ -71,7 +31,7 @@ export default function Welcome() {
                 />
             </Head>
             
-            <Navbar user={auth.user} activeLink={activeSection} />
+            <Navbar user={auth.user} />
             
             <div className="flex flex-col min-h-screen bg-black">
                 <main>
