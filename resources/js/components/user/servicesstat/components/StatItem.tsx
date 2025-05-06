@@ -21,8 +21,12 @@ const animations = {
       }
     },
     hover: {
-      scale: 1.02,
-      y: -5
+      scale: 1.03,
+      y: -5,
+      transition: {
+        duration: 0.3,
+        ease: "easeOut"
+      }
     },
     tap: {
       scale: 0.98
@@ -193,17 +197,14 @@ const StatItem: React.FC<StatItemProps> = ({ icon, count, label, onClick }) => {
         const elapsed = now - startTime;
         const progress = Math.min(elapsed / duration, 1);
         
-        // Use easeOutExpo for smoother animation near the end
-        const easeOutExpo = 1 - Math.pow(2, -10 * progress);
+        // Use easeOutQuart easing function for a natural counting effect
+        const easing = 1 - Math.pow(1 - progress, 4);
+        const current = Math.floor(easing * numericCount);
         
-        // Calculate current count value based on progress
-        const current = Math.floor(easeOutExpo * numericCount);
         setCountValue(current);
         
         if (progress < 1) {
           requestAnimationFrame(animateCount);
-        } else {
-          setCountValue(numericCount);
         }
       };
       
@@ -213,19 +214,20 @@ const StatItem: React.FC<StatItemProps> = ({ icon, count, label, onClick }) => {
   
   // Keyboard handler for accessibility
   const handleKeyDown = (e: React.KeyboardEvent): void => {
-    if (onClick && (e.key === 'Enter' || e.key === ' ')) {
+    if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      onClick();
+      onClick?.();
     }
   };
-
-  // CSS class strings used in the component
+  
+  // CSS classes using tailwind
   const classes = {
     container: [
-      "flex flex-col items-center p-8 rounded-xl",
-      "bg-neutral-800/30 backdrop-blur-sm border border-neutral-700", 
-      "hover:border-emerald-500/50 transition-all duration-300", 
-      "hover:shadow-xl hover:shadow-emerald-500/5 relative overflow-hidden group",
+      "relative h-full w-full py-8 px-6 rounded-2xl overflow-hidden flex flex-col items-center justify-center", 
+      "cursor-pointer transition-all duration-300 group",
+      "bg-gradient-to-b from-neutral-800/80 to-neutral-900/90",
+      "border border-neutral-700/30 backdrop-blur-sm",
+      "shadow-lg shadow-emerald-900/5 hover:shadow-xl hover:shadow-emerald-500/10", 
       "focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-500/30", 
       "focus-within:ring-offset-2 focus-within:ring-offset-neutral-900"
     ].join(' '),
@@ -243,7 +245,7 @@ const StatItem: React.FC<StatItemProps> = ({ icon, count, label, onClick }) => {
 
     iconContainer: [
       "relative text-emerald-500 mb-5 p-4 rounded-full", 
-      "bg-emerald-500/10 w-20 h-20 flex items-center justify-center", 
+      "bg-emerald-500/10 w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center", 
       "border border-emerald-500/30"
     ].join(' '),
 
@@ -253,19 +255,19 @@ const StatItem: React.FC<StatItemProps> = ({ icon, count, label, onClick }) => {
     ].join(' '),
 
     countValue: [
-      "font-bold text-4xl lg:text-5xl mb-4 font-playfair", 
+      "font-bold text-3xl sm:text-4xl lg:text-5xl mb-3 font-playfair", 
       "bg-gradient-to-r from-white to-white bg-clip-text", 
       "relative z-10"
     ].join(' '),
 
     label: [
-      "text-neutral-300 font-nunito text-center text-lg relative z-10", 
+      "text-neutral-300 font-nunito text-center text-base sm:text-lg relative z-10", 
       "bg-gradient-to-r from-neutral-300 to-neutral-300 bg-clip-text"
     ].join(' '),
 
     highlightLine: [
       "h-1 bg-gradient-to-r from-emerald-600 via-emerald-500 to-emerald-400", 
-      "rounded-full mt-4 w-0 absolute bottom-0"
+      "rounded-full mt-3 mx-auto w-0 absolute bottom-4 left-1/2 transform -translate-x-1/2"
     ].join(' '),
 
     pulseEffect: "absolute inset-0 rounded-xl border-2 border-emerald-500/30 z-0"
