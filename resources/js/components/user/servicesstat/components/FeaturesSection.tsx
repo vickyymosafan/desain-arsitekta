@@ -327,7 +327,7 @@ const FeaturesSection: React.FC = () => {
   );
     
     return (
-        <section className="min-h-screen bg-gradient-to-b from-black to-neutral-900 pt-24 pb-16 md:pt-32 md:pb-24 flex flex-col justify-center relative overflow-hidden">
+        <section className="min-h-screen bg-gradient-to-b from-black to-neutral-900 pt-16 pb-16 md:pt-20 md:pb-20 flex flex-col justify-center relative overflow-hidden">
             <AnimatedBackground scrollY={scrollY} />
             
             {/* Keyboard navigation indicator */}
@@ -356,10 +356,10 @@ const FeaturesSection: React.FC = () => {
                 )}
             </AnimatePresence>
             
-            <div className="container mx-auto px-4 relative z-10 mt-8 md:mt-12">
+            <div className="container mx-auto px-4 relative z-10 mt-0 md:mt-0">
                 {/* Stats Section */}
                 <motion.div 
-                    className="relative mb-16 md:mb-24 flex justify-center items-center w-full"
+                    className="relative mb-12 md:mb-16 flex justify-center items-center w-full"
                     {...sectionProps}
                 >
                     {isDesktopOnly && (
@@ -394,7 +394,7 @@ const FeaturesSection: React.FC = () => {
                         <SectionTitle 
                             title="Layanan Kami"
                             subtitle="Kami menyediakan berbagai layanan profesional untuk mewujudkan ruang impian Anda dengan kualitas terbaik"
-                            className="px-4 md:px-0"
+                            className="px-4 md:px-0 mb-8"
                         />
                     </div>
                     
