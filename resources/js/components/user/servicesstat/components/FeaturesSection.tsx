@@ -327,7 +327,7 @@ const FeaturesSection: React.FC = () => {
   );
     
     return (
-        <section className="min-h-screen bg-gradient-to-b from-black to-neutral-900 py-16 md:py-24 flex flex-col justify-center relative overflow-hidden">
+        <section className="min-h-screen bg-gradient-to-b from-black to-neutral-900 pt-24 pb-16 md:pt-32 md:pb-24 flex flex-col justify-center relative overflow-hidden">
             <AnimatedBackground scrollY={scrollY} />
             
             {/* Keyboard navigation indicator */}
@@ -356,7 +356,7 @@ const FeaturesSection: React.FC = () => {
                 )}
             </AnimatePresence>
             
-            <div className="container mx-auto px-4 relative z-10">
+            <div className="container mx-auto px-4 relative z-10 mt-8 md:mt-12">
                 {/* Stats Section */}
                 <motion.div 
                     className="relative mb-16 md:mb-24 flex justify-center items-center w-full"
