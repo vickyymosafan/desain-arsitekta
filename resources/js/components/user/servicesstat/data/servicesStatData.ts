@@ -17,17 +17,17 @@ export interface ServiceCardData {
 // Stats data
 export const statsData: StatItemData[] = [
     {
-        icon: React.createElement(FaCheckCircle),
+        icon: React.createElement(FaCheckCircle, { size: 36 }),
         count: '239+',
         label: 'Proyek Selesai'
     },
     {
-        icon: React.createElement(MdArchitecture),
+        icon: React.createElement(MdArchitecture, { size: 36 }),
         count: '179+',
         label: 'Arsitektur'
     },
     {
-        icon: React.createElement(FaHardHat),
+        icon: React.createElement(FaHardHat, { size: 36 }),
         count: '50+',
         label: 'Konstruksi'
     }
