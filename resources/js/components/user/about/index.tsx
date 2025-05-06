@@ -1,10 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, useAnimation, useMotionValue, useTransform } from 'framer-motion';
 
 export default function AboutSection() {
     const [isVisible, setIsVisible] = useState(false);
     const [activeValue, setActiveValue] = useState(0);
     const [isHovering, setIsHovering] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+    const [touchStartX, setTouchStartX] = useState(0);
+    const [touchEndX, setTouchEndX] = useState(0);
+    const [isImageLoaded, setIsImageLoaded] = useState(false);
+    const [swipeIndicator, setSwipeIndicator] = useState<'left' | 'right' | null>(null);
+    
+    // Motion values for parallax effect on mobile
+    const scrollY = useMotionValue(0);
+    const y1 = useTransform(scrollY, [0, 300], [0, -50]);
+    const y2 = useTransform(scrollY, [0, 300], [0, -30]);
+    
+    // References for section and value items tracking
+    const sectionRef = useRef<HTMLElement>(null);
+    const valuesRef = useRef<HTMLDivElement>(null);
+    const controls = useAnimation();
 
     // Animation variants
     const fadeIn = {
@@ -75,47 +90,136 @@ export default function AboutSection() {
     ];
 
     // Intersection Observer to trigger animations when section is in view
+    // Check if device is mobile
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+    
+    // Handle scroll events for parallax effect
+    useEffect(() => {
+        const handleScroll = () => {
+            if (sectionRef.current) {
+                const { top } = (sectionRef.current as HTMLElement).getBoundingClientRect();
+                scrollY.set(window.innerHeight - top);
+            }
+        };
+        
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [scrollY]);
+
+    // Detect section visibility
     useEffect(() => {
         const observer = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting) {
                 setIsVisible(true);
+                controls.start("visible");
+            } else {
+                controls.start("hidden");
             }
-        }, { threshold: 0.1 });
+        }, { threshold: isMobile ? 0.05 : 0.1 });
 
         const section = document.querySelector('#about-section');
         if (section) observer.observe(section);
 
-        // Auto-rotate through values
+        // Auto-rotate through values (slower on mobile)
         const interval = setInterval(() => {
             if (!isHovering) {
                 setActiveValue((prev) => (prev + 1) % values.length);
             }
-        }, 3000);
+        }, isMobile ? 4000 : 3000);
 
         return () => {
             if (section) observer.unobserve(section);
             clearInterval(interval);
         };
-    }, [isHovering]);
+    }, [isHovering, isMobile, controls]);
+    
+    // Handle touch events for swipe navigation between values
+    const handleTouchStart = (e: React.TouchEvent) => {
+        setTouchStartX(e.touches[0].clientX);
+    };
+    
+    const handleTouchEnd = (e: React.TouchEvent) => {
+        setTouchEndX(e.changedTouches[0].clientX);
+        handleSwipe();
+    };
+    
+    const handleSwipe = () => {
+        const swipeThreshold = 50;
+        if (touchStartX - touchEndX > swipeThreshold) {
+            // Swiped left - next value
+            setSwipeIndicator('left');
+            setActiveValue((prev) => (prev + 1) % values.length);
+            setTimeout(() => setSwipeIndicator(null), 500);
+        } else if (touchEndX - touchStartX > swipeThreshold) {
+            // Swiped right - previous value
+            setSwipeIndicator('right');
+            setActiveValue((prev) => (prev === 0 ? values.length - 1 : prev - 1));
+            setTimeout(() => setSwipeIndicator(null), 500);
+        }
+    };
+    
+    // Handle image load completion
+    const handleImageLoad = () => {
+        setIsImageLoaded(true);
+    };
 
     return (
-        <section id="about-section" className="min-h-screen flex items-center relative overflow-hidden py-16 md:py-24">
+        <section 
+            id="about-section" 
+            ref={sectionRef}
+            className="min-h-screen flex items-center relative overflow-hidden py-12 md:py-24"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+        >
             {/* Dynamic background elements */}
             <motion.div 
+                style={{ y: isMobile ? y1 : 0 }}
                 animate={floatingAnimation}
-                className="absolute -bottom-20 -right-20 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl"
+                className="absolute -bottom-20 -right-20 w-64 md:w-96 h-64 md:h-96 bg-emerald-500/10 rounded-full blur-3xl"
             ></motion.div>
             <motion.div 
+                style={{ y: isMobile ? y2 : 0 }}
                 animate={{
                     ...floatingAnimation,
                     transition: { ...floatingAnimation.transition, delay: 1 }
                 }}
-                className="absolute -top-20 -left-20 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl"
+                className="absolute -top-20 -left-20 w-64 md:w-96 h-64 md:h-96 bg-emerald-500/10 rounded-full blur-3xl"
             ></motion.div>
             
             {/* Decorative elements */}
-            <div className="absolute right-0 top-1/3 w-32 h-32 bg-emerald-800/5 backdrop-blur-sm rounded-full"></div>
-            <div className="absolute left-10 bottom-10 w-20 h-20 border border-emerald-500/20 rounded-full"></div>
+            <motion.div 
+                animate={isMobile ? { x: [0, 10, 0], transition: { repeat: Infinity, duration: 8 }} : {}}
+                className="absolute right-0 top-1/3 w-24 md:w-32 h-24 md:h-32 bg-emerald-800/5 backdrop-blur-sm rounded-full hidden md:block"
+            ></motion.div>
+            <motion.div 
+                animate={isMobile ? { scale: [1, 1.1, 1], transition: { repeat: Infinity, duration: 5 }} : {}}
+                className="absolute left-2 md:left-10 bottom-10 w-16 md:w-20 h-16 md:h-20 border border-emerald-500/20 rounded-full"
+            ></motion.div>
+            
+            {/* Mobile-only decorative elements */}
+            {isMobile && (
+                <>
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 0.5, transition: { delay: 0.5 }}}
+                        className="absolute top-10 right-10 w-20 h-20 bg-emerald-600/10 rounded-full blur-xl"
+                    ></motion.div>
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 0.5, scale: [1, 1.2, 1], transition: { delay: 0.5, repeat: Infinity, duration: 4 }}}
+                        className="absolute bottom-32 left-5 w-12 h-12 border-2 border-emerald-500/10 rounded-full"
+                    ></motion.div>
+                </>
+            )}
             
             <div className="container mx-auto px-4 py-10">
                 <motion.div 
@@ -124,15 +228,27 @@ export default function AboutSection() {
                     variants={fadeIn}
                     className="mb-12 text-center"
                 >
-                    <h2 className="mb-2 text-emerald-500 text-sm font-bold tracking-widest uppercase inline-flex items-center">
-                        <span className="mr-2 h-px w-6 bg-emerald-500"></span>
+                    <h2 className="mb-3 text-emerald-500 text-xs md:text-sm font-bold tracking-widest uppercase inline-flex items-center">
+                        <motion.span 
+                            initial={{ width: 0 }}
+                            animate={{ width: "1.5rem", transition: { delay: 0.3, duration: 0.6 }}}
+                            className="mr-2 h-px bg-emerald-500"
+                        ></motion.span>
                         Tentang Kami
-                        <span className="ml-2 h-px w-6 bg-emerald-500"></span>
+                        <motion.span 
+                            initial={{ width: 0 }}
+                            animate={{ width: "1.5rem", transition: { delay: 0.3, duration: 0.6 }}}
+                            className="ml-2 h-px bg-emerald-500"
+                        ></motion.span>
                     </h2>
-                    <h3 className="mb-6 text-4xl md:text-5xl font-playfair font-bold text-white">
-                        <span className="text-emerald-500 relative">
+                    <h3 className="mb-6 text-3xl sm:text-4xl md:text-5xl font-playfair font-bold text-white">
+                        <span className="text-emerald-500 relative inline-block">
                             Antosa Architect
-                            <span className="absolute -bottom-2 left-0 w-full h-1 bg-emerald-500/30"></span>
+                            <motion.span 
+                                initial={{ width: 0 }}
+                                animate={{ width: "100%", transition: { delay: 0.8, duration: 0.6 }}}
+                                className="absolute -bottom-2 left-0 h-1 bg-emerald-500/30"
+                            ></motion.span>
                         </span>
                     </h3>
                     <p className="max-w-3xl mx-auto text-gray-300 text-lg leading-relaxed">
@@ -148,15 +264,20 @@ export default function AboutSection() {
                         variants={fadeIn}
                         className="w-full lg:w-1/2 relative"
                     >
-                        <div className="rounded-xl overflow-hidden shadow-2xl shadow-emerald-900/30 relative z-10 group">
+                        <motion.div 
+                            whileTap={isMobile ? { scale: 0.98 } : {}}
+                            className="rounded-xl overflow-hidden shadow-2xl shadow-emerald-900/30 relative z-10 group"
+                        >
                             <img 
                                 src="/storage/images/hero/2.webp" 
                                 alt="Tim Antosa Architect" 
-                                className="w-full h-[400px] md:h-[500px] object-cover transition-transform duration-700 group-hover:scale-105"
+                                className="w-full h-[300px] sm:h-[400px] md:h-[500px] object-cover transition-transform duration-700 group-hover:scale-105"
+                                onLoad={handleImageLoad}
+                                loading="lazy"
                             />
                             {/* Overlay gradient on hover */}
                             <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-70 transition-opacity duration-300 group-hover:opacity-50"></div>
-                        </div>
+                        </motion.div>
                         
                         {/* Decorative elements */}
                         <motion.div animate={floatingAnimation} className="absolute -bottom-6 -right-6 w-48 h-48 bg-emerald-500/20 rounded-full blur-3xl"></motion.div>
@@ -174,11 +295,11 @@ export default function AboutSection() {
                             initial="hidden" 
                             animate={isVisible ? "visible" : "hidden"}
                             whileHover={{ scale: 1.05 }}
-                            className="absolute -right-5 bottom-20 bg-black border border-emerald-500/20 shadow-xl rounded-lg py-4 px-6 z-20"
+                            className="absolute -right-2 md:-right-5 bottom-10 md:bottom-20 bg-black border border-emerald-500/20 shadow-xl rounded-lg py-3 md:py-4 px-4 md:px-6 z-20"
                         >
                             <div className="text-center">
-                                <span className="block text-5xl font-bold text-emerald-500 tracking-tight">15+</span>
-                                <span className="block text-sm uppercase tracking-wider font-medium text-gray-400">Tahun Pengalaman</span>
+                                <span className="block text-4xl md:text-5xl font-bold text-emerald-500 tracking-tight">15+</span>
+                                <span className="block text-xs md:text-sm uppercase tracking-wider font-medium text-gray-400">Tahun Pengalaman</span>
                             </div>
                         </motion.div>
                     </motion.div>
@@ -190,7 +311,7 @@ export default function AboutSection() {
                         variants={fadeIn}
                         className="w-full lg:w-1/2"
                     >
-                        <h4 className="text-2xl md:text-3xl font-playfair font-bold text-white mb-5">
+                        <h4 className="text-xl sm:text-2xl md:text-3xl font-playfair font-bold text-white mb-4 md:mb-5">
                             Mewujudkan Visi Arsitektur <span className="text-emerald-500">Modern & Berkelanjutan</span>
                         </h4>
                         
@@ -217,7 +338,7 @@ export default function AboutSection() {
                             variants={staggerContainer}
                             initial="hidden" 
                             animate={isVisible ? "visible" : "hidden"}
-                            className="grid grid-cols-2 gap-5 mb-8"
+                            className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-5 mb-6 md:mb-8"
                             onMouseEnter={() => setIsHovering(true)}
                             onMouseLeave={() => setIsHovering(false)}
                         >
@@ -226,11 +347,11 @@ export default function AboutSection() {
                                     key={index}
                                     variants={valueItem}
                                     whileHover={{ scale: 1.05 }}
-                                    className={`flex items-start p-4 rounded-lg cursor-pointer transition-all duration-300 ${activeValue === index ? 'bg-emerald-500/20 shadow-lg' : 'hover:bg-emerald-500/10'}`}
+                                    className={`flex items-start p-3 md:p-4 rounded-lg cursor-pointer transition-all duration-300 ${activeValue === index ? 'bg-emerald-500/20 shadow-lg' : isMobile ? 'active:bg-emerald-500/10' : 'hover:bg-emerald-500/10'}`}
                                     onClick={() => setActiveValue(index)}
                                 >
-                                    <div className={`mr-4 p-3 rounded-lg transition-colors duration-300 ${activeValue === index ? 'bg-emerald-500 text-white' : 'bg-emerald-500/10 text-emerald-500'}`}>
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <div className={`mr-3 md:mr-4 p-2 md:p-3 rounded-lg transition-colors duration-300 ${activeValue === index ? 'bg-emerald-500 text-white' : 'bg-emerald-500/10 text-emerald-500'}`}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             {value.icon}
                                         </svg>
                                     </div>
@@ -250,12 +371,12 @@ export default function AboutSection() {
                             transition={{ delay: 0.8 }}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            className="inline-flex items-center py-3 px-7 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg transition duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 relative overflow-hidden group"
+                            className="inline-flex items-center py-3 px-5 md:px-7 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg transition duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 relative overflow-hidden group"
                         >
                             <span className="absolute inset-0 w-0 bg-white transition-all duration-500 ease-out opacity-20 group-hover:w-full"></span>
                             <span className="relative flex items-center">
                                 Konsultasi Sekarang
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                                 </svg>
                             </span>
