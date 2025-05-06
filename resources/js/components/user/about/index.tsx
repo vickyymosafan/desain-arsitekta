@@ -180,46 +180,7 @@ export default function AboutSection() {
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
         >
-            {/* Dynamic background elements */}
-            <motion.div 
-                style={{ y: isMobile ? y1 : 0 }}
-                animate={floatingAnimation}
-                className="absolute -bottom-20 -right-20 w-64 md:w-96 h-64 md:h-96 bg-emerald-500/10 rounded-full blur-3xl"
-            ></motion.div>
-            <motion.div 
-                style={{ y: isMobile ? y2 : 0 }}
-                animate={{
-                    ...floatingAnimation,
-                    transition: { ...floatingAnimation.transition, delay: 1 }
-                }}
-                className="absolute -top-20 -left-20 w-64 md:w-96 h-64 md:h-96 bg-emerald-500/10 rounded-full blur-3xl"
-            ></motion.div>
-            
-            {/* Decorative elements */}
-            <motion.div 
-                animate={isMobile ? { x: [0, 10, 0], transition: { repeat: Infinity, duration: 8 }} : {}}
-                className="absolute right-0 top-1/3 w-24 md:w-32 h-24 md:h-32 bg-emerald-800/5 backdrop-blur-sm rounded-full hidden md:block"
-            ></motion.div>
-            <motion.div 
-                animate={isMobile ? { scale: [1, 1.1, 1], transition: { repeat: Infinity, duration: 5 }} : {}}
-                className="absolute left-2 md:left-10 bottom-10 w-16 md:w-20 h-16 md:h-20 border border-emerald-500/20 rounded-full"
-            ></motion.div>
-            
-            {/* Mobile-only decorative elements */}
-            {isMobile && (
-                <>
-                    <motion.div 
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 0.5, transition: { delay: 0.5 }}}
-                        className="absolute top-10 right-10 w-20 h-20 bg-emerald-600/10 rounded-full blur-xl"
-                    ></motion.div>
-                    <motion.div 
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 0.5, scale: [1, 1.2, 1], transition: { delay: 0.5, repeat: Infinity, duration: 4 }}}
-                        className="absolute bottom-32 left-5 w-12 h-12 border-2 border-emerald-500/10 rounded-full"
-                    ></motion.div>
-                </>
-            )}
+            {/* Background now clean without circular blur elements */}
             
             <div className="container mx-auto px-4 py-10">
                 <motion.div 
@@ -279,15 +240,7 @@ export default function AboutSection() {
                             <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-70 transition-opacity duration-300 group-hover:opacity-50"></div>
                         </motion.div>
                         
-                        {/* Decorative elements */}
-                        <motion.div animate={floatingAnimation} className="absolute -bottom-6 -right-6 w-48 h-48 bg-emerald-500/20 rounded-full blur-3xl"></motion.div>
-                        <motion.div 
-                            animate={{
-                                ...floatingAnimation,
-                                transition: { ...floatingAnimation.transition, delay: 0.5 }
-                            }}
-                            className="absolute -top-6 -left-6 w-32 h-32 bg-emerald-500/30 rounded-full blur-3xl"
-                        ></motion.div>
+                        {/* No decorative blur elements */}
                         
                         {/* Experience badge */}
                         <motion.div 
