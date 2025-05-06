@@ -6,6 +6,7 @@ import Navbar from '@/components/user/navbar';
 // Lazy load components
 const HeroSection = lazy(() => import('@/components/user/hero/index'));
 const FeaturesSection = lazy(() => import('@/components/user/servicesstat/index'));
+const AboutSection = lazy(() => import('@/components/user/about/index'));
 
 // Loading spinner component
 const LoadingSpinner = ({ minHeight = '50vh' }: { minHeight?: string }) => (
@@ -44,6 +45,12 @@ export default function Welcome() {
                     <section id="services" className="section-wrapper">
                         <Suspense fallback={<LoadingSpinner minHeight="100vh" />}>
                             <FeaturesSection />
+                        </Suspense>
+                    </section>
+                    
+                    <section id="about" className="section-wrapper">
+                        <Suspense fallback={<LoadingSpinner minHeight="100vh" />}>
+                            <AboutSection />
                         </Suspense>
                     </section>
                 </main>
