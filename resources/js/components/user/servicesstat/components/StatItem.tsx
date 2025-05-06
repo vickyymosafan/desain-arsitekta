@@ -5,28 +5,29 @@ import { StatItemProps } from '../types';
 /**
  * Animation Variants
  * Defines all the animation behavior for the stat card elements
+ * Optimized for better mobile performance
  */
 const animations = {
   // Main container animations
   container: {
     hidden: { 
       opacity: 0,
-      y: 30
+      y: 20 // Reduced y offset for faster rendering on mobile
     },
     visible: { 
       opacity: 1,
       y: 0,
       transition: { 
-        duration: 0.6, 
+        duration: 0.5, // Slightly faster for mobile
         ease: "easeOut",
         type: "spring",
-        stiffness: 100,
+        stiffness: 90, // Slightly reduced stiffness for performance
         damping: 15
       }
     },
     hover: {
-      scale: 1.03,
-      y: -5,
+      scale: 1.02, // Reduced scale for less GPU strain
+      y: -3, // Reduced lift effect for mobile
       transition: {
         duration: 0.3,
         ease: "easeOut"
@@ -65,7 +66,7 @@ const animations = {
     }
   } as Variants,
 
-  // Icon animations
+  // Icon animations - optimized for mobile
   icon: {
     initial: {
       y: 0,
@@ -73,11 +74,11 @@ const animations = {
       rotateY: 0
     },
     hover: {
-      y: [0, -5, 0],
-      scale: 1.05,
-      rotateY: [0, 10, 0, -10, 0],
+      y: [0, -3, 0], // Reduced movement for mobile
+      scale: 1.03, // More subtle scale effect
+      rotateY: [0, 5, 0, -5, 0], // Reduced rotation for better performance
       transition: { 
-        duration: 2, 
+        duration: 1.8, // Slightly faster for better mobile performance
         repeat: Infinity,
         repeatType: "loop" as const,
         ease: "easeInOut"
@@ -168,15 +169,16 @@ const animations = {
 
 /**
  * CSS classes definitions using Tailwind
- * Organized by component elements
+ * Enhanced for mobile usability
  */
 const getClasses = () => ({
   container: [
-    "bg-neutral-900 p-8 rounded-xl group border border-neutral-800",
-    "hover:border-emerald-500/50 focus-within:border-emerald-500",
+    "bg-neutral-900 p-5 sm:p-8 rounded-xl group border border-neutral-800", // Reduced padding on mobile
+    "hover:border-emerald-500/50 focus-within:border-emerald-500 active:border-emerald-500", // Added active state for touch
     "relative overflow-hidden cursor-pointer h-full",
     "focus:outline-none focus-visible:ring-2 ring-emerald-500",
-    "focus-within:ring-offset-2 focus-within:ring-offset-neutral-900"
+    "focus-within:ring-offset-2 focus-within:ring-offset-neutral-900",
+    "touch-action-manipulation" // Improved touch handling
   ].join(' '),
 
   backgroundGradient: [
@@ -192,8 +194,8 @@ const getClasses = () => ({
   ].join(' '),
 
   iconContainer: [
-    "relative text-emerald-500 mb-6",
-    "bg-emerald-500/10 p-5 rounded-xl w-fit",
+    "relative text-emerald-500 mb-4 sm:mb-6", // Reduced margin on mobile
+    "bg-emerald-500/10 p-4 sm:p-5 rounded-xl w-fit", // Reduced padding on mobile
     "group-hover:text-emerald-400"
   ].join(' '),
 
@@ -203,14 +205,13 @@ const getClasses = () => ({
   ].join(' '),
 
   countValue: [
-    "font-bold text-3xl sm:text-4xl lg:text-5xl mb-3 font-playfair", 
-    "bg-gradient-to-r from-white to-white bg-clip-text", 
-    "relative z-10"
+    "text-4xl sm:text-5xl font-playfair font-bold text-white mb-1 transition-colors duration-300",
+    "relative z-10" // Ensure text is above backgrounds and interactions work properly
   ].join(' '),
 
   label: [
-    "text-neutral-300 font-nunito text-lg relative z-10",
-    "bg-gradient-to-r from-neutral-300 to-neutral-300 bg-clip-text"
+    "text-base sm:text-lg font-nunito text-neutral-300 relative",
+    "transition-colors duration-300"
   ].join(' '),
 
   highlightLine: [
@@ -346,6 +347,7 @@ const StatContent: React.FC<{
  * 
  * Displays an animated statistic card with icon, count value that animates on scroll into view,
  * and a descriptive label. Features smooth animations and hover effects.
+ * Optimized for mobile performance and touch interaction.
  * 
  * @param icon - React element to display as the statistic icon
  * @param count - Numeric value to display (can include suffix like '+')
@@ -359,7 +361,7 @@ const StatItem: React.FC<StatItemProps> = ({ icon, count, label, onClick }) => {
   
   // Ref & animation hooks for scroll detection
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, amount: 0.3 });
+  const isInView = useInView(ref, { once: true, amount: 0.2 }); // Trigger earlier on mobile
   const controls = useAnimation();
     
   // Parse the count to get a numerical value for animation
@@ -372,8 +374,8 @@ const StatItem: React.FC<StatItemProps> = ({ icon, count, label, onClick }) => {
     if (isInView) {
       controls.start('visible');
       
-      // Animate the count value
-      const duration = 2000; // 2 seconds
+      // Animate the count value - optimized for better performance
+      const duration = 1800; // Slightly faster for mobile (1.8 seconds)
       const startTime = Date.now();
       
       const animateCount = (): void => {
@@ -397,12 +399,22 @@ const StatItem: React.FC<StatItemProps> = ({ icon, count, label, onClick }) => {
     }
   }, [isInView, numericCount, controls]);
   
-  // Keyboard handler for accessibility
+  // Handlers for touch and keyboard interaction
   const handleKeyDown = (e: React.KeyboardEvent): void => {
     if (onClick && (e.key === 'Enter' || e.key === ' ')) {
       e.preventDefault();
       onClick();
     }
+  };
+
+  // Special handler for touch devices
+  const handleTouchStart = () => {
+    setHovering(true);
+  };
+  
+  const handleTouchEnd = () => {
+    // Slight delay to ensure hover effects are visible
+    setTimeout(() => setHovering(false), 300);
   };
   
   const classes = getClasses();
@@ -413,6 +425,8 @@ const StatItem: React.FC<StatItemProps> = ({ icon, count, label, onClick }) => {
       className={classes.container}
       onHoverStart={() => setHovering(true)}
       onHoverEnd={() => setHovering(false)}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
       variants={animations.container}
       initial="hidden"
       animate={controls}

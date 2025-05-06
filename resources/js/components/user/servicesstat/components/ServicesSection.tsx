@@ -6,10 +6,11 @@ import { servicesData, ServiceCardData } from '../data/servicesStatData';
 
 /**
  * IntroText Component - Displays the services section introductory text with animation
+ * Optimized for mobile viewing with responsive padding
  */
 const IntroText: React.FC = () => (
   <motion.p 
-    className="text-neutral-300 max-w-3xl mx-auto font-nunito text-lg mb-16 text-center"
+    className="text-neutral-300 max-w-3xl mx-auto font-nunito text-lg mb-8 sm:mb-16 text-center px-4 sm:px-6"
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     transition={{ delay: 0.2, duration: 0.6 }}
@@ -21,12 +22,13 @@ const IntroText: React.FC = () => (
 
 /**
  * ServiceGrid Component - Renders a responsive grid of service cards
+ * Enhanced for better mobile layout and spacing
  * 
  * @param services - Array of service data objects to display
  */
 const ServiceGrid: React.FC<{ services: ServiceCardData[] }> = ({ services }) => (
   <motion.div 
-    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10 px-4"
+    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 lg:gap-10 px-4 sm:px-6"
     initial="hidden"
     animate="visible"
     variants={serviceContainerVariants}
@@ -44,6 +46,7 @@ const ServiceGrid: React.FC<{ services: ServiceCardData[] }> = ({ services }) =>
 
 /**
  * ServiceItem Component - Wraps individual service cards with animations
+ * Optimized for full-width on mobile devices
  * 
  * @param service - Service data object to display
  * @param index - Order index for staggered animations
@@ -56,7 +59,7 @@ const ServiceItem: React.FC<{
     variants={serviceItemVariants}
     className="flex justify-center"
   >
-    <div className="w-full max-w-xs">
+    <div className="w-full">
       <ServiceCard
         icon={service.icon}
         title={service.title}
@@ -72,9 +75,10 @@ const ServiceItem: React.FC<{
  * 
  * Renders a full section of service offerings with animated introduction
  * and responsive grid of service cards.
+ * Enhanced for better mobile display and touch interactions.
  */
 const ServicesFullscreenContent: React.FC = () => (
-  <section className="w-full max-w-6xl mx-auto">
+  <section className="w-full max-w-6xl mx-auto py-2 sm:py-4">
     <IntroText />
     <ServiceGrid services={servicesData} />
   </section>

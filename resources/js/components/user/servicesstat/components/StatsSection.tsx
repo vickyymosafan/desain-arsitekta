@@ -7,7 +7,7 @@ import { statsData } from '../data/servicesStatData';
 const StatsFullscreenContent: React.FC = () => (
   <div className="w-full max-w-6xl mx-auto">
     <motion.p 
-      className="text-neutral-300 max-w-3xl mx-auto font-nunito text-lg mb-35 text-center"
+      className="text-neutral-300 max-w-3xl mx-auto font-nunito text-lg mb-3 text-center px-4 sm:px-6"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 0.2, duration: 0.6 }}
@@ -16,7 +16,7 @@ const StatsFullscreenContent: React.FC = () => (
     </motion.p>
     
     <motion.div 
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-12 px-4"
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 lg:gap-12 px-4 sm:px-6"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -27,7 +27,7 @@ const StatsFullscreenContent: React.FC = () => (
           variants={itemVariants}
           className="flex justify-center"
         >
-          <div className="w-full max-w-xs">
+          <div className="w-full">
             <StatItem 
               icon={stat.icon}
               count={stat.count}
