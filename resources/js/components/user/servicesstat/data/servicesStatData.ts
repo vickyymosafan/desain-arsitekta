@@ -23,7 +23,7 @@ export const statsData: StatItemData[] = [
     },
     {
         icon: React.createElement(MdArchitecture),
-        count: '179',
+        count: '179+',
         label: 'Arsitektur'
     },
     {
