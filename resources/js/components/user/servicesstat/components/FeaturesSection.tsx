@@ -25,14 +25,6 @@ const FeaturesSection: React.FC = () => {
     window.addEventListener('scroll', handleScroll);
     window.addEventListener('resize', handleResize);
 
-    // Check for hash on initial load
-    if (window.location.hash === '#services' && sectionRef.current) {
-      setTimeout(() => {
-        sectionRef.current?.scrollIntoView({ behavior: 'smooth' });
-        setActiveView('services');
-      }, 100);
-    }
-
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleResize);
@@ -41,9 +33,6 @@ const FeaturesSection: React.FC = () => {
 
   const toggleView = () => {
     setActiveView(prev => prev === 'stats' ? 'services' : 'stats');
-    // Update URL hash without scrolling
-    const newHash = activeView === 'stats' ? '#services' : '#stats';
-    window.history.replaceState(null, '', newHash);
   };
 
   return (
