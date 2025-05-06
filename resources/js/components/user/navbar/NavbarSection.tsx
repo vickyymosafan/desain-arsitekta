@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { NavbarProps } from './components/types';
 import NavLink from './components/NavLink';
 import Button from './components/NavButtons';
@@ -18,6 +18,9 @@ const NavbarSection = ({ user, activeLink = '#' }: NavbarProps) => {
     // State untuk efek scroll pada navbar
     const [scrolled, setScrolled] = useState<boolean>(false);
     
+    // State untuk active section pada scroll
+    const [activeSection, setActiveSection] = useState<string>('#');
+    
     // State untuk breakpoint tampilan tablet
     const [isTablet, setIsTablet] = useState<boolean>(false);
     
@@ -35,16 +38,100 @@ const NavbarSection = ({ user, activeLink = '#' }: NavbarProps) => {
 
     // Menggunakan navItems dari file centralized
 
-    // Menangani efek scroll hanya untuk efek visual navbar
-    useEffect(() => {
-        const handleScroll = () => {
-            // Set scrolled status berdasarkan posisi scroll
-            setScrolled(window.scrollY > 50);
+    // Fungsi untuk mengecek section mana yang sedang aktif berdasarkan scroll position
+    const determineActiveSection = useCallback(() => {
+        // Set scrolled status untuk efek visual navbar
+        setScrolled(window.scrollY > 50);
+        
+        // Mendapatkan posisi scroll saat ini (ditambah offset untuk deteksi yang lebih akurat)
+        const scrollPosition = window.scrollY + 200; // Offset 200px agar section terdeteksi lebih awal
+        
+        // Cek section mana yang sedang aktif
+        // Tidak termasuk 'Beranda' karena itu adalah section pertama (default active)
+        const sections = navItems
+            .filter(item => item.href !== '#') // Skip 'Beranda'
+            .map(item => ({
+                id: item.href,
+                element: document.querySelector(item.href)
+            }));
+            
+        // Default ke 'Beranda' jika sedang berada di paling atas halaman
+        if (scrollPosition < 100) {
+            setActiveSection('#');
+            return;
+        }
+        
+        // Loop dari bawah ke atas (section terakhir prioritas lebih tinggi)
+        // untuk mencari section mana yang sedang aktif
+        for (let i = sections.length - 1; i >= 0; i--) {
+            const { id, element } = sections[i];
+            if (element) {
+                const rect = element.getBoundingClientRect();
+                const sectionTop = rect.top + window.scrollY - 100; // Offset 100px
+                
+                if (scrollPosition >= sectionTop) {
+                    setActiveSection(id);
+                    return;
+                }
+            }
+        }
+        
+        // Default ke 'Beranda' jika tidak ada section yang aktif
+        setActiveSection('#');
+    }, []);
+    
+    // Debounce function untuk scroll event (mencegah terlalu banyak pembaruan)
+    const debounce = (func: Function, delay: number) => {
+        let timeoutId: NodeJS.Timeout;
+        return function(...args: any[]) {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => func(...args), delay);
         };
-
+    };
+    
+    // Menangani efek scroll untuk navbar dan active section detection
+    useEffect(() => {
+        const handleScroll = debounce(determineActiveSection, 100);
+        
+        // Initial check saat komponen di-mount
+        determineActiveSection();
+        
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+    }, [determineActiveSection]);
+    
+    // Smooth scroll handler untuk menangani klik pada nav links
+    const handleNavLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+        e.preventDefault();
+        // Skip jika link adalah 'Beranda' (alias '#'), lakukan default scroll to top
+        if (href === '#') {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+            return;
+        }
+        
+        const targetElement = document.querySelector(href);
+        if (targetElement) {
+            // Mendapatkan posisi dari target section
+            const yOffset = -80; // Offset agar tidak tertutupi oleh navbar fixed
+            const y = targetElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            
+            window.scrollTo({
+                top: y,
+                behavior: 'smooth'
+            });
+            
+            // Set active section
+            setActiveSection(href);
+            
+            // Close mobile menu if open
+            if (mobileMenuOpen) {
+                setMobileMenuOpen(false);
+            }
+        }
+    };
     
     // Mendeteksi breakpoint untuk tablet dan menyesuaikan tampilan
     useEffect(() => {
@@ -136,7 +223,8 @@ const NavbarSection = ({ user, activeLink = '#' }: NavbarProps) => {
                                 >
                                     <NavLink 
                                         href={item.href} 
-                                        active={activeLink === item.href}
+                                        active={activeSection === item.href}
+                                        onClick={(e) => handleNavLinkClick(e, item.href)}
                                     >
                                         {item.label}
                                     </NavLink>
@@ -160,9 +248,10 @@ const NavbarSection = ({ user, activeLink = '#' }: NavbarProps) => {
                                     >
                                         <NavLink 
                                             href={item.href} 
-                                            active={activeLink === item.href}
+                                            active={activeSection === item.href}
                                             variant="desktop"
                                             className="text-sm px-3"
+                                            onClick={(e) => handleNavLinkClick(e, item.href)}
                                         >
                                             {item.label}
                                         </NavLink>
@@ -204,9 +293,12 @@ const NavbarSection = ({ user, activeLink = '#' }: NavbarProps) => {
                                                 <NavLink
                                                     key={item.label}
                                                     href={item.href}
-                                                    active={activeLink === item.href}
+                                                    active={activeSection === item.href}
                                                     variant="tablet"
-                                                    onClick={() => setTabletDropdownOpen(false)}
+                                                    onClick={(e) => {
+                                                        handleNavLinkClick(e, item.href);
+                                                        setTabletDropdownOpen(false);
+                                                    }}
                                                     className="hover:translate-x-1 px-4 py-3"
                                                     onMouseEnter={() => setActiveTabletItem(item.label)}
                                                     onMouseLeave={() => setActiveTabletItem(null)}
@@ -297,7 +389,7 @@ const NavbarSection = ({ user, activeLink = '#' }: NavbarProps) => {
                     {!isTablet && (
                         <MobileMenu 
                             isOpen={mobileMenuOpen}
-                            activeLink={activeLink}
+                            activeLink={activeSection}
                             navItems={navItems}
                             user={user}
                             onClose={() => setMobileMenuOpen(false)}

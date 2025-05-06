@@ -26,7 +26,7 @@ export interface NavLinkProps {
     active?: boolean;
     icon?: string;
     variant?: 'desktop' | 'mobile' | 'tablet';
-    onClick?: () => void;
+    onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
     className?: string;
     onMouseEnter?: () => void;
     onMouseLeave?: () => void;
