@@ -373,7 +373,7 @@ const FeaturesSection: React.FC = () => {
                 )}
             </AnimatePresence>
             
-            <div className="container mx-auto px-4 relative z-10 mt-0 md:mt-0">
+            <div className="container mx-auto px-4 relative z-10 mt-0 md:mt-4">
                 {/* Stats Section */}
                 <motion.div 
                     className="relative mb-12 md:mb-16 flex justify-center items-center w-full"
