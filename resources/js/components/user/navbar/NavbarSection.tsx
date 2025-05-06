@@ -115,8 +115,18 @@ const NavbarSection = ({ user, activeLink }: NavbarProps) => {
         const targetElement = document.querySelector(href);
         if (targetElement) {
             // Mendapatkan posisi dari target section
-            const yOffset = -80; // Offset agar tidak tertutupi oleh navbar fixed
-            const y = targetElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            // Kalkulasi offset untuk centering section di viewport
+            const navbarHeight = 70; // Perkiraan tinggi navbar
+            const windowHeight = window.innerHeight;
+            const elementHeight = targetElement.getBoundingClientRect().height;
+            
+            // Jika tinggi elemen lebih kecil dari viewport, center it
+            // Jika tidak, scroll ke bagian atas dengan offset navbar
+            const centerOffset = elementHeight < (windowHeight - navbarHeight) 
+                ? (windowHeight - elementHeight) / 2 - navbarHeight
+                : -navbarHeight;
+            
+            const y = targetElement.getBoundingClientRect().top + window.pageYOffset + centerOffset;
             
             window.scrollTo({
                 top: y,
