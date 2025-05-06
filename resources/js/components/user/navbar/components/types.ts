@@ -28,6 +28,8 @@ export interface NavLinkProps {
     variant?: 'desktop' | 'mobile' | 'tablet';
     onClick?: () => void;
     className?: string;
+    onMouseEnter?: () => void;
+    onMouseLeave?: () => void;
 }
 
 /**

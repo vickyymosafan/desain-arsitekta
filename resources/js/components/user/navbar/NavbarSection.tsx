@@ -26,6 +26,9 @@ const NavbarSection = ({ user, activeLink = '#' }: NavbarProps) => {
     // Ref untuk dropdown menu pada tampilan tablet
     const tabletDropdownRef = useRef<HTMLDivElement>(null);
     
+    // State untuk menampilkan hover item pada tablet
+    const [activeTabletItem, setActiveTabletItem] = useState<string | null>(null);
+    
     // Cek jika user memilih reduced motion preference
     const prefersReducedMotion = useReducedMotion();
 
@@ -53,7 +56,13 @@ const NavbarSection = ({ user, activeLink = '#' }: NavbarProps) => {
     useEffect(() => {
         const checkTabletBreakpoint = () => {
             // Sesuaikan breakpoint untuk tablet (768px - 1024px)
-            setIsTablet(window.innerWidth >= 768 && window.innerWidth < 1024);
+            const isTabletView = window.innerWidth >= 768 && window.innerWidth < 1024;
+            setIsTablet(isTabletView);
+            
+            // Auto close dropdown when switching away from tablet view
+            if (!isTabletView && tabletDropdownOpen) {
+                setTabletDropdownOpen(false);
+            }
         };
         
         // Cek saat komponen dimuat
@@ -64,7 +73,7 @@ const NavbarSection = ({ user, activeLink = '#' }: NavbarProps) => {
         
         // Cleanup event listener saat komponen unmount
         return () => window.removeEventListener('resize', checkTabletBreakpoint);
-    }, []);
+    }, [tabletDropdownOpen]);
     
     // Menangani klik di luar dropdown untuk menutup dropdown tablet
     useEffect(() => {
@@ -143,19 +152,46 @@ const NavbarSection = ({ user, activeLink = '#' }: NavbarProps) => {
                         </motion.nav>
                     ) : (
                         /* Navigasi Tablet (768px - 1024px) */
-                        <div className="hidden md:flex lg:hidden items-center ml-4 relative" ref={tabletDropdownRef}>
+                        <div className="hidden md:flex lg:hidden items-center relative" ref={tabletDropdownRef}>
+                            {/* Tampilkan 2 menu item paling penting secara langsung */}
+                            <div className="hidden md:flex lg:hidden items-center mr-3 gap-1">
+                                {navItems.slice(0, 2).map((item, idx) => (
+                                    <motion.div
+                                        key={item.label}
+                                        initial={{ opacity: 0, y: -10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ 
+                                            duration: prefersReducedMotion ? 0 : 0.3, 
+                                            delay: prefersReducedMotion ? 0 : 0.1 * (idx + 1) 
+                                        }}
+                                    >
+                                        <NavLink 
+                                            href={item.href} 
+                                            active={activeLink === item.href}
+                                            icon={item.icon}
+                                            variant="desktop"
+                                            className="text-sm px-3"
+                                        >
+                                            {item.label}
+                                        </NavLink>
+                                    </motion.div>
+                                ))}
+                            </div>
+                            
                             {/* Button untuk menu dropdown tablet */}
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.98 }}
+                                whileTap={{ scale: 0.95 }}
                                 onClick={() => setTabletDropdownOpen(!tabletDropdownOpen)}
-                                className="py-2 px-4 flex items-center space-x-2 bg-emerald-50 hover:bg-emerald-100 dark:bg-gray-800 dark:hover:bg-gray-700 text-emerald-600 dark:text-emerald-500 rounded-lg font-medium transition-all duration-200 shadow-sm border border-emerald-200/30 dark:border-gray-700/50"
+                                className={`py-2 px-4 flex items-center space-x-2 rounded-lg font-medium transition-all duration-200 shadow-sm border ${tabletDropdownOpen 
+                                    ? 'bg-emerald-100 text-emerald-700 border-emerald-300 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800/50' 
+                                    : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-600 border-emerald-200/30 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-emerald-500 dark:border-gray-700/50'}`}
                             >
-                                <span>Menu</span>
+                                <span>{tabletDropdownOpen ? 'Tutup' : 'Menu Lainnya'}</span>
                                 <i className={`fas fa-chevron-${tabletDropdownOpen ? 'up' : 'down'} transition-transform duration-200`}></i>
                             </motion.button>
                             
-                            {/* Dropdown menu untuk tablet */}
+                            {/* Dropdown menu untuk tablet yang lebih user-friendly */}
                             <AnimatePresence>
                                 {tabletDropdownOpen && (
                                     <motion.div
@@ -163,10 +199,16 @@ const NavbarSection = ({ user, activeLink = '#' }: NavbarProps) => {
                                         animate={{ opacity: 1, y: 0, scale: 1 }}
                                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                                         transition={{ duration: 0.2 }}
-                                        className="absolute right-0 left-0 top-full mt-2 z-50 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 py-3 max-w-xs w-60"
+                                        className="absolute right-0 top-full mt-2 z-50 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 py-2 w-72"
                                     >
-                                        <div className="flex flex-col">
-                                            {navItems.map((item) => (
+                                        {/* Menu header untuk tablet */}
+                                        <div className="px-4 py-2 border-b border-gray-100 dark:border-gray-700">
+                                            <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Menu Lainnya</h3>
+                                        </div>
+                                        
+                                        <div className="grid grid-cols-1 divide-y divide-gray-100 dark:divide-gray-700/50">
+                                            {/* Menampilkan hanya menu item yang tidak muncul di navbar */}
+                                            {navItems.slice(2).map((item) => (
                                                 <NavLink
                                                     key={item.label}
                                                     href={item.href}
@@ -174,9 +216,22 @@ const NavbarSection = ({ user, activeLink = '#' }: NavbarProps) => {
                                                     icon={item.icon}
                                                     variant="tablet"
                                                     onClick={() => setTabletDropdownOpen(false)}
-                                                    className="hover:translate-x-1 px-4 py-2"
+                                                    className="hover:translate-x-1 px-4 py-3"
+                                                    onMouseEnter={() => setActiveTabletItem(item.label)}
+                                                    onMouseLeave={() => setActiveTabletItem(null)}
                                                 >
-                                                    {item.label}
+                                                    <div className="flex flex-col">
+                                                        <span className="font-medium">{item.label}</span>
+                                                        {activeTabletItem === item.label && (
+                                                            <motion.span 
+                                                                initial={{ opacity: 0 }}
+                                                                animate={{ opacity: 1 }}
+                                                                className="text-xs text-gray-500 dark:text-gray-400 mt-0.5"
+                                                            >
+                                                                {`Lihat ${item.label}`}
+                                                            </motion.span>
+                                                        )}
+                                                    </div>
                                                 </NavLink>
                                             ))}
                                         </div>
