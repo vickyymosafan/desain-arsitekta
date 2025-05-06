@@ -1,7 +1,8 @@
 import { type SharedData } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
-import { lazy, Suspense, useEffect, useState, useRef } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import Navbar from '@/components/user/navbar/index';
+import { NavItem } from '@/components/user/navbar';
 
 // Lazy load components
 const HeroSection = lazy(() => import('@/components/user/hero/index'));
@@ -14,28 +15,45 @@ const LoadingSpinner = ({ minHeight = '50vh' }: { minHeight?: string }) => (
     </div>
 );
 
+// Navigation items yang sama dengan yang digunakan di NavbarSection
+const navItems: NavItem[] = [
+    { href: '#', label: 'Beranda', icon: 'fa-home' },
+    { href: '#services', label: 'Layanan', icon: 'fa-tools' },
+    { href: '#portfolio', label: 'Portofolio', icon: 'fa-image' },
+    { href: '#blog', label: 'Blog', icon: 'fa-newspaper' },
+    { href: '#contact', label: 'Kontak', icon: 'fa-envelope' }
+];
+
 export default function Welcome() {
     const { auth } = usePage<SharedData>().props;
     const [activeSection, setActiveSection] = useState<string>('#');
-    
-    // Reference untuk semua section
-    const sectionsRef = useRef<HTMLElement[]>([]);
     
     // Mendeteksi section yang aktif saat scroll
     useEffect(() => {
         const handleScroll = () => {
             const scrollPosition = window.scrollY + 100; // Offset untuk header
             
-            // Temukan section yang sedang aktif
-            for (const section of sectionsRef.current) {
-                if (!section) continue;
+            // Default section adalah home ketika di bagian paling atas
+            if (scrollPosition < 300) {
+                setActiveSection('#');
+                return;
+            }
+            
+            // Cek setiap section berdasarkan ID yang sesuai dengan navItems href
+            for (const item of navItems) {
+                if (item.href === '#') continue; // Skip home section
                 
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.offsetHeight;
+                const sectionId = item.href.replace('#', '');
+                const section = document.getElementById(sectionId);
                 
-                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-                    setActiveSection(`#${section.id}`);
-                    break;
+                if (section) {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.offsetHeight;
+                    
+                    if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                        setActiveSection(item.href);
+                        break;
+                    }
                 }
             }
         };
@@ -45,11 +63,6 @@ export default function Welcome() {
         handleScroll();
         
         return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-    
-    // Efek untuk merefresh referensi section setelah render
-    useEffect(() => {
-        sectionsRef.current = Array.from(document.querySelectorAll('section[id]'));
     }, []);
 
     return (
@@ -70,7 +83,7 @@ export default function Welcome() {
             
             <div className="flex flex-col min-h-screen bg-black">
                 <main>
-                    <section id="" className="section-wrapper">
+                    <section id="home" className="section-wrapper">
                         <Suspense fallback={<LoadingSpinner minHeight="100vh" />}>
                             <HeroSection />
                         </Suspense>
