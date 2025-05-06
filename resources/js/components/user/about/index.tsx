@@ -126,7 +126,7 @@ export default function AboutSection() {
             }
         }, { threshold: isMobile ? 0.05 : 0.1 });
 
-        const section = document.querySelector('#about-section');
+        const section = document.querySelector('#about');
         if (section) observer.observe(section);
 
         // Auto-rotate through values (slower on mobile)
@@ -174,7 +174,7 @@ export default function AboutSection() {
 
     return (
         <section 
-            id="about-section" 
+            id="about" 
             ref={sectionRef}
             className="min-h-screen flex items-center relative overflow-hidden py-12 md:py-24"
             onTouchStart={handleTouchStart}
