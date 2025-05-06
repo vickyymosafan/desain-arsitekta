@@ -327,7 +327,7 @@ const FeaturesSection: React.FC = () => {
   );
     
     return (
-        <section className="min-h-screen bg-gradient-to-b from-black to-neutral-900 pt-16 pb-16 md:pt-20 md:pb-20 flex flex-col justify-center relative overflow-hidden">
+        <section id="services" className="min-h-screen bg-gradient-to-b from-black to-neutral-900 pt-16 pb-16 md:pt-20 md:pb-20 flex flex-col justify-center relative overflow-hidden">
             <AnimatedBackground scrollY={scrollY} />
             
             {/* Keyboard navigation indicator */}
