@@ -342,7 +342,7 @@ const FeaturesSection: React.FC = () => {
         <section 
             ref={sectionRef}
             id="services" 
-            className="min-h-screen bg-gradient-to-b from-black to-neutral-900 pt-16 pb-16 md:pt-20 md:pb-20 flex flex-col justify-center relative overflow-hidden"
+            className="min-h-screen bg-gradient-to-b from-black to-neutral-900 pt-16 md:pt-20 flex flex-col justify-center relative overflow-hidden"
             style={{ scrollMarginTop: '80px' }} // Add offset for fixed header
         >
             <AnimatedBackground scrollY={scrollY} />
