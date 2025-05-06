@@ -360,12 +360,14 @@ const FeaturesSection: React.FC = () => {
                 {/* Stats Section */}
                 <motion.div className="mb-16 md:mb-24 relative" {...sectionProps}>
                     {isDesktopOnly && (
-                        <LazyFullscreenButton 
-                            isFullscreen={false} 
-                            onClick={() => openFullscreen('stats')} 
-                            position="top-right"
-                            label="Perbesar"
-                        />
+                        <div className="absolute top-25 right-4 z-20">
+                            <LazyFullscreenButton 
+                                isFullscreen={false} 
+                                onClick={() => openFullscreen('stats')} 
+                                position="top-right"
+                                label="Perbesar"
+                            />
+                        </div>
                     )}
                     
                     <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto px-4 md:px-0">
@@ -385,51 +387,58 @@ const FeaturesSection: React.FC = () => {
                 {/* Services Section */}
                 <section className="relative mt-8 md:mt-0">
                     {/* Services section reference for lazy loading */}
-                    <SectionTitle 
-                        title="Layanan Kami"
-                        subtitle="Kami menyediakan berbagai layanan profesional untuk mewujudkan ruang impian Anda dengan kualitas terbaik"
-                        className="px-4 md:px-0"
-                    />
+                    <div className="relative">
+                        <SectionTitle 
+                            title="Layanan Kami"
+                            subtitle="Kami menyediakan berbagai layanan profesional untuk mewujudkan ruang impian Anda dengan kualitas terbaik"
+                            className="px-4 md:px-0"
+                        />
+                    </div>
                     
                     <motion.div 
-                        className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto px-4 md:px-6 lg:px-4"
-                        initial="hidden"
-                        whileInView="visible"
-                        variants={{
-                            hidden: { opacity: 0 },
-                            visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
-                        }}
-                        viewport={ANIMATION_VIEWPORT}
+                        className="relative mb-16 md:mb-24"
+                        {...sectionProps}
                     >
-                        {servicesData.map((service, index) => (
-                            <motion.div 
-                                key={index} 
-                                variants={{
-                                    hidden: { y: 20, opacity: 0 },
-                                    visible: { y: 0, opacity: 1 }
-                                }}
-                            >
-                                <ServiceCard
-                                    icon={service.icon}
-                                    title={service.title}
-                                    description={service.description}
-                                    index={index}
-                                    onClick={() => openFullscreen('services')}
+                        {isDesktopOnly && (
+                          <div className="absolute top-30 -right-4 z-20">
+                                <LazyFullscreenButton 
+                                    isFullscreen={false} 
+                                    onClick={() => openFullscreen('services')} 
+                                    position="top-right"
+                                    label="Perbesar"
                                 />
-                            </motion.div>
-                        ))}
+                          </div>
+                        )}
+                        
+                        <motion.div 
+                            className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto px-4 md:px-6 lg:px-4"
+                            initial="hidden"
+                            whileInView="visible"
+                            variants={{
+                                hidden: { opacity: 0 },
+                                visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+                            }}
+                            viewport={ANIMATION_VIEWPORT}
+                        >
+                            {servicesData.map((service, index) => (
+                                <motion.div 
+                                    key={index} 
+                                    variants={{
+                                        hidden: { y: 20, opacity: 0 },
+                                        visible: { y: 0, opacity: 1 }
+                                    }}
+                                >
+                                    <ServiceCard
+                                        icon={service.icon}
+                                        title={service.title}
+                                        description={service.description}
+                                        index={index}
+                                        onClick={() => openFullscreen('services')}
+                                    />
+                                </motion.div>
+                            ))}
+                        </motion.div>
                     </motion.div>
-                    
-                    {isDesktopOnly && (
-                        <div className="relative mt-4 md:mt-6 flex justify-end px-4 md:px-6">
-                            <LazyFullscreenButton 
-                                isFullscreen={false} 
-                                onClick={() => openFullscreen('services')} 
-                                position="bottom-right"
-                                label="Perbesar"
-                            />
-                        </div>
-                    )}
                 </section>
             </div>
         </section>
