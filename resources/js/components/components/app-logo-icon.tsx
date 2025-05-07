@@ -7,7 +7,7 @@ interface AppLogoIconProps extends HTMLAttributes<HTMLImageElement> {
 export default function AppLogoIcon({ className, ...props }: AppLogoIconProps) {
     return (
         <img
-            src="/images/4.webp"
+            src="/storage/images/4.webp"
             alt="Arsitekta Logo"
             className={className}
             {...props}

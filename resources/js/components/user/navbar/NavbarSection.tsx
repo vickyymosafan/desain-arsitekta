@@ -203,7 +203,7 @@ const NavbarSection = ({ user, activeLink }: NavbarProps) => {
                         <div className="relative flex items-center transition-all duration-300">
                             <div className="flex items-center gap-2">
                                 <img 
-                                    src="/storage/images/hero/4.webp" 
+                                    src="/storage/images/4.webp" 
                                     alt="Antosa Architect" 
                                     className={`${scrolled ? 'h-8' : 'h-10'} transition-all duration-300 object-contain`} 
                                 />
