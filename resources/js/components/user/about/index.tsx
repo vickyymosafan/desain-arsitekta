@@ -230,7 +230,7 @@ export default function AboutSection() {
                             className="rounded-xl overflow-hidden shadow-2xl shadow-emerald-900/30 relative z-10 group"
                         >
                             <img 
-                                src="/storage/images/2.webp" 
+                                src="/images/2.webp" 
                                 alt="Tim Antosa Architect" 
                                 className="w-full h-[300px] sm:h-[400px] md:h-[500px] object-cover transition-transform duration-700 group-hover:scale-105"
                                 onLoad={handleImageLoad}

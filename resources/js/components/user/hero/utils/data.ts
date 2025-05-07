@@ -26,7 +26,7 @@ export const defaultConfig: HeroConfig = {
 export const slides: Slide[] = [
     {
         id: 1,
-        image: "/storage/images/1.webp",
+        image: "/images/1.webp",
         alt: "Progressive Architecture Design",
         headline: "Spatial Vision",
         subtext: "Menghadirkan keseimbangan sempurna antara estetika dan fungsionalitas ruang",
@@ -38,7 +38,7 @@ export const slides: Slide[] = [
     },
     {
         id: 2,
-        image: "/storage/images/2.webp",
+        image: "/images/2.webp",
         alt: "Luxury Interior Design",
         headline: "Material Harmony",
         subtext: "Kurasi material premium yang menghadirkan dimensi dan tekstur tak terlupakan",
