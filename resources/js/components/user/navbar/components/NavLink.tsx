@@ -62,7 +62,7 @@ const NavLink = ({
         <Link 
             href={href} 
             className={`${baseClasses} ${variantStyles[variant]} ${className}`}
-            onClick={onClick}
+            onClick={(e: React.MouseEvent<Element>) => onClick?.(e)}
         >
             {/* Ikon (jika ada) */}
             {icon && (
