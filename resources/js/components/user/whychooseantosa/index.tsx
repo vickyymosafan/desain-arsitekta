@@ -58,13 +58,10 @@ const Counter: React.FC<CounterProps> = ({ value, duration = 2, prefix = '', suf
 const WhyChooseAntosaSection: React.FC = () => {
   const [activeTab, setActiveTab] = useState<number>(0);
 
-  // Hero background parallax effect reference
+  // Fixed position reference without problematic parallax effect
   const heroRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"]
-  });
-  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  // Simplified transformation for better UI stability
+  const bgY = useMotionValue('0%');
 
   // Company achievement data for animated counters
   const companyStats = [
@@ -81,41 +78,37 @@ const WhyChooseAntosaSection: React.FC = () => {
     { id: 'testimonials', label: 'Testimoni', icon: <IconMoodHappy size={18} /> }
   ];
   
-  // Trigger scroll reveal animation on initial render
+  // Auto-reveal animation without scroll dependency
   useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate-reveal');
-        }
-      });
-    }, { threshold: 0.1 });
-
+    // Apply animation class immediately without intersection observer
     const elements = document.querySelectorAll('.reveal-element');
-    elements.forEach(el => observer.observe(el));
-
-    return () => {
-      elements.forEach(el => observer.unobserve(el));
-    };
+    elements.forEach(el => {
+      setTimeout(() => {
+        el.classList.add('animate-reveal');
+      }, 100);
+    });
   }, []);
 
   return (
-    <div className="relative overflow-hidden">
-      {/* Hero Section with Parallax Effect */}
-      <div ref={heroRef} className="relative min-h-screen">
-        {/* Parallax Background */}
+    <div className="relative w-full h-full">
+      {/* Hero Section with simplified background */}
+      <div ref={heroRef} className="relative w-full h-full">
+        {/* Fixed Background */}
         <motion.div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0 brightness-50"
           style={{ 
             backgroundImage: `url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1470&auto=format&fit=crop')`,
-            y: bgY 
+            // Fixed position, no parallax transformation
+            backgroundAttachment: 'fixed'
           }}
         />
         
         {/* Overlay Gradient */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-black z-10"></div>
+        {/* Fixed-position overlay to prevent any scaling issues */}
+        <div className="absolute inset-0 z-5 pointer-events-none"></div>
         
-        <div className="relative z-20 min-h-screen flex flex-col justify-center py-16 px-4 md:px-8">
+        <div className="relative z-20 h-full flex flex-col justify-center py-16 px-4 md:px-8">
           <div className="max-w-7xl mx-auto w-full">
             {/* Section Header - Hero Style */}
             <motion.div 
@@ -181,16 +174,7 @@ const WhyChooseAntosaSection: React.FC = () => {
                 ))}
               </div>
               
-              {/* Scroll indicator */}
-              <motion.div 
-                className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1, y: [0, 10, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              >
-                <p className="text-sm text-gray-400 mb-2">Scroll untuk melihat</p>
-                <IconArrowNarrowRight size={24} className="text-emerald-400 rotate-90" />
-              </motion.div>
+              {/* Removed scroll indicator to prevent UI confusion */}
             </motion.div>
           </div>
         </div>

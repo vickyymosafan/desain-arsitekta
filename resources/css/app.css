@@ -9,25 +9,49 @@
 
 /* Global styles for fullscreen sections */
 .section-fullscreen {
-  min-height: 100vh; /* Full viewport height */
+  height: 100vh; /* Full viewport height */
   display: flex;
   flex-direction: column;
   justify-content: center;
   position: relative;
   overflow: hidden;
-  scroll-snap-align: start; /* For smooth section scrolling */
-  scroll-margin-top: 0px;
 }
 
-/* Add scroll snapping to the main container */
-html.snap-scroll {
-  scroll-behavior: smooth;
+/* Basic reset for fullPage.js */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  height: 100%;
+  width: 100%;
 }
 
-body.snap-scroll {
-  height: 100vh;
-  overflow-y: auto;
-  scroll-snap-type: y mandatory;
+/* Prevent content from causing unwanted zoom */
+.fp-section {
+  width: 100% !important;
+  height: 100vh !important;
+  position: relative;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Fix for fullpage.js content sizing */
+.section {
+  overflow: hidden;
+  position: relative;
+}
+
+/* Allow default touch behavior */
+.fp-tableCell {
+  vertical-align: middle;
+  width: 100%;
+}
+
+/* Fix for mobile devices */
+@media (max-width: 768px) {
+  .fp-section, .fp-tableCell {
+    height: 100vh !important;
+  }
 }
 
 

@@ -44,10 +44,28 @@ export default function Welcome() {
         return () => window.removeEventListener('hashchange', handleHashChange);
     }, [initialLoad]);
     
-    // Ensure fullpage is properly loaded
+    // Enhanced fullpage initialization with proper scaling and zoom handling
     useEffect(() => {
-        // Allow a small delay for components to load before initializing fullpage
-        setTimeout(() => setFullpageLoaded(true), 500);
+        // Simpler viewport meta tag setup without disabling user scaling
+        const setViewportMeta = () => {
+            let viewport = document.querySelector('meta[name=viewport]') as HTMLMetaElement;
+            if (!viewport) {
+                viewport = document.createElement('meta');
+                viewport.setAttribute('name', 'viewport');
+                document.getElementsByTagName('head')[0].appendChild(viewport);
+            }
+            // Allow user scaling for better accessibility
+            viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
+        };
+        
+        setViewportMeta();
+        
+        // Initialize fullpage.js after a very brief delay
+        const timer = setTimeout(() => setFullpageLoaded(true), 300);
+        
+        return () => {
+            clearTimeout(timer);
+        };
     }, []);
 
     return (
@@ -63,20 +81,30 @@ export default function Welcome() {
                     content="Arsitekta - Jasa profesional untuk desain, konstruksi, dan renovasi bangunan dengan kualitas terbaik." 
                 />
                 <style>{`
-                    /* Customize fullpage.js navigation dots */
+                    /* Basic styles for fullpage.js */
                     #fp-nav ul li a span, 
                     .fp-slidesNav ul li a span {
                         background-color: rgba(16, 185, 129, 0.8) !important;
                     }
                     
-                    /* Make sections take full height */
-                    .fp-section, .fp-tableCell {
-                        height: 100vh !important;
+                    /* Ensure proper section height */
+                    .section {
+                        position: relative;
+                        box-sizing: border-box;
+                        height: 100vh;
+                        width: 100%;
                     }
-
-                    /* Override fullpage.js scrollbar styling */
-                    .fp-overflow {
-                        overflow: hidden;
+                    
+                    /* Reset default margins and paddings */
+                    body {
+                        margin: 0;
+                        padding: 0;
+                    }
+                    
+                    /* Prevent zoom issues on mobile */
+                    .fp-tableCell {
+                        padding: 0;
+                        vertical-align: middle;
                     }
                 `}</style>
             </Head>
@@ -85,7 +113,7 @@ export default function Welcome() {
             
             {fullpageLoaded ? (
                 <ReactFullpage
-                    // Using simplified configuration to avoid conflicts
+                    // Enhanced configuration to fix UI/UX issues
                     licenseKey={''} // Open source version
                     scrollingSpeed={800}
                     anchors={['home', 'services', 'about', 'whychooseantosa']}
@@ -93,9 +121,14 @@ export default function Welcome() {
                     navigationPosition={'right'}
                     navigationTooltips={['Home', 'Services', 'About', 'Why Choose Us']}
                     showActiveTooltip={true}
-                    scrollOverflow={false} // Changed to false to avoid potential issues
-                    credits={{ enabled: false }} // Disable credits to fix potential styling issues
+                    scrollOverflow={false} // Disable to troubleshoot blank screen
+                    fitToSection={true} // Sections will always fit the viewport
+                    bigSectionsDestination={'top'} // Always scroll to the top of big sections
+                    credits={{ enabled: false }} // Disable credits
                     normalScrollElements='.navbar'
+                    verticalCentered={true}
+                    responsiveWidth={800} // Disable fullpage.js below this width for better mobile experience
+                    scrollBar={true} // Enable scrollbar for better user experience
                     onLeave={(origin, destination) => {
                         // Update URL hash without triggering a new navigation
                         const newHash = destination.anchor;
