@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence } from 'framer-motion';
-import { IconCertificate, IconMoodHappy, IconStarFilled, IconBuildingSkyscraper, IconRotate360, IconBulb, IconHeartHandshake, IconPalette, IconClock } from '@tabler/icons-react';
+import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
+import { IconArrowNarrowRight, IconCertificate, IconMoodHappy, IconStarFilled, IconBuildingSkyscraper, IconRotate360, IconBulb } from '@tabler/icons-react';
 
 interface CounterProps {
   value: number;
@@ -74,99 +74,6 @@ const WhyChooseAntosaSection: React.FC = () => {
     { number: 15, label: "Penghargaan", prefix: "", suffix: "+", icon: <IconCertificate size={20} className="text-emerald-400" /> }
   ];
   
-  // Reasons why to choose Antosa
-  const whyChooseReasons = [
-    {
-      icon: <IconPalette size={32} className="text-emerald-400" />,
-      title: "Desain Inovatif",
-      description: "Pendekatan desain yang menggabungkan estetika modern dengan fungsionalitas, menciptakan ruang yang tidak hanya indah tetapi juga praktis untuk kehidupan sehari-hari."
-    },
-    {
-      icon: <IconClock size={32} className="text-emerald-400" />,
-      title: "Tepat Waktu",
-      description: "Komitmen untuk menyelesaikan setiap proyek sesuai jadwal yang telah disepakati, dengan manajemen waktu yang terstruktur dan efisien."
-    },
-    {
-      icon: <IconHeartHandshake size={32} className="text-emerald-400" />,
-      title: "Layanan Personal",
-      description: "Pendekatan yang mengutamakan kebutuhan dan preferensi klien, dengan komunikasi yang terbuka dan responsif di setiap tahap proyek."
-    }
-  ];
-  
-  // Featured projects data
-  const featuredProjects = [
-    {
-      id: 1,
-      title: "The Emerald Heights Residence",
-      location: "Jakarta Selatan",
-      description: "Rumah mewah dengan desain modern minimalis yang menyatu dengan alam, mengoptimalkan pencahayaan alami dan sirkulasi udara.",
-      rating: 5,
-      imageSrc: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=1470&auto=format&fit=crop",
-      imageAlt: "The Emerald Heights Residence",
-      stats: [
-        { label: "Luas Bangunan", value: "450 m²" },
-        { label: "Durasi Proyek", value: "8 bulan" },
-        { label: "Tahun Selesai", value: "2023" }
-      ]
-    },
-    {
-      id: 2,
-      title: "Azure Sky Apartments",
-      location: "Bandung",
-      description: "Kompleks apartemen premium dengan fasilitas lengkap dan desain interior bergaya Skandinavia yang memaksimalkan ruang dan cahaya.",
-      rating: 5,
-      imageSrc: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=1470&auto=format&fit=crop",
-      imageAlt: "Azure Sky Apartments",
-      stats: [
-        { label: "Unit", value: "24 unit" },
-        { label: "Durasi Proyek", value: "14 bulan" },
-        { label: "Tahun Selesai", value: "2022" }
-      ]
-    },
-    {
-      id: 3,
-      title: "Tropical Haven Villa",
-      location: "Bali",
-      description: "Villa mewah dengan sentuhan arsitektur tradisional Bali yang dipadukan dengan kemewahan modern dan pemandangan laut yang spektakuler.",
-      rating: 5,
-      imageSrc: "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?q=80&w=1470&auto=format&fit=crop",
-      imageAlt: "Tropical Haven Villa",
-      stats: [
-        { label: "Luas Bangunan", value: "320 m²" },
-        { label: "Durasi Proyek", value: "10 bulan" },
-        { label: "Tahun Selesai", value: "2024" }
-      ]
-    }
-  ];
-
-  // Testimonials data
-  const testimonials = [
-    {
-      id: 1,
-      name: "Budi Santoso",
-      role: "Pengusaha",
-      content: "Antosa Architect telah memberikan desain rumah impian kami yang melebihi ekspektasi. Proses kerja mereka sangat profesional dan transparan.",
-      avatarSrc: "https://randomuser.me/api/portraits/men/32.jpg",
-      rating: 5
-    },
-    {
-      id: 2,
-      name: "Dewi Lestari",
-      role: "Dokter",
-      content: "Sangat puas dengan hasil renovasi klinik kami. Tim Antosa sangat memahami kebutuhan kami dan memberikan solusi desain yang fungsional dan estetis.",
-      avatarSrc: "https://randomuser.me/api/portraits/women/44.jpg",
-      rating: 5
-    },
-    {
-      id: 3,
-      name: "Fajar Prasetyo",
-      role: "Direktur Perusahaan",
-      content: "Kolaborasi dengan Antosa dalam proyek kantor baru kami berjalan sangat baik. Mereka profesional, tepat waktu, dan sangat memperhatikan detail.",
-      avatarSrc: "https://randomuser.me/api/portraits/men/62.jpg",
-      rating: 5
-    }
-  ];
-  
   // Content tabs for dynamic content presentation
   const contentTabs = [
     { id: 'why', label: 'Mengapa Kami', icon: <IconBulb size={18} /> },
@@ -208,34 +115,34 @@ const WhyChooseAntosaSection: React.FC = () => {
         {/* Overlay Gradient */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-black z-10"></div>
         
-        <div className="relative z-20 min-h-screen flex flex-col justify-center items-center py-12 px-4 md:px-8">
-          <div className="max-w-7xl w-full">
+        <div className="relative z-20 min-h-screen flex flex-col justify-center py-16 px-4 md:px-8">
+          <div className="max-w-7xl mx-auto w-full">
             {/* Section Header - Hero Style */}
             <motion.div 
-              className="text-center mb-0 reveal-element flex flex-col items-center"
+              className="text-center mb-16 reveal-element"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-              <div className="inline-flex items-center bg-emerald-500/20 px-4 py-2 rounded-full mb-3">
+              <div className="inline-flex items-center bg-emerald-500/20 px-4 py-2 rounded-full mb-4">
                 <IconStarFilled size={16} className="text-emerald-400 mr-2" />
                 <h2 className="text-emerald-400 text-sm font-medium uppercase tracking-wider">ALASAN TEPAT</h2>
               </div>
               
-              <h3 className="font-playfair text-4xl md:text-6xl lg:text-7xl font-bold mb-4 text-white">
+              <h3 className="font-playfair text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-white">
                 Mengapa Memilih <span className="text-emerald-400 relative inline-block">
                   Antosa
                   <span className="absolute -bottom-2 left-0 w-full h-1 bg-emerald-400"></span>
                 </span> Architect?
               </h3>
               
-              <p className="max-w-2xl mx-auto text-gray-300 text-lg font-nunito mb-8">
+              <p className="max-w-2xl mx-auto text-gray-300 text-lg font-nunito mb-12">
                 Mewujudkan impian Anda menjadi kenyataan dengan pendekatan profesional dan inovatif dalam setiap tahap proyek.          
               </p>
               
               {/* Tabs for different content sections */}
-              <div className="flex flex-wrap justify-center gap-2 mb-8">
+              <div className="flex flex-wrap justify-center gap-2 mb-12">
                 {contentTabs.map((tab, idx) => (
                   <motion.button
                     key={tab.id}
@@ -253,7 +160,7 @@ const WhyChooseAntosaSection: React.FC = () => {
               </div>
 
               {/* Dynamic Stats with Animated Counters */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mt-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mt-8">
                 {companyStats.map((stat, index) => (
                   <motion.div 
                     key={index}
@@ -274,127 +181,16 @@ const WhyChooseAntosaSection: React.FC = () => {
                 ))}
               </div>
               
-              {/* Tab Content with Animations */}
-              <div className="mt-10 relative min-h-[450px] w-full flex justify-center">
-                <AnimatePresence mode="wait">
-                  {activeTab === 0 && (
-                    <motion.div 
-                      key="why-us"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.5 }}
-                      className="absolute w-full flex justify-center"
-                    >
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full px-4 max-w-6xl mx-auto">
-                        {whyChooseReasons.map((reason, index) => (
-                          <motion.div 
-                            key={index}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: index * 0.2 }}
-                            className="p-8 rounded-xl backdrop-blur-md bg-white/5 border border-white/10 hover:bg-white/10 hover:border-emerald-500/30 transition-all duration-500 h-full flex flex-col"
-                          >
-                            <div className="rounded-full w-16 h-16 flex items-center justify-center bg-emerald-900/50 border border-emerald-500/20 mb-4">
-                              {reason.icon}
-                            </div>
-                            <h4 className="text-xl font-playfair text-white font-semibold mb-3">{reason.title}</h4>
-                            <p className="text-gray-300 text-sm font-nunito flex-grow">{reason.description}</p>
-                          </motion.div>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {activeTab === 1 && (
-                    <motion.div 
-                      key="projects"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.5 }}
-                      className="absolute w-full flex justify-center"
-                    >
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full px-4 max-w-6xl mx-auto">
-                        {featuredProjects.map((project, index) => (
-                          <motion.div 
-                            key={project.id}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: index * 0.2 }}
-                            className="rounded-xl overflow-hidden bg-white/5 border border-white/10 hover:border-emerald-500/30 transition-all duration-500 group h-full"
-                          >
-                            <div className="relative h-48 overflow-hidden">
-                              <img 
-                                src={project.imageSrc} 
-                                alt={project.imageAlt} 
-                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
-                              />
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                              <div className="absolute bottom-3 left-3 text-white">
-                                <p className="text-sm font-medium">{project.location}</p>
-                              </div>
-                            </div>
-                            <div className="p-4">
-                              <h4 className="text-lg font-playfair text-white font-semibold mb-2">{project.title}</h4>
-                              <p className="text-gray-300 text-sm font-nunito mb-3 line-clamp-2">{project.description}</p>
-                              <div className="grid grid-cols-3 gap-2 mt-4">
-                                {project.stats.map((stat, i) => (
-                                  <div key={i} className="text-center">
-                                    <p className="text-emerald-400 text-xs font-semibold">{stat.label}</p>
-                                    <p className="text-white text-sm">{stat.value}</p>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          </motion.div>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {activeTab === 2 && (
-                    <motion.div 
-                      key="testimonials"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.5 }}
-                      className="absolute w-full flex justify-center"
-                    >
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full px-4 max-w-6xl mx-auto">
-                        {testimonials.map((testimonial, index) => (
-                          <motion.div 
-                            key={testimonial.id}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: index * 0.2 }}
-                            className="p-8 rounded-xl backdrop-blur-md bg-white/5 border border-white/10 hover:bg-white/10 hover:border-emerald-500/30 transition-all duration-500 flex flex-col h-full"
-                          >
-                            <div className="flex items-center mb-3">
-                              <img 
-                                src={testimonial.avatarSrc} 
-                                alt={testimonial.name} 
-                                className="w-12 h-12 rounded-full object-cover border-2 border-emerald-500/50 mr-3" 
-                              />
-                              <div>
-                                <h4 className="text-white font-semibold font-playfair mb-0">{testimonial.name}</h4>
-                                <p className="text-gray-400 text-sm leading-tight">{testimonial.role}</p>
-                              </div>
-                            </div>
-                            <div className="flex mb-2">
-                              {[...Array(testimonial.rating)].map((_, i) => (
-                                <IconStarFilled key={i} size={16} className="text-emerald-400" />
-                              ))}
-                            </div>
-                            <p className="text-gray-300 text-sm font-nunito italic">"{testimonial.content}"</p>
-                          </motion.div>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+              {/* Scroll indicator */}
+              <motion.div 
+                className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1, y: [0, 10, 0] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                <p className="text-sm text-gray-400 mb-2">Scroll untuk melihat</p>
+                <IconArrowNarrowRight size={24} className="text-emerald-400 rotate-90" />
+              </motion.div>
             </motion.div>
           </div>
         </div>
