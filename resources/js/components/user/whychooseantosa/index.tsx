@@ -208,34 +208,34 @@ const WhyChooseAntosaSection: React.FC = () => {
         {/* Overlay Gradient */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-black z-10"></div>
         
-        <div className="relative z-20 min-h-screen flex flex-col justify-center py-16 px-4 md:px-8">
+        <div className="relative z-20 min-h-screen flex flex-col justify-center py-12 px-4 md:px-8">
           <div className="max-w-7xl mx-auto w-full">
             {/* Section Header - Hero Style */}
             <motion.div 
-              className="text-center mb-16 reveal-element"
+              className="text-center mb-0 reveal-element"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-              <div className="inline-flex items-center bg-emerald-500/20 px-4 py-2 rounded-full mb-4">
+              <div className="inline-flex items-center bg-emerald-500/20 px-4 py-2 rounded-full mb-3">
                 <IconStarFilled size={16} className="text-emerald-400 mr-2" />
                 <h2 className="text-emerald-400 text-sm font-medium uppercase tracking-wider">ALASAN TEPAT</h2>
               </div>
               
-              <h3 className="font-playfair text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-white">
+              <h3 className="font-playfair text-4xl md:text-6xl lg:text-7xl font-bold mb-4 text-white">
                 Mengapa Memilih <span className="text-emerald-400 relative inline-block">
                   Antosa
                   <span className="absolute -bottom-2 left-0 w-full h-1 bg-emerald-400"></span>
                 </span> Architect?
               </h3>
               
-              <p className="max-w-2xl mx-auto text-gray-300 text-lg font-nunito mb-12">
+              <p className="max-w-2xl mx-auto text-gray-300 text-lg font-nunito mb-8">
                 Mewujudkan impian Anda menjadi kenyataan dengan pendekatan profesional dan inovatif dalam setiap tahap proyek.          
               </p>
               
               {/* Tabs for different content sections */}
-              <div className="flex flex-wrap justify-center gap-2 mb-12">
+              <div className="flex flex-wrap justify-center gap-2 mb-8">
                 {contentTabs.map((tab, idx) => (
                   <motion.button
                     key={tab.id}
@@ -253,7 +253,7 @@ const WhyChooseAntosaSection: React.FC = () => {
               </div>
 
               {/* Dynamic Stats with Animated Counters */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mt-8">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mt-6">
                 {companyStats.map((stat, index) => (
                   <motion.div 
                     key={index}
@@ -275,7 +275,7 @@ const WhyChooseAntosaSection: React.FC = () => {
               </div>
               
               {/* Tab Content with Animations */}
-              <div className="mt-12 relative min-h-[400px]">
+              <div className="mt-10 relative min-h-[500px]">
                 <AnimatePresence mode="wait">
                   {activeTab === 0 && (
                     <motion.div 
@@ -286,14 +286,14 @@ const WhyChooseAntosaSection: React.FC = () => {
                       transition={{ duration: 0.5 }}
                       className="absolute w-full"
                     >
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full px-4 max-w-6xl mx-auto">
                         {whyChooseReasons.map((reason, index) => (
                           <motion.div 
                             key={index}
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: index * 0.2 }}
-                            className="p-6 rounded-xl backdrop-blur-md bg-white/5 border border-white/10 hover:bg-white/10 hover:border-emerald-500/30 transition-all duration-500 h-full flex flex-col"
+                            className="p-8 rounded-xl backdrop-blur-md bg-white/5 border border-white/10 hover:bg-white/10 hover:border-emerald-500/30 transition-all duration-500 h-full flex flex-col"
                           >
                             <div className="rounded-full w-16 h-16 flex items-center justify-center bg-emerald-900/50 border border-emerald-500/20 mb-4">
                               {reason.icon}
@@ -315,14 +315,14 @@ const WhyChooseAntosaSection: React.FC = () => {
                       transition={{ duration: 0.5 }}
                       className="absolute w-full"
                     >
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full px-4 max-w-6xl mx-auto">
                         {featuredProjects.map((project, index) => (
                           <motion.div 
                             key={project.id}
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: index * 0.2 }}
-                            className="rounded-xl overflow-hidden bg-white/5 border border-white/10 hover:border-emerald-500/30 transition-all duration-500 group"
+                            className="rounded-xl overflow-hidden bg-white/5 border border-white/10 hover:border-emerald-500/30 transition-all duration-500 group h-full"
                           >
                             <div className="relative h-48 overflow-hidden">
                               <img 
@@ -362,14 +362,14 @@ const WhyChooseAntosaSection: React.FC = () => {
                       transition={{ duration: 0.5 }}
                       className="absolute w-full"
                     >
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full px-4 max-w-6xl mx-auto">
                         {testimonials.map((testimonial, index) => (
                           <motion.div 
                             key={testimonial.id}
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: index * 0.2 }}
-                            className="p-6 rounded-xl backdrop-blur-md bg-white/5 border border-white/10 hover:bg-white/10 hover:border-emerald-500/30 transition-all duration-500 flex flex-col"
+                            className="p-8 rounded-xl backdrop-blur-md bg-white/5 border border-white/10 hover:bg-white/10 hover:border-emerald-500/30 transition-all duration-500 flex flex-col h-full"
                           >
                             <div className="flex items-center mb-4">
                               <img 
