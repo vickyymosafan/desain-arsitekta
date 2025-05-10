@@ -208,11 +208,11 @@ const WhyChooseAntosaSection: React.FC = () => {
         {/* Overlay Gradient */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-black z-10"></div>
         
-        <div className="relative z-20 min-h-screen flex flex-col justify-center py-12 px-4 md:px-8">
-          <div className="max-w-7xl mx-auto w-full">
+        <div className="relative z-20 min-h-screen flex flex-col justify-center items-center py-12 px-4 md:px-8">
+          <div className="max-w-7xl w-full">
             {/* Section Header - Hero Style */}
             <motion.div 
-              className="text-center mb-0 reveal-element"
+              className="text-center mb-0 reveal-element flex flex-col items-center"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -275,7 +275,7 @@ const WhyChooseAntosaSection: React.FC = () => {
               </div>
               
               {/* Tab Content with Animations */}
-              <div className="mt-10 relative min-h-[500px]">
+              <div className="mt-10 relative min-h-[450px] w-full flex justify-center">
                 <AnimatePresence mode="wait">
                   {activeTab === 0 && (
                     <motion.div 
@@ -284,7 +284,7 @@ const WhyChooseAntosaSection: React.FC = () => {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -20 }}
                       transition={{ duration: 0.5 }}
-                      className="absolute w-full"
+                      className="absolute w-full flex justify-center"
                     >
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full px-4 max-w-6xl mx-auto">
                         {whyChooseReasons.map((reason, index) => (
@@ -313,7 +313,7 @@ const WhyChooseAntosaSection: React.FC = () => {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -20 }}
                       transition={{ duration: 0.5 }}
-                      className="absolute w-full"
+                      className="absolute w-full flex justify-center"
                     >
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full px-4 max-w-6xl mx-auto">
                         {featuredProjects.map((project, index) => (
@@ -360,7 +360,7 @@ const WhyChooseAntosaSection: React.FC = () => {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -20 }}
                       transition={{ duration: 0.5 }}
-                      className="absolute w-full"
+                      className="absolute w-full flex justify-center"
                     >
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full px-4 max-w-6xl mx-auto">
                         {testimonials.map((testimonial, index) => (
@@ -371,18 +371,18 @@ const WhyChooseAntosaSection: React.FC = () => {
                             transition={{ delay: index * 0.2 }}
                             className="p-8 rounded-xl backdrop-blur-md bg-white/5 border border-white/10 hover:bg-white/10 hover:border-emerald-500/30 transition-all duration-500 flex flex-col h-full"
                           >
-                            <div className="flex items-center mb-4">
+                            <div className="flex items-center mb-3">
                               <img 
                                 src={testimonial.avatarSrc} 
                                 alt={testimonial.name} 
                                 className="w-12 h-12 rounded-full object-cover border-2 border-emerald-500/50 mr-3" 
                               />
                               <div>
-                                <h4 className="text-white font-semibold font-playfair">{testimonial.name}</h4>
-                                <p className="text-gray-400 text-sm">{testimonial.role}</p>
+                                <h4 className="text-white font-semibold font-playfair mb-0">{testimonial.name}</h4>
+                                <p className="text-gray-400 text-sm leading-tight">{testimonial.role}</p>
                               </div>
                             </div>
-                            <div className="flex mb-3">
+                            <div className="flex mb-2">
                               {[...Array(testimonial.rating)].map((_, i) => (
                                 <IconStarFilled key={i} size={16} className="text-emerald-400" />
                               ))}
