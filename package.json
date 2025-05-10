@@ -23,6 +23,7 @@
         "typescript-eslint": "^8.23.0"
     },
     "dependencies": {
+        "@fullpage/react-fullpage": "^0.1.48",
         "@headlessui/react": "^2.2.0",
         "@heroicons/react": "^2.2.0",
         "@inertiajs/react": "^2.0.0",
@@ -48,6 +49,7 @@
         "clsx": "^2.1.1",
         "concurrently": "^9.0.1",
         "framer-motion": "^11.18.2",
+        "fullpage.js": "^4.0.35",
         "globals": "^15.14.0",
         "laravel-vite-plugin": "^1.0",
         "lucide-react": "^0.475.0",

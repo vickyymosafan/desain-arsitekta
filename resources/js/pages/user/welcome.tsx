@@ -1,7 +1,10 @@
 import { type SharedData } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect, useState, useRef } from 'react';
 import Navbar from '@/components/user/navbar';
+import ReactFullpage from '@fullpage/react-fullpage';
+// Import the core fullPagejs for TypeScript definition
+import 'fullpage.js/dist/fullpage.css';
 
 // Lazy load components
 const HeroSection = lazy(() => import('@/components/user/hero/index'));
@@ -18,6 +21,34 @@ const LoadingSpinner = ({ minHeight = '50vh' }: { minHeight?: string }) => (
 
 export default function Welcome() {
     const { auth } = usePage<SharedData>().props;
+    const [currentAnchor, setCurrentAnchor] = useState('');
+    const [initialLoad, setInitialLoad] = useState(true);
+    const [fullpageLoaded, setFullpageLoaded] = useState(false);
+    const fpRef = useRef<any>(null);
+
+    // Handle hash navigation on initial load
+    useEffect(() => {
+        const handleHashChange = () => {
+            const hash = window.location.hash?.substring(1) || 'home';
+            if (hash && initialLoad) {
+                setCurrentAnchor(hash);
+                setInitialLoad(false);
+            }
+        };
+
+        // Initial check
+        handleHashChange();
+
+        // Listen for hash changes
+        window.addEventListener('hashchange', handleHashChange);
+        return () => window.removeEventListener('hashchange', handleHashChange);
+    }, [initialLoad]);
+    
+    // Ensure fullpage is properly loaded
+    useEffect(() => {
+        // Allow a small delay for components to load before initializing fullpage
+        setTimeout(() => setFullpageLoaded(true), 500);
+    }, []);
 
     return (
         <>
@@ -31,42 +62,85 @@ export default function Welcome() {
                     name="description" 
                     content="Arsitekta - Jasa profesional untuk desain, konstruksi, dan renovasi bangunan dengan kualitas terbaik." 
                 />
+                <style>{`
+                    /* Customize fullpage.js navigation dots */
+                    #fp-nav ul li a span, 
+                    .fp-slidesNav ul li a span {
+                        background-color: rgba(16, 185, 129, 0.8) !important;
+                    }
+                    
+                    /* Make sections take full height */
+                    .fp-section, .fp-tableCell {
+                        height: 100vh !important;
+                    }
+
+                    /* Override fullpage.js scrollbar styling */
+                    .fp-overflow {
+                        overflow: hidden;
+                    }
+                `}</style>
             </Head>
             
             <Navbar user={auth.user} />
             
-            <div className="flex flex-col min-h-screen bg-black">
-                <main>
-                    <section id="home" className="section-wrapper">
-                        <Suspense fallback={<LoadingSpinner minHeight="100vh" />}>
-                            <HeroSection />
-                        </Suspense>
-                    </section>
-                    
-                    <section id="services" className="section-wrapper">
-                        <Suspense fallback={<LoadingSpinner minHeight="100vh" />}>
-                            <FeaturesSection />
-                        </Suspense>
-                    </section>
-                    
-                    <section id="about" className="section-wrapper">
-                        <Suspense fallback={<LoadingSpinner minHeight="100vh" />}>
-                            <AboutSection />
-                        </Suspense>
-                    </section>
+            {fullpageLoaded ? (
+                <ReactFullpage
+                    // Using simplified configuration to avoid conflicts
+                    licenseKey={''} // Open source version
+                    scrollingSpeed={800}
+                    anchors={['home', 'services', 'about', 'whychooseantosa']}
+                    navigation={true}
+                    navigationPosition={'right'}
+                    navigationTooltips={['Home', 'Services', 'About', 'Why Choose Us']}
+                    showActiveTooltip={true}
+                    scrollOverflow={false} // Changed to false to avoid potential issues
+                    credits={{ enabled: false }} // Disable credits to fix potential styling issues
+                    normalScrollElements='.navbar'
+                    onLeave={(origin, destination) => {
+                        // Update URL hash without triggering a new navigation
+                        const newHash = destination.anchor;
+                        if (newHash && newHash !== currentAnchor) {
+                            setCurrentAnchor(typeof newHash === 'string' ? newHash : String(newHash));
+                            const newUrl = window.location.pathname + '#' + newHash;
+                            window.history.replaceState(null, '', newUrl);
+                        }
+                    }}
+                    render={({ state, fullpageApi }) => {
+                        return (
+                            <>
+                                <div className="section bg-black" data-anchor="home">
+                                    <Suspense fallback={<LoadingSpinner minHeight="100vh" />}>
+                                        <HeroSection />
+                                    </Suspense>
+                                </div>
+                                
+                                <div className="section bg-black" data-anchor="services">
+                                    <Suspense fallback={<LoadingSpinner minHeight="100vh" />}>
+                                        <FeaturesSection />
+                                    </Suspense>
+                                </div>
+                                
+                                <div className="section bg-black" data-anchor="about">
+                                    <Suspense fallback={<LoadingSpinner minHeight="100vh" />}>
+                                        <AboutSection />
+                                    </Suspense>
+                                </div>
 
-                    <section id="whychooseantosa" className="section-wrapper">
-                        <Suspense fallback={<LoadingSpinner minHeight="80vh" />}>
-                            <WhyChooseAntosaSection />
-                        </Suspense>
-                    </section>
-                </main>
-                
-                {/* Simple footer to maintain layout structure */}
-                {/* <footer className="mt-auto py-8 bg-black">
-                    <div className="container mx-auto"></div>
-                </footer> */}
-            </div>
+                                <div className="section bg-black" data-anchor="whychooseantosa">
+                                    <Suspense fallback={<LoadingSpinner minHeight="100vh" />}>
+                                        <WhyChooseAntosaSection />
+                                    </Suspense>
+                                </div>
+                            </>
+                        );
+                    }}
+                />
+            ) : (
+                // Show loading indicator while fullpage.js initializes
+                <div className="min-h-screen bg-black flex items-center justify-center">
+                    <LoadingSpinner minHeight="100vh" />
+                </div>
+            )}
         </>
     );
 }
