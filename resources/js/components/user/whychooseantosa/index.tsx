@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
-import { IconArrowNarrowRight, IconCertificate, IconMoodHappy, IconStarFilled, IconBuildingSkyscraper, IconRotate360, IconBulb } from '@tabler/icons-react';
+import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence } from 'framer-motion';
+import { IconCertificate, IconMoodHappy, IconStarFilled, IconBuildingSkyscraper, IconRotate360, IconBulb, IconHeartHandshake, IconPalette, IconClock } from '@tabler/icons-react';
 
 interface CounterProps {
   value: number;
@@ -72,6 +72,99 @@ const WhyChooseAntosaSection: React.FC = () => {
     { number: 250, label: "Proyek Selesai", prefix: "", suffix: "+", icon: <IconBuildingSkyscraper size={20} className="text-emerald-400" /> },
     { number: 98, label: "Kepuasan Klien", prefix: "", suffix: "%", icon: <IconMoodHappy size={20} className="text-emerald-400" /> },
     { number: 15, label: "Penghargaan", prefix: "", suffix: "+", icon: <IconCertificate size={20} className="text-emerald-400" /> }
+  ];
+  
+  // Reasons why to choose Antosa
+  const whyChooseReasons = [
+    {
+      icon: <IconPalette size={32} className="text-emerald-400" />,
+      title: "Desain Inovatif",
+      description: "Pendekatan desain yang menggabungkan estetika modern dengan fungsionalitas, menciptakan ruang yang tidak hanya indah tetapi juga praktis untuk kehidupan sehari-hari."
+    },
+    {
+      icon: <IconClock size={32} className="text-emerald-400" />,
+      title: "Tepat Waktu",
+      description: "Komitmen untuk menyelesaikan setiap proyek sesuai jadwal yang telah disepakati, dengan manajemen waktu yang terstruktur dan efisien."
+    },
+    {
+      icon: <IconHeartHandshake size={32} className="text-emerald-400" />,
+      title: "Layanan Personal",
+      description: "Pendekatan yang mengutamakan kebutuhan dan preferensi klien, dengan komunikasi yang terbuka dan responsif di setiap tahap proyek."
+    }
+  ];
+  
+  // Featured projects data
+  const featuredProjects = [
+    {
+      id: 1,
+      title: "The Emerald Heights Residence",
+      location: "Jakarta Selatan",
+      description: "Rumah mewah dengan desain modern minimalis yang menyatu dengan alam, mengoptimalkan pencahayaan alami dan sirkulasi udara.",
+      rating: 5,
+      imageSrc: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=1470&auto=format&fit=crop",
+      imageAlt: "The Emerald Heights Residence",
+      stats: [
+        { label: "Luas Bangunan", value: "450 m²" },
+        { label: "Durasi Proyek", value: "8 bulan" },
+        { label: "Tahun Selesai", value: "2023" }
+      ]
+    },
+    {
+      id: 2,
+      title: "Azure Sky Apartments",
+      location: "Bandung",
+      description: "Kompleks apartemen premium dengan fasilitas lengkap dan desain interior bergaya Skandinavia yang memaksimalkan ruang dan cahaya.",
+      rating: 5,
+      imageSrc: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=1470&auto=format&fit=crop",
+      imageAlt: "Azure Sky Apartments",
+      stats: [
+        { label: "Unit", value: "24 unit" },
+        { label: "Durasi Proyek", value: "14 bulan" },
+        { label: "Tahun Selesai", value: "2022" }
+      ]
+    },
+    {
+      id: 3,
+      title: "Tropical Haven Villa",
+      location: "Bali",
+      description: "Villa mewah dengan sentuhan arsitektur tradisional Bali yang dipadukan dengan kemewahan modern dan pemandangan laut yang spektakuler.",
+      rating: 5,
+      imageSrc: "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?q=80&w=1470&auto=format&fit=crop",
+      imageAlt: "Tropical Haven Villa",
+      stats: [
+        { label: "Luas Bangunan", value: "320 m²" },
+        { label: "Durasi Proyek", value: "10 bulan" },
+        { label: "Tahun Selesai", value: "2024" }
+      ]
+    }
+  ];
+
+  // Testimonials data
+  const testimonials = [
+    {
+      id: 1,
+      name: "Budi Santoso",
+      role: "Pengusaha",
+      content: "Antosa Architect telah memberikan desain rumah impian kami yang melebihi ekspektasi. Proses kerja mereka sangat profesional dan transparan.",
+      avatarSrc: "https://randomuser.me/api/portraits/men/32.jpg",
+      rating: 5
+    },
+    {
+      id: 2,
+      name: "Dewi Lestari",
+      role: "Dokter",
+      content: "Sangat puas dengan hasil renovasi klinik kami. Tim Antosa sangat memahami kebutuhan kami dan memberikan solusi desain yang fungsional dan estetis.",
+      avatarSrc: "https://randomuser.me/api/portraits/women/44.jpg",
+      rating: 5
+    },
+    {
+      id: 3,
+      name: "Fajar Prasetyo",
+      role: "Direktur Perusahaan",
+      content: "Kolaborasi dengan Antosa dalam proyek kantor baru kami berjalan sangat baik. Mereka profesional, tepat waktu, dan sangat memperhatikan detail.",
+      avatarSrc: "https://randomuser.me/api/portraits/men/62.jpg",
+      rating: 5
+    }
   ];
   
   // Content tabs for dynamic content presentation
@@ -181,16 +274,127 @@ const WhyChooseAntosaSection: React.FC = () => {
                 ))}
               </div>
               
-              {/* Scroll indicator */}
-              <motion.div 
-                className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1, y: [0, 10, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              >
-                <p className="text-sm text-gray-400 mb-2">Scroll untuk melihat</p>
-                <IconArrowNarrowRight size={24} className="text-emerald-400 rotate-90" />
-              </motion.div>
+              {/* Tab Content with Animations */}
+              <div className="mt-12 relative min-h-[400px]">
+                <AnimatePresence mode="wait">
+                  {activeTab === 0 && (
+                    <motion.div 
+                      key="why-us"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 0.5 }}
+                      className="absolute w-full"
+                    >
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                        {whyChooseReasons.map((reason, index) => (
+                          <motion.div 
+                            key={index}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: index * 0.2 }}
+                            className="p-6 rounded-xl backdrop-blur-md bg-white/5 border border-white/10 hover:bg-white/10 hover:border-emerald-500/30 transition-all duration-500 h-full flex flex-col"
+                          >
+                            <div className="rounded-full w-16 h-16 flex items-center justify-center bg-emerald-900/50 border border-emerald-500/20 mb-4">
+                              {reason.icon}
+                            </div>
+                            <h4 className="text-xl font-playfair text-white font-semibold mb-3">{reason.title}</h4>
+                            <p className="text-gray-300 text-sm font-nunito flex-grow">{reason.description}</p>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {activeTab === 1 && (
+                    <motion.div 
+                      key="projects"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 0.5 }}
+                      className="absolute w-full"
+                    >
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                        {featuredProjects.map((project, index) => (
+                          <motion.div 
+                            key={project.id}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: index * 0.2 }}
+                            className="rounded-xl overflow-hidden bg-white/5 border border-white/10 hover:border-emerald-500/30 transition-all duration-500 group"
+                          >
+                            <div className="relative h-48 overflow-hidden">
+                              <img 
+                                src={project.imageSrc} 
+                                alt={project.imageAlt} 
+                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                              <div className="absolute bottom-3 left-3 text-white">
+                                <p className="text-sm font-medium">{project.location}</p>
+                              </div>
+                            </div>
+                            <div className="p-4">
+                              <h4 className="text-lg font-playfair text-white font-semibold mb-2">{project.title}</h4>
+                              <p className="text-gray-300 text-sm font-nunito mb-3 line-clamp-2">{project.description}</p>
+                              <div className="grid grid-cols-3 gap-2 mt-4">
+                                {project.stats.map((stat, i) => (
+                                  <div key={i} className="text-center">
+                                    <p className="text-emerald-400 text-xs font-semibold">{stat.label}</p>
+                                    <p className="text-white text-sm">{stat.value}</p>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {activeTab === 2 && (
+                    <motion.div 
+                      key="testimonials"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 0.5 }}
+                      className="absolute w-full"
+                    >
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                        {testimonials.map((testimonial, index) => (
+                          <motion.div 
+                            key={testimonial.id}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: index * 0.2 }}
+                            className="p-6 rounded-xl backdrop-blur-md bg-white/5 border border-white/10 hover:bg-white/10 hover:border-emerald-500/30 transition-all duration-500 flex flex-col"
+                          >
+                            <div className="flex items-center mb-4">
+                              <img 
+                                src={testimonial.avatarSrc} 
+                                alt={testimonial.name} 
+                                className="w-12 h-12 rounded-full object-cover border-2 border-emerald-500/50 mr-3" 
+                              />
+                              <div>
+                                <h4 className="text-white font-semibold font-playfair">{testimonial.name}</h4>
+                                <p className="text-gray-400 text-sm">{testimonial.role}</p>
+                              </div>
+                            </div>
+                            <div className="flex mb-3">
+                              {[...Array(testimonial.rating)].map((_, i) => (
+                                <IconStarFilled key={i} size={16} className="text-emerald-400" />
+                              ))}
+                            </div>
+                            <p className="text-gray-300 text-sm font-nunito italic">"{testimonial.content}"</p>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             </motion.div>
           </div>
         </div>
