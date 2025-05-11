@@ -1,9 +1,9 @@
 import React, { ReactNode } from 'react';
 import { motion } from 'framer-motion';
 
-// Import shared utilities - using proper paths
-import { transitions } from '../../utils/animations';
-import { colors, shadows } from '../../utils/styles';
+// Import hooks and utilities
+import { usePageLayout } from '../../hooks/usePageLayout';
+import { colors, typography, borderRadius } from '../../utils/styles';
 
 // Layout component props
 interface PageLayoutProps {
@@ -12,6 +12,8 @@ interface PageLayoutProps {
   pageTransition?: boolean;
   pageTitle?: string;
   fullHeight?: boolean;
+  navbarSpacing?: boolean;
+  navbarHeight?: number;
 }
 
 /**
@@ -20,50 +22,52 @@ interface PageLayoutProps {
  * Provides standard page container with proper spacing, animations,
  * and emerald-based styling consistent with the brand identity.
  * Designed for Gen Z audience with clean, modern aesthetics.
+ * 
+ * Uses the usePageLayout hook to handle layout logic and animations.
  */
 const PageLayout: React.FC<PageLayoutProps> = ({
   children,
-  className = '',
-  pageTransition = true,
+  className,
+  pageTransition,
   pageTitle,
-  fullHeight = false
+  fullHeight,
+  navbarSpacing,
+  navbarHeight
 }) => {
-  // Page transition animation variants
-  const pageVariants = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -20 }
-  };
-  
-  // Page transition settings
-  const pageTransitionSettings = {
-    ...transitions.default,
-    duration: 0.4
-  };
-  
-  // Base container classes
-  const containerClasses = [
-    'w-full mx-auto',
-    'px-4 sm:px-6 lg:px-8',
-    'py-4 sm:py-8',
-    fullHeight ? 'min-h-screen' : '',
-    className
-  ].filter(Boolean).join(' ');
+  // Use the layout hook to get container classes and animation properties
+  const { containerClasses, animationProps, contentStyle } = usePageLayout({
+    pageTransition,
+    fullHeight,
+    className,
+    navbarSpacing,
+    navbarHeight
+  });
   
   return (
     <motion.div
       className={containerClasses}
-      initial={pageTransition ? 'initial' : undefined}
-      animate={pageTransition ? 'animate' : undefined}
-      exit={pageTransition ? 'exit' : undefined}
-      variants={pageVariants}
-      transition={pageTransitionSettings}
+      initial={animationProps.initial}
+      animate={animationProps.animate}
+      exit={animationProps.exit}
+      variants={animationProps.variants}
+      transition={animationProps.transition}
+      style={contentStyle}
     >
       {pageTitle && (
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-playfair mb-6 md:mb-8 text-gray-900 dark:text-white tracking-wide">
+        <motion.h1 
+          className="text-3xl sm:text-4xl md:text-5xl font-bold font-playfair mb-6 md:mb-8 text-gray-900 dark:text-white tracking-wide"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+        >
           {pageTitle}
-          <div className="h-1 w-24 bg-emerald-500 mt-4 rounded-full" />
-        </h1>
+          <motion.div 
+            className="h-1 w-24 bg-emerald-500 mt-4 rounded-full"
+            initial={{ width: 0 }}
+            animate={{ width: '6rem' }}
+            transition={{ delay: 0.5, duration: 0.7 }}
+          />
+        </motion.h1>
       )}
       
       {children}
