@@ -1,9 +1,15 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+// Import shared utilities
+import { useReducedMotionPreference, useScrollPosition, useClickOutside } from '../../../utils/hooks';
+import { NAVIGATION_BREAKPOINTS, DEBOUNCE_DELAYS } from '../../../utils/constants';
+
+// Import component-specific dependencies
 import { NavbarProps } from './components/types';
 import NavLink from './components/NavLink';
 import Button from './components/NavButtons';
 import MobileMenu from './components/MobileMenu';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { navItems } from './components/navigationItems';
 
 /**
@@ -33,8 +39,8 @@ const NavbarSection = ({ user, activeLink }: NavbarProps) => {
     // State untuk menampilkan hover item pada tablet
     const [activeTabletItem, setActiveTabletItem] = useState<string | null>(null);
     
-    // Cek jika user memilih reduced motion preference
-    const prefersReducedMotion = useReducedMotion();
+    // Check if user prefers reduced motion for accessibility
+    const prefersReducedMotion = useReducedMotionPreference();
 
     // Menggunakan navItems dari file centralized
 
@@ -100,8 +106,8 @@ const NavbarSection = ({ user, activeLink }: NavbarProps) => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, [determineActiveSection]);
     
-    // Smooth scroll handler untuk menangani klik pada nav links
-    const handleNavLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    // Smooth scroll handler for managing nav link clicks
+    const handleNavLinkClick = (e: React.MouseEvent<Element>, href: string) => {
         e.preventDefault();
         // Skip jika link adalah 'Beranda' (alias '#'), lakukan default scroll to top
         if (href === '#') {
