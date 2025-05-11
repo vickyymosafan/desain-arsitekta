@@ -86,8 +86,8 @@ const NavbarSection = ({ user, activeLink }: NavbarProps) => {
         setActiveSection('#');
     }, []);
     
-    // Debounce function untuk scroll event (mencegah terlalu banyak pembaruan)
-    const debounce = (func: Function, delay: number) => {
+    // Utility function for debouncing scroll events
+    const debounce = (func: Function, delay: number = DEBOUNCE_DELAYS.scroll) => {
         let timeoutId: NodeJS.Timeout;
         return function(...args: any[]) {
             clearTimeout(timeoutId);
@@ -95,11 +95,12 @@ const NavbarSection = ({ user, activeLink }: NavbarProps) => {
         };
     };
     
-    // Menangani efek scroll untuk navbar dan active section detection
+    // Handle scroll effects for navbar and active section detection
     useEffect(() => {
-        const handleScroll = debounce(determineActiveSection, 100);
+        // Use DEBOUNCE_DELAYS from centralized constants for consistent debounce timing
+        const handleScroll = debounce(determineActiveSection, DEBOUNCE_DELAYS.scroll);
         
-        // Initial check saat komponen di-mount
+        // Initial check when component mounts
         determineActiveSection();
         
         window.addEventListener('scroll', handleScroll);

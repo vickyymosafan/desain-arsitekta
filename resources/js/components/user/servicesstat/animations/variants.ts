@@ -1,7 +1,16 @@
-// Import varian animasi dari utilitas terpusat
-import { containerVariants, itemVariants, transitions } from '../../../../utils/animations';
+/**
+ * Service-specific animation variants that extend the centralized animations
+ * Optimized for mobile performance and specific to the services component needs
+ */
 
-// Varian container spesifik untuk layanan dengan timing khusus untuk mobile
+import { 
+  containerVariants, 
+  itemVariants, 
+  transitions, 
+  createAnimationProps 
+} from '../../../../utils/animations';
+
+// Service-specific container variant with optimized timing for mobile
 export const serviceContainerVariants = {
   ...containerVariants,
   visible: {
@@ -10,26 +19,22 @@ export const serviceContainerVariants = {
   }
 };
 
-// Varian item spesifik untuk layanan dengan offset yang lebih kecil untuk mobile
+// Service-specific item variant with smaller offset for better mobile performance
 export const serviceItemVariants = {
   ...itemVariants,
-  hidden: { y: 15, opacity: 0 }, // Smaller y-offset for mobile - lebih optimal untuk performa
+  hidden: { y: 15, opacity: 0 }, // Smaller y-offset for mobile - better for performance
   visible: { 
     y: 0, 
     opacity: 1,
-    transition: { ...transitions.spring, stiffness: 80, damping: 10 } // Performa yang lebih baik untuk mobile
+    transition: { ...transitions.spring, stiffness: 80, damping: 10 } // Better mobile performance
   }
 };
 
-// Re-export varian animasi umum untuk konsistensi API
+// Re-export standard animation variants for API consistency
 export { containerVariants, itemVariants };
 
-export const titleAnimationProps = {
-  initial: { opacity: 0, y: 20 }, // Reduced y-offset for mobile
-  whileInView: { opacity: 1, y: 0 },
-  transition: { duration: 0.6 }, // Slightly faster for mobile
-  viewport: { once: true, margin: "-80px" } // Adjusted viewport margin
-};
+// Predefined animation props using the centralized utilities
+export const titleAnimationProps = createAnimationProps('slideUp', 0, true);
 
 export const subtitleAnimationProps = {
   initial: { opacity: 0 },
