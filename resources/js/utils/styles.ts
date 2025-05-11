@@ -175,3 +175,20 @@ export const getHeightStyle = (
       return { height };
   }
 };
+
+/**
+ * Menghitung posisi konten berdasarkan konfigurasi jarak navbar
+ * Memastikan konten berada pada posisi yang tepat dengan mempertimbangkan navbar
+ */
+export const getContentPosition = (navbarSpacing: boolean, navbarHeight: number): React.CSSProperties => {
+  if (navbarSpacing) {
+    return {
+      height: `calc(100vh - ${navbarHeight}px)`,
+      minHeight: `calc(100vh - ${navbarHeight}px)`
+    };
+  }
+  return {
+    height: '100vh',
+    minHeight: '100vh'
+  };
+};

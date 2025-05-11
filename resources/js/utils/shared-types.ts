@@ -84,3 +84,35 @@ export interface SectionConfig {
   verticalAlign?: 'top' | 'center' | 'bottom';
   horizontalAlign?: 'left' | 'center' | 'right';
 }
+
+/**
+ * Interface slide untuk komponen hero dan slider
+ */
+export interface Slide {
+  /** ID unik slide */
+  id: number;
+  /** URL gambar background */
+  image: string;
+  /** Teks alternatif untuk gambar */
+  alt: string;
+  /** Judul utama slide */
+  headline?: string;
+  /** Teks pendukung/subtitle slide */
+  subtext?: string;
+  /** Custom overlay gradient */
+  overlay?: string;
+  /** Posisi gambar latar belakang */
+  position?: 'center' | 'top' | 'bottom' | 'left' | 'right';
+  /** Video background opsional */
+  video?: string;
+  /** Efek visual untuk slide */
+  effect?: 'none' | 'parallax' | 'blur' | 'zoom' | 'glitch' | 'grain';
+  /** Warna aksen untuk highlight khusus per slide */
+  accent?: string;
+  /** Tag opsional (seperti 'New', 'Featured', dll) */
+  tag?: string;
+  /** Animasi khusus untuk slide */
+  animation?: AnimationVariant;
+  /** Perataan konten slide */
+  alignment?: 'left' | 'center' | 'right';
+}

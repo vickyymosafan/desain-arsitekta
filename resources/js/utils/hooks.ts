@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback, RefObject } from 'react';
-import { AnimationVariant } from './shared-types';
+import { useState, useEffect, useCallback, useRef, RefObject } from 'react';
+import { AnimationVariant, Slide } from './shared-types';
 
 /**
  * Custom hook for handling window resize events with debounce
@@ -139,5 +139,169 @@ export const useAnimationWithDelay = (variant: AnimationVariant, delay: number =
     initial: { opacity: 0 },
     animate: { opacity: 1 },
     transition: { delay, duration: 0.5 }
+  };
+};
+
+/**
+ * Props untuk hook useSlider
+ */
+interface UseSliderProps {
+  slides: Slide[];
+  autoplay?: boolean;
+  autoplaySpeed?: number;
+  pauseOnHover?: boolean;
+}
+
+/**
+ * Return value dari hook useSlider
+ */
+interface UseSliderReturn {
+  currentSlide: number;
+  isPaused: boolean;
+  sliderRef: RefObject<HTMLDivElement | null>;
+  touchHandlers: {
+    onTouchStart: (e: React.TouchEvent) => void;
+    onTouchMove: (e: React.TouchEvent) => void;
+    onTouchEnd: () => void;
+  };
+  hoverHandlers: {
+    onMouseEnter: () => void;
+    onMouseLeave: () => void;
+  };
+  clickHandlers: {
+    onClick: (e: React.MouseEvent) => void;
+  };
+  slideControls: {
+    goToSlide: (index: number) => void;
+    goToPrevSlide: () => void;
+    goToNextSlide: () => void;
+  };
+}
+
+/**
+ * Custom hook untuk mengelola slider/carousel dengan dukungan touch, autoplay, dan navigasi
+ * Optimal untuk pengalaman Gen Z di mobile dan desktop
+ * @param props - Konfigurasi slider
+ */
+export const useSlider = ({
+  slides,
+  autoplay = true,
+  autoplaySpeed = 5000,
+  pauseOnHover = true
+}: UseSliderProps): UseSliderReturn => {
+  // State untuk slide saat ini
+  const [currentSlide, setCurrentSlide] = useState(0);
+  
+  // State untuk pause/play autoplay
+  const [isPaused, setIsPaused] = useState(false);
+  
+  // Referensi untuk container slider
+  const sliderRef = useRef<HTMLDivElement>(null);
+  
+  // State untuk touch handling
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
+  
+  // Menangani klik pada slide (untuk deteksi perangkat sentuh atau mouse)
+  const handleClick = (e: React.MouseEvent) => {
+    if (!sliderRef.current) return;
+    
+    const container = sliderRef.current;
+    const containerWidth = container.clientWidth;
+    const clickX = e.clientX - container.getBoundingClientRect().left;
+    
+    // Klik pada sisi kiri = prev, kanan = next
+    if (clickX < containerWidth / 2) {
+      goToPrevSlide();
+    } else {
+      goToNextSlide();
+    }
+  };
+  
+  // Touch handlers untuk dukungan swipe di mobile
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchEndX.current = e.touches[0].clientX;
+  };
+  
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+  
+  const handleTouchEnd = () => {
+    const difference = touchStartX.current - touchEndX.current;
+    
+    // Swipe threshold untuk menghindari trigger yang tidak disengaja
+    if (Math.abs(difference) > 50) {
+      if (difference > 0) {
+        // Swipe ke kiri = next slide
+        goToNextSlide();
+      } else {
+        // Swipe ke kanan = prev slide
+        goToPrevSlide();
+      }
+    }
+  };
+  
+  // Handler untuk mouse hover (pause autoplay saat hover)
+  const handleMouseEnter = () => {
+    if (pauseOnHover && autoplay) {
+      setIsPaused(true);
+    }
+  };
+  
+  const handleMouseLeave = () => {
+    if (pauseOnHover && autoplay) {
+      setIsPaused(false);
+    }
+  };
+  
+  // Slide navigation controls
+  const goToSlide = (index: number) => {
+    // Pastikan index dalam rentang valid
+    const validIndex = index < 0 ? slides.length - 1 : index >= slides.length ? 0 : index;
+    setCurrentSlide(validIndex);
+  };
+  
+  const goToPrevSlide = () => {
+    goToSlide(currentSlide - 1);
+  };
+  
+  const goToNextSlide = () => {
+    goToSlide(currentSlide + 1);
+  };
+  
+  // Setup autoplay
+  useEffect(() => {
+    if (!autoplay || isPaused) return;
+    
+    const interval = setInterval(() => {
+      goToNextSlide();
+    }, autoplaySpeed);
+    
+    return () => clearInterval(interval);
+  }, [autoplay, autoplaySpeed, currentSlide, isPaused]);
+  
+  return {
+    currentSlide,
+    isPaused,
+    sliderRef,
+    touchHandlers: {
+      onTouchStart: handleTouchStart,
+      onTouchMove: handleTouchMove,
+      onTouchEnd: handleTouchEnd
+    },
+    hoverHandlers: {
+      onMouseEnter: handleMouseEnter,
+      onMouseLeave: handleMouseLeave
+    },
+    clickHandlers: {
+      onClick: handleClick
+    },
+    slideControls: {
+      goToSlide,
+      goToPrevSlide,
+      goToNextSlide
+    }
   };
 };

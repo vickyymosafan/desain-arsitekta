@@ -36,7 +36,9 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
         touchHandlers,
         hoverHandlers,
         clickHandlers,
-        slideControls
+        goToSlide,        // Langsung akses tanpa nested slideControls
+        goToPrevSlide,    // Langsung akses tanpa nested slideControls
+        goToNextSlide     // Langsung akses tanpa nested slideControls
     } = useSlider({
         slides,
         autoplay: mergedConfig.autoplay || false,
@@ -121,7 +123,7 @@ const HeroSection: FC<HeroSectionProps> = ({ config }) => {
                     <SlideIndicators 
                         slides={slides} 
                         currentSlide={currentSlide} 
-                        goToSlide={slideControls.goToSlide}
+                        goToSlide={goToSlide}
                         variant={mergedConfig.indicatorType as 'dots' | 'lines' | 'numbers' | 'pills' | 'emoji' | 'minimal'}
                         size={mergedConfig.indicatorSize as 'sm' | 'md' | 'lg' | 'xl'}
                         position="custom"

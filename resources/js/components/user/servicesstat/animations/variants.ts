@@ -1,34 +1,28 @@
-// Animation variants for components
-// Optimized for mobile performance while maintaining visual appeal
-export const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.12 } // Slightly faster staggering for mobile
-  }
-};
+// Import varian animasi dari utilitas terpusat
+import { containerVariants, itemVariants, transitions } from '../../../../utils/animations';
 
-export const itemVariants = {
-  hidden: { y: 20, opacity: 0 }, // Reduced y-offset for smoother mobile animation
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: { type: "spring", stiffness: 80, damping: 10 } // Reduced stiffness for better performance
-  }
-};
-
+// Varian container spesifik untuk layanan dengan timing khusus untuk mobile
 export const serviceContainerVariants = {
-  hidden: { opacity: 0 },
+  ...containerVariants,
   visible: {
     opacity: 1,
     transition: { staggerChildren: 0.12, delayChildren: 0.4 } // Optimized timing for mobile
   }
 };
 
+// Varian item spesifik untuk layanan dengan offset yang lebih kecil untuk mobile
 export const serviceItemVariants = {
-  hidden: { y: 15, opacity: 0 }, // Smaller y-offset for mobile
-  visible: { y: 0, opacity: 1 }
+  ...itemVariants,
+  hidden: { y: 15, opacity: 0 }, // Smaller y-offset for mobile - lebih optimal untuk performa
+  visible: { 
+    y: 0, 
+    opacity: 1,
+    transition: { ...transitions.spring, stiffness: 80, damping: 10 } // Performa yang lebih baik untuk mobile
+  }
 };
+
+// Re-export varian animasi umum untuk konsistensi API
+export { containerVariants, itemVariants };
 
 export const titleAnimationProps = {
   initial: { opacity: 0, y: 20 }, // Reduced y-offset for mobile

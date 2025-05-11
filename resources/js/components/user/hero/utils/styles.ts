@@ -1,31 +1,12 @@
-// Gaya CSS untuk bagian hero
-export const globalCss = `
-    @keyframes gradient-shift {
-        0% { background-position: 0% 50% }
-        50% { background-position: 100% 50% }
-        100% { background-position: 0% 50% }
-    }
-    
-    @keyframes float {
-        0% { transform: translateY(0px); }
-        50% { transform: translateY(-10px); }
-        100% { transform: translateY(0px); }
-    }
-    
-    @keyframes pulse {
-        0% { opacity: 0.6; }
-        50% { opacity: 1; }
-        100% { opacity: 0.6; }
-    }
-`;
+import { applyGlobalStyles as applySharedGlobalStyles } from '../../../../utils/styles';
 
-// Menerapkan CSS global ke dokumen
+/**
+ * @deprecated Gunakan applyGlobalStyles dari utilitas terpusat
+ * Fungsi ini tetap disediakan untuk backward compatibility
+ */
 export const applyGlobalStyles = (): void => {
-    if (typeof document !== 'undefined') {
-        const style = document.createElement('style');
-        style.innerHTML = globalCss;
-        document.head.appendChild(style);
-    }
+    // Menggunakan fungsi dari utilitas terpusat
+    applySharedGlobalStyles();
 };
 
 // Common styling objects yang dapat digunakan ulang di komponen-komponen

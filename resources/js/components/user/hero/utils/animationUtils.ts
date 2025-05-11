@@ -1,4 +1,5 @@
-import { AnimationVariant, AnimationVariantProps, EasingType, TransitionType } from './types';
+// Import dari utilitas terpusat untuk konsistensi
+import { AnimationVariant, AnimationVariantProps, EasingType, TransitionType } from '../../../../utils/shared-types';
 
 // Utilitas animasi untuk mengurangi redundansi
 export const transitions = {
