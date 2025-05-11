@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, RefObject } from 'react';
+import { useState, useEffect, useCallback, useRef, RefObject, MutableRefObject } from 'react';
 import { AnimationVariant, Slide } from './shared-types';
 
 /**
@@ -183,6 +183,66 @@ interface UseSliderReturn {
  * Optimal untuk pengalaman Gen Z di mobile dan desktop
  * @param props - Konfigurasi slider
  */
+/**
+ * Custom hook for device type detection
+ * Returns info about the current device type (mobile, tablet, desktop)
+ */
+export const useResponsive = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(true);
+
+  useEffect(() => {
+    const checkDeviceType = () => {
+      const width = window.innerWidth;
+      setIsMobile(width < 768);
+      setIsTablet(width >= 768 && width < 1024);
+      setIsDesktop(width >= 1024);
+    };
+
+    // Check on initial load
+    checkDeviceType();
+
+    // Add resize listener
+    window.addEventListener('resize', checkDeviceType);
+
+    // Cleanup
+    return () => window.removeEventListener('resize', checkDeviceType);
+  }, []);
+
+  return { isMobile, isTablet, isDesktop };
+};
+
+/**
+ * Custom hook for intersection observer
+ * @param ref - Reference to the element to observe
+ * @param callback - Function to call when intersection changes
+ * @param options - IntersectionObserver options
+ */
+export const useIntersectionObserver = (
+  ref: RefObject<Element | null>,
+  callback: (isIntersecting: boolean, entry?: IntersectionObserverEntry) => void,
+  options: IntersectionObserverInit = {}
+) => {
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      const entry = entries[0];
+      callback(entry.isIntersecting, entry);
+    }, options);
+
+    const element = ref.current;
+    if (element) {
+      observer.observe(element);
+    }
+
+    return () => {
+      if (element) {
+        observer.unobserve(element);
+      }
+    };
+  }, [ref, callback, options]);
+};
+
 export const useSlider = ({
   slides,
   autoplay = true,
