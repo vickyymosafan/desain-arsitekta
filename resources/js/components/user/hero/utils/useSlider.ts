@@ -1,58 +1,62 @@
-/**
- * Re-exports and adapts the shared useSlider hook
- * This file serves as an adapter to maintain API compatibility while using centralized functionality
- */
-
+// Import hook dari utilitas terpusat
 import { useSlider as useSharedSlider } from '../../../../utils/hooks';
 import { Slide } from '../../../../utils/shared-types';
 import { RefObject } from 'react';
 
-// Types for component-specific API compatibility
-export interface UseSliderProps {
-  slides: Slide[];
-  autoplay?: boolean;
-  autoplaySpeed?: number;
-  pauseOnHover?: boolean;
-}
-
-export interface UseSliderReturn {
-  currentSlide: number;
-  goToSlide: (index: number) => void;
-  goToPrevSlide: () => void;
-  goToNextSlide: () => void;
-  sliderRef: RefObject<HTMLDivElement | null>;
-  isPaused: boolean;
-  touchHandlers: {
-    onTouchStart: (e: React.TouchEvent) => void;
-    onTouchMove: (e: React.TouchEvent) => void;
-    onTouchEnd: () => void;
-  };
-  hoverHandlers: {
-    onMouseEnter: () => void;
-    onMouseLeave: () => void;
-  };
-  clickHandlers: {
-    onClick: (e: React.MouseEvent) => void;
-  };
+/**
+ * Props untuk hook useSlider
+ */
+interface UseSliderProps {
+    slides: Slide[];
+    autoplay?: boolean;
+    autoplaySpeed?: number;
+    pauseOnHover?: boolean;
 }
 
 /**
- * Adapter for the centralized useSlider hook that maintains the component-specific API
+ * Return value dari hook useSlider dengan API yang ringkas
+ */
+export interface UseSliderReturn {
+    currentSlide: number;
+    goToSlide: (index: number) => void;
+    goToPrevSlide: () => void;
+    goToNextSlide: () => void;
+    sliderRef: RefObject<HTMLDivElement | null>;
+    isPaused: boolean;
+    touchHandlers: {
+        onTouchStart: (e: React.TouchEvent) => void;
+        onTouchMove: (e: React.TouchEvent) => void;
+        onTouchEnd: () => void;
+    };
+    hoverHandlers: {
+        onMouseEnter: () => void;
+        onMouseLeave: () => void;
+    };
+    clickHandlers: {
+        onClick: (e: React.MouseEvent) => void;
+    };
+}
+
+/**
+ * Custom hook untuk slider functionality yang menggunakan useSharedSlider dari hooks.ts
+ * @param props - Konfigurasi slider
+ * @returns - Object dengan state dan handler untuk slider
  */
 export const useSlider = (props: UseSliderProps): UseSliderReturn => {
-  const sliderData = useSharedSlider(props);
-  
-  return {
-    currentSlide: sliderData.currentSlide,
-    goToSlide: sliderData.slideControls.goToSlide,
-    goToPrevSlide: sliderData.slideControls.goToPrevSlide,
-    goToNextSlide: sliderData.slideControls.goToNextSlide,
-    sliderRef: sliderData.sliderRef,
-    isPaused: sliderData.isPaused,
-    touchHandlers: sliderData.touchHandlers,
-    hoverHandlers: sliderData.hoverHandlers,
-    clickHandlers: sliderData.clickHandlers
-  };
+    // Menggunakan hook terpusat
+    const sliderData = useSharedSlider(props);
+    
+    return {
+        currentSlide: sliderData.currentSlide,
+        goToSlide: sliderData.slideControls.goToSlide,
+        goToPrevSlide: sliderData.slideControls.goToPrevSlide,
+        goToNextSlide: sliderData.slideControls.goToNextSlide,
+        sliderRef: sliderData.sliderRef,
+        isPaused: sliderData.isPaused,
+        touchHandlers: sliderData.touchHandlers,
+        hoverHandlers: sliderData.hoverHandlers,
+        clickHandlers: sliderData.clickHandlers
+    };
 };
 
 export default useSlider;

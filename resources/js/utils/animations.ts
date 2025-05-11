@@ -10,14 +10,6 @@ export const transitions = {
     elastic: { type: 'spring' as TransitionType, stiffness: 200, damping: 8, mass: 0.8 }
 };
 
-// Slide-specific transitions
-export const slideTransitions = {
-    default: { duration: 0.8, ease: 'easeOut' as EasingType },
-    smooth: { duration: 1.2, ease: 'easeInOut' as EasingType },
-    spring: { type: 'spring' as TransitionType, stiffness: 80, damping: 20 },
-    bounce: { type: 'spring' as TransitionType, stiffness: 200, damping: 15, velocity: 1 }
-};
-
 // Reusable animation variants
 export const animationVariants: Record<AnimationVariant | string, AnimationVariantProps> = {
     // Fade variations
@@ -113,6 +105,14 @@ export const getSlideAnimationStyle = (
     animationType: string, 
     isActive: boolean
 ) => {
+    // Define transition presets for slides
+    const slideTransitions = {
+        default: { duration: 0.8, ease: 'easeOut' as EasingType },
+        smooth: { duration: 1.2, ease: 'easeInOut' as EasingType },
+        spring: { type: 'spring' as TransitionType, stiffness: 80, damping: 20 },
+        bounce: { type: 'spring' as TransitionType, stiffness: 200, damping: 15, velocity: 1 }
+    };
+
     // Animation presets
     switch(animationType) {
         case 'fade':
@@ -177,5 +177,3 @@ export const itemVariants = {
         transition: transitions.spring
     }
 };
-
-
