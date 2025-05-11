@@ -86,6 +86,16 @@ export interface SectionConfig {
 }
 
 /**
+ * Props untuk hook useSlider, digunakan di beberapa komponen slider
+ */
+export interface UseSliderProps {
+  slides: Slide[];
+  autoplay?: boolean;
+  autoplaySpeed?: number;
+  pauseOnHover?: boolean;
+}
+
+/**
  * Interface slide untuk komponen hero dan slider
  */
 export interface Slide {

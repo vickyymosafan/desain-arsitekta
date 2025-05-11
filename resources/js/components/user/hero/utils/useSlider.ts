@@ -1,20 +1,18 @@
-// Import hook dari utilitas terpusat
+/**
+ * This file is a bridge to the central useSlider hook
+ * It provides a simpler, more convenient API specifically for Hero components
+ * while leveraging the shared logic in the core hook.
+ */
+
 import { useSlider as useSharedSlider } from '../../../../utils/hooks';
 import { Slide } from '../../../../utils/shared-types';
 import { RefObject } from 'react';
 
-/**
- * Props untuk hook useSlider
- */
-interface UseSliderProps {
-    slides: Slide[];
-    autoplay?: boolean;
-    autoplaySpeed?: number;
-    pauseOnHover?: boolean;
-}
+// Re-export the UseSliderProps from the shared types
+export type { UseSliderProps } from '../../../../utils/shared-types';
 
 /**
- * Return value dari hook useSlider dengan API yang ringkas
+ * Return value from the hero-specific useSlider hook with a streamlined API
  */
 export interface UseSliderReturn {
     currentSlide: number;
@@ -38,14 +36,17 @@ export interface UseSliderReturn {
 }
 
 /**
- * Custom hook untuk slider functionality yang menggunakan useSharedSlider dari hooks.ts
- * @param props - Konfigurasi slider
- * @returns - Object dengan state dan handler untuk slider
+ * Hero-specific slider hook that provides a simplified interface
+ * to the central useSlider hook functionality.
+ * 
+ * @param props - Slider configuration (slides, autoplay options, etc.)
+ * @returns Object with state and handlers for the slider
  */
-export const useSlider = (props: UseSliderProps): UseSliderReturn => {
-    // Menggunakan hook terpusat
+export const useSlider = (props: { slides: Slide[], autoplay?: boolean, autoplaySpeed?: number, pauseOnHover?: boolean }): UseSliderReturn => {
+    // Use the centralized hook
     const sliderData = useSharedSlider(props);
     
+    // Return a simplified interface suitable for Hero components
     return {
         currentSlide: sliderData.currentSlide,
         goToSlide: sliderData.slideControls.goToSlide,
