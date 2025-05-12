@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { animationVariants } from '../../../utils/animations';
+import { animationVariants, getAnimationWithDelay } from '../../../utils/animations';
 
 interface AboutHeaderProps {
     isVisible: boolean;
@@ -36,10 +36,7 @@ const AboutHeader: React.FC<AboutHeaderProps> = ({ isVisible }) => {
             
             <motion.h2
                 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white font-playfair"
-                variants={{
-                    hidden: { opacity: 0, y: 20 },
-                    visible: { opacity: 1, y: 0, transition: { delay: 0.2, duration: 0.6 } }
-                }}
+                variants={getAnimationWithDelay('slideUp', 0.2)}
             >
                 Mewujudkan Ruang Impian Anda
             </motion.h2>
@@ -53,10 +50,7 @@ const AboutHeader: React.FC<AboutHeaderProps> = ({ isVisible }) => {
             
             <motion.p
                 className="mt-6 md:text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto"
-                variants={{
-                    hidden: { opacity: 0, y: 15 },
-                    visible: { opacity: 1, y: 0, transition: { delay: 0.4, duration: 0.6 } }
-                }}
+                variants={getAnimationWithDelay('slideUp', 0.4)}
             >
                 Arsitekta adalah studio desain yang berdedikasi untuk menciptakan ruang fungsional 
                 dengan estetika yang sesuai dengan kepribadian dan kebutuhan Anda.

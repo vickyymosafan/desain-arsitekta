@@ -1,6 +1,6 @@
 import React from 'react';
-import { motion, useTransform, useMotionValue } from 'framer-motion';
-import { transitions, itemVariants } from '../../../utils/animations';
+import { motion } from 'framer-motion';
+import { transitions, itemVariants, getAnimationWithDelay } from '../../../utils/animations';
 
 interface AboutContentProps {
     isVisible: boolean;
@@ -13,21 +13,10 @@ interface AboutContentProps {
  * experience badge, description text, and animated elements.
  */
 const AboutContent: React.FC<AboutContentProps> = ({ isVisible }) => {
-    // Experience badge animation
-    const experienceBadge = {
-        hidden: { scale: 0.8, opacity: 0 },
-        visible: { 
-            scale: 1, 
-            opacity: 1, 
-            transition: { 
-                delay: 0.5, 
-                type: 'spring', 
-                stiffness: 100 
-            } 
-        }
-    };
+    // Menggunakan animasi dari utils dengan delay untuk badge
+    const experienceBadgeAnimation = getAnimationWithDelay('zoom', 0.5);
     
-    // Floating animation for background elements
+    // Floating animation untuk elemen dekoratif
     const floatingAnimation = {
         y: [0, -15, 0],
         transition: {
@@ -42,7 +31,7 @@ const AboutContent: React.FC<AboutContentProps> = ({ isVisible }) => {
             {/* Experience badge */}
             <motion.div 
                 className="absolute -top-4 -right-4 md:top-0 md:right-0 z-10 bg-emerald-500 text-white rounded-full px-4 py-2 shadow-lg flex items-center"
-                variants={experienceBadge}
+                variants={experienceBadgeAnimation}
                 initial="hidden"
                 animate={isVisible ? "visible" : "hidden"}
             >

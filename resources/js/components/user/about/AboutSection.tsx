@@ -1,10 +1,10 @@
 import React, { useState, useRef } from 'react';
 import { motion, useAnimation } from 'framer-motion';
-import ValuesCarousel from './ValuesCarousel.js';
-import AboutHeader from './AboutHeader.js';
-import AboutContent from './AboutContent.js';
+import ValuesCarousel from './ValuesCarousel';
+import AboutHeader from './AboutHeader';
+import AboutContent from './AboutContent';
 import { useIntersectionObserver, useResponsive } from '../../../utils/hooks';
-import { animationVariants, containerVariants } from '../../../utils/animations';
+import { containerVariants } from '../../../utils/animations';
 
 /**
  * AboutSection Component
