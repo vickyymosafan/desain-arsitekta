@@ -176,58 +176,59 @@ export default function AboutSection() {
         <section 
             id="about-section" 
             ref={sectionRef}
-            className="min-h-screen flex items-center justify-center relative overflow-hidden py-0 md:py-4 -mt-8 md:-mt-12"
+            className="h-screen w-full flex items-center justify-center relative overflow-hidden py-0 -mt-16 md:-mt-20"
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
         >
             {/* Background now clean without circular blur elements */}
             
-            <div className="container mx-auto px-4 py-2 md:py-4">
-                <motion.div 
-                    initial="hidden" 
-                    animate={isVisible ? "visible" : "hidden"}
-                    variants={fadeIn}
-                    className="mb-8 md:mb-10 text-center"
-                >
-                    <h2 className="mb-3 text-emerald-500 text-xs md:text-sm font-bold tracking-widest uppercase inline-flex items-center">
-                        <motion.span 
-                            initial={{ width: 0 }}
-                            animate={{ width: "1.5rem", transition: { delay: 0.3, duration: 0.6 }}}
-                            className="mr-2 h-px bg-emerald-500"
-                        ></motion.span>
-                        Tentang Kami
-                        <motion.span 
-                            initial={{ width: 0 }}
-                            animate={{ width: "1.5rem", transition: { delay: 0.3, duration: 0.6 }}}
-                            className="ml-2 h-px bg-emerald-500"
-                        ></motion.span>
-                    </h2>
-                    <h3 className="mb-6 text-3xl sm:text-4xl md:text-5xl font-playfair font-bold text-white">
-                        <span className="text-emerald-500 relative inline-block">
-                            Antosa Architect
-                            <motion.span 
-                                initial={{ width: 0 }}
-                                animate={{ width: "100%", transition: { delay: 0.8, duration: 0.6 }}}
-                                className="absolute -bottom-2 left-0 h-1 bg-emerald-500/30"
-                            ></motion.span>
-                        </span>
-                    </h3>
-                    <p className="max-w-3xl mx-auto text-gray-300 text-lg leading-relaxed">
-                        Tim arsitek profesional dengan fokus pada desain yang memadukan estetika, fungsi, dan keberlanjutan untuk menciptakan ruang impian Anda.
-                    </p>
-                </motion.div>
-
-                <div className="flex flex-col lg:flex-row gap-8 lg:gap-14 items-center">
-                    {/* Left Column - Image & Experience */}
+            <div className="container mx-auto px-4 py-0 flex justify-center items-center h-full">
+                <div className="max-w-6xl w-full">
                     <motion.div 
                         initial="hidden" 
                         animate={isVisible ? "visible" : "hidden"}
                         variants={fadeIn}
-                        className="w-full lg:w-1/2 relative"
+                        className="mb-8 md:mb-10 text-center"
                     >
+                        <h2 className="mb-3 text-emerald-500 text-xs md:text-sm font-bold tracking-widest uppercase inline-flex items-center">
+                            <motion.span 
+                                initial={{ width: 0 }}
+                                animate={{ width: "1.5rem", transition: { delay: 0.3, duration: 0.6 }}}
+                                className="mr-2 h-px bg-emerald-500"
+                            ></motion.span>
+                            Tentang Kami
+                            <motion.span 
+                                initial={{ width: 0 }}
+                                animate={{ width: "1.5rem", transition: { delay: 0.3, duration: 0.6 }}}
+                                className="ml-2 h-px bg-emerald-500"
+                            ></motion.span>
+                        </h2>
+                        <h3 className="mb-6 text-3xl sm:text-4xl md:text-5xl font-playfair font-bold text-white">
+                            <span className="text-emerald-500 relative inline-block">
+                                Antosa Architect
+                                <motion.span 
+                                    initial={{ width: 0 }}
+                                    animate={{ width: "100%", transition: { delay: 0.8, duration: 0.6 }}}
+                                    className="absolute -bottom-2 left-0 h-1 bg-emerald-500/30"
+                                ></motion.span>
+                            </span>
+                        </h3>
+                        <p className="max-w-3xl mx-auto text-gray-300 text-lg leading-relaxed">
+                            Tim arsitek profesional dengan fokus pada desain yang memadukan estetika, fungsi, dan keberlanjutan untuk menciptakan ruang impian Anda.
+                        </p>
+                    </motion.div>
+
+                    <div className="flex flex-col lg:flex-row gap-8 lg:gap-14 items-center justify-center">
+                        {/* Left Column - Image & Experience */}
                         <motion.div 
-                            whileTap={isMobile ? { scale: 0.98 } : {}}
-                            className="rounded-xl overflow-hidden shadow-2xl shadow-emerald-900/30 relative z-10 group"
+                            initial="hidden" 
+                            animate={isVisible ? "visible" : "hidden"}
+                            variants={fadeIn}
+                            className="w-full lg:w-1/2 relative"
+                        >
+                            <motion.div 
+                                whileTap={isMobile ? { scale: 0.98 } : {}}
+                                className="rounded-xl overflow-hidden shadow-2xl shadow-emerald-900/30 relative z-10 group"
                         >
                             <img 
                                 src="/images/2.webp" 
@@ -254,15 +255,31 @@ export default function AboutSection() {
                                 <span className="block text-4xl md:text-5xl font-bold text-emerald-500 tracking-tight">15+</span>
                                 <span className="block text-xs md:text-sm uppercase tracking-wider font-medium text-gray-400">Tahun Pengalaman</span>
                             </div>
+                            </motion.div>
+                            
+                            {/* No decorative blur elements */}
+                            
+                            {/* Experience badge */}
+                            <motion.div 
+                                variants={experienceBadge}
+                                initial="hidden" 
+                                animate={isVisible ? "visible" : "hidden"}
+                                whileHover={{ scale: 1.05 }}
+                                className="absolute -right-2 md:-right-5 bottom-10 md:bottom-20 bg-black border border-emerald-500/20 shadow-xl rounded-lg py-3 md:py-4 px-4 md:px-6 z-20"
+                            >
+                                <div className="text-center">
+                                    <span className="block text-4xl md:text-5xl font-bold text-emerald-500 tracking-tight">15+</span>
+                                    <span className="block text-xs md:text-sm uppercase tracking-wider font-medium text-gray-400">Tahun Pengalaman</span>
+                                </div>
+                            </motion.div>
                         </motion.div>
-                    </motion.div>
-                    
-                    {/* Right Column - Content */}
-                    <motion.div 
-                        initial="hidden" 
-                        animate={isVisible ? "visible" : "hidden"}
-                        variants={fadeIn}
-                        className="w-full lg:w-1/2"
+                        
+                        {/* Right Column - Content */}
+                        <motion.div 
+                            initial="hidden" 
+                            animate={isVisible ? "visible" : "hidden"}
+                            variants={fadeIn}
+                            className="w-full lg:w-1/2"
                     >
                         <h4 className="text-xl sm:text-2xl md:text-3xl font-playfair font-bold text-white mb-4 md:mb-5">
                             Mewujudkan Visi Arsitektur <span className="text-emerald-500">Modern & Berkelanjutan</span>
@@ -334,7 +351,8 @@ export default function AboutSection() {
                                 </svg>
                             </span>
                         </motion.a>
-                    </motion.div>
+                        </motion.div>
+                    </div>
                 </div>
             </div>
         </section>
