@@ -2,8 +2,13 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Import shared utilities
-import { useReducedMotionPreference, useScrollPosition, useClickOutside } from '../../../utils/hooks';
-import { NAVIGATION_BREAKPOINTS, DEBOUNCE_DELAYS } from '../../../utils/constants';
+import { 
+    useReducedMotionPreference, 
+    useScrollPosition, 
+    useClickOutside, 
+    useResponsive 
+} from '../../../utils/hooks';
+import { NAVIGATION_BREAKPOINTS, DEBOUNCE_DELAYS, Z_INDICES } from '../../../utils/constants';
 
 // Import component-specific dependencies
 import { NavbarProps } from './components/types';
@@ -21,14 +26,8 @@ const NavbarSection = ({ user, activeLink }: NavbarProps) => {
     // State untuk menu mobile (terbuka/tertutup)
     const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
     
-    // State untuk efek scroll pada navbar
-    const [scrolled, setScrolled] = useState<boolean>(false);
-    
     // State untuk active section pada scroll
     const [activeSection, setActiveSection] = useState<string>('#');
-    
-    // State untuk breakpoint tampilan tablet
-    const [isTablet, setIsTablet] = useState<boolean>(false);
     
     // State untuk menampilkan dropdown tablet
     const [tabletDropdownOpen, setTabletDropdownOpen] = useState<boolean>(false);
@@ -39,18 +38,22 @@ const NavbarSection = ({ user, activeLink }: NavbarProps) => {
     // State untuk menampilkan hover item pada tablet
     const [activeTabletItem, setActiveTabletItem] = useState<string | null>(null);
     
-    // Check if user prefers reduced motion for accessibility
+    // Utilize shared hooks from utils
     const prefersReducedMotion = useReducedMotionPreference();
+    const { scrollPosition, isScrolled: scrolled } = useScrollPosition();
+    const { isMobile, isTablet, isDesktop } = useResponsive();
+    
+    // Use click outside hook for dropdown
+    useClickOutside(tabletDropdownRef as React.RefObject<HTMLElement>, () => {
+        if (tabletDropdownOpen) setTabletDropdownOpen(false);
+    });
 
     // Menggunakan navItems dari file centralized
 
     // Fungsi untuk mengecek section mana yang sedang aktif berdasarkan scroll position
     const determineActiveSection = useCallback(() => {
-        // Set scrolled status untuk efek visual navbar
-        setScrolled(window.scrollY > 50);
-        
         // Mendapatkan posisi scroll saat ini (ditambah offset untuk deteksi yang lebih akurat)
-        const scrollPosition = window.scrollY + 200; // Offset 200px agar section terdeteksi lebih awal
+        const scrollPos = scrollPosition + 200; // Offset 200px agar section terdeteksi lebih awal
         
         // Cek section mana yang sedang aktif
         // Tidak termasuk 'Beranda' karena itu adalah section pertama (default active)
@@ -62,7 +65,7 @@ const NavbarSection = ({ user, activeLink }: NavbarProps) => {
             }));
             
         // Default ke 'Beranda' jika sedang berada di paling atas halaman
-        if (scrollPosition < 100) {
+        if (scrollPos < 100) {
             setActiveSection('#');
             return;
         }
@@ -75,7 +78,7 @@ const NavbarSection = ({ user, activeLink }: NavbarProps) => {
                 const rect = element.getBoundingClientRect();
                 const sectionTop = rect.top + window.scrollY - 100; // Offset 100px
                 
-                if (scrollPosition >= sectionTop) {
+                if (scrollPos >= sectionTop) {
                     setActiveSection(id);
                     return;
                 }
@@ -84,27 +87,17 @@ const NavbarSection = ({ user, activeLink }: NavbarProps) => {
         
         // Default ke 'Beranda' jika tidak ada section yang aktif
         setActiveSection('#');
-    }, []);
+    }, [scrollPosition]);
     
-    // Debounce function untuk scroll event (mencegah terlalu banyak pembaruan)
-    const debounce = (func: Function, delay: number) => {
-        let timeoutId: NodeJS.Timeout;
-        return function(...args: any[]) {
-            clearTimeout(timeoutId);
-            timeoutId = setTimeout(() => func(...args), delay);
-        };
-    };
-    
-    // Menangani efek scroll untuk navbar dan active section detection
+    // Menangani efek scroll untuk active section detection
     useEffect(() => {
-        const handleScroll = debounce(determineActiveSection, 100);
-        
         // Initial check saat komponen di-mount
         determineActiveSection();
         
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, [determineActiveSection]);
+        // Karena useScrollPosition sudah menerapkan debouncing
+        // Kita hanya perlu memanggil determineActiveSection saat scrollPosition berubah
+        determineActiveSection();
+    }, [determineActiveSection, scrollPosition]);
     
     // Smooth scroll handler for managing nav link clicks
     const handleNavLinkClick = (e: React.MouseEvent<Element>, href: string) => {
@@ -149,47 +142,14 @@ const NavbarSection = ({ user, activeLink }: NavbarProps) => {
         }
     };
     
-    // Mendeteksi breakpoint untuk tablet dan menyesuaikan tampilan
+    // Auto close dropdown when switching away from tablet view
     useEffect(() => {
-        const checkTabletBreakpoint = () => {
-            // Sesuaikan breakpoint untuk tablet (768px - 1024px)
-            const isTabletView = window.innerWidth >= 768 && window.innerWidth < 1024;
-            setIsTablet(isTabletView);
-            
-            // Auto close dropdown when switching away from tablet view
-            if (!isTabletView && tabletDropdownOpen) {
-                setTabletDropdownOpen(false);
-            }
-        };
-        
-        // Cek saat komponen dimuat
-        checkTabletBreakpoint();
-        
-        // Tambahkan event listener untuk resize
-        window.addEventListener('resize', checkTabletBreakpoint);
-        
-        // Cleanup event listener saat komponen unmount
-        return () => window.removeEventListener('resize', checkTabletBreakpoint);
-    }, [tabletDropdownOpen]);
-    
-    // Menangani klik di luar dropdown untuk menutup dropdown tablet
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (tabletDropdownRef.current && !tabletDropdownRef.current.contains(event.target as Node)) {
-                setTabletDropdownOpen(false);
-            }
-        };
-        
-        // Tambahkan event listener saat dropdown terbuka
-        if (tabletDropdownOpen) {
-            document.addEventListener('mousedown', handleClickOutside);
+        if (!isTablet && tabletDropdownOpen) {
+            setTabletDropdownOpen(false);
         }
-        
-        // Cleanup event listener
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [tabletDropdownOpen]);
+    }, [isTablet, tabletDropdownOpen]);
+    
+    // useClickOutside hook replaces this entire effect
 
     return (
         <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 
