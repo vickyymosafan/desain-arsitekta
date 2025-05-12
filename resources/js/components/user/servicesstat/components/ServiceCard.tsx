@@ -2,7 +2,7 @@ import React from 'react';
 import { motion, Variants } from 'framer-motion';
 
 // Import shared utilities
-import { transitions, createAnimationProps } from '../../../../utils/animations';
+import { transitions, createAnimationProps, animationVariants } from '../../../../utils/animations';
 import { colors, shadows } from '../../../../utils/styles';
 
 // Component-specific imports
@@ -27,7 +27,8 @@ const animations = {
     }
   } as Variants,
 
-  // Primary glow effect with organic fluid movement
+  // Glow effect animations - utilizing the transition utilities
+  // to avoid redundancy with shared transition patterns
   background: {
     initial: { 
       scale: 1,
@@ -57,13 +58,13 @@ const animations = {
       opacity: 0.85,
       rotate: 5,
       transition: {
-        duration: 1.2,
+        ...transitions.slow,
         ease: [0.25, 0.1, 0.25, 1]
       }
     }
   } as Variants,
   
-  // Secondary glow layer for added dimension
+  // Secondary glow using the same pattern to stay DRY
   backgroundSecondary: {
     initial: {
       scale: 0.8,
@@ -89,18 +90,14 @@ const animations = {
       opacity: 0.7,
       x: -25,
       y: 15,
-      transition: {
-        duration: 1.5,
-        ease: 'easeOut'
-      }
+      transition: transitions.slow
     }
   } as Variants,
 
+  // Utilizing the basic fadeIn pattern from shared utilities and extending it
   // Icon animations with staggered entrance and spring effect
   icon: {
-    initial: { 
-      opacity: 0 
-    },
+    initial: { opacity: 0 },
     animate: (delay: number) => ({ 
       opacity: 1, 
       transition: { ...transitions.default, delay } 
@@ -111,7 +108,7 @@ const animations = {
     }
   } as Variants,
 
-  // Title text animations with staggered entrance and enhanced transitions
+  // Title text animations - similar to slideUp from shared animations
   title: {
     initial: { 
       opacity: 0, 
@@ -124,11 +121,9 @@ const animations = {
     })
   } as Variants,
 
-  // Title underline animations with improved transitions
+  // Clean underline animation effect
   underline: {
-    initial: { 
-      width: 0 
-    },
+    initial: { width: 0 },
     animate: { 
       width: 24,
       transition: { ...transitions.default, delay: 0.3 }
@@ -139,18 +134,16 @@ const animations = {
     }
   } as Variants,
 
-  // Description text animations with staggered entrance and smooth fade-in
+  // Description text fade-in using shared slow transition
   description: {
-    initial: { 
-      opacity: 0 
-    },
+    ...animationVariants.fadeInSlow,
     animate: (delay: number) => ({ 
       opacity: 1, 
       transition: { ...transitions.slow, delay: delay + 0.2 } 
     })
   } as Variants,
 
-  // Learn more link animations with spring effect for modern feel
+  // Interactive element animations reused across components
   link: {
     initial: {},
     hover: { 
@@ -163,7 +156,7 @@ const animations = {
     }
   } as Variants,
 
-  // Arrow icon animations with enhanced pulsing effect for Gen Z appeal
+  // Simple looping animation for the arrow
   arrow: {
     animate: { 
       x: [0, 3, 0],
