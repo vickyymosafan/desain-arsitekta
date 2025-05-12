@@ -38,33 +38,8 @@ const animations = {
     }
   } as Variants,
 
-  // Background gradient animations
-  background: {
-    initial: {
-      opacity: 0
-    },
-    hover: {
-      opacity: 0.2,
-      transition: {
-        duration: 0.7
-      }
-    }
-  } as Variants,
+  // Background animations removed
 
-  // Background glow effect animations
-  glow: {
-    initial: {
-      opacity: 0,
-      scale: 1
-    },
-    hover: {
-      scale: 1.2,
-      opacity: 0.5,
-      transition: {
-        duration: 0.8
-      }
-    }
-  } as Variants,
 
   // Icon animations - optimized for mobile
   icon: {
@@ -149,22 +124,7 @@ const animations = {
     }
   } as Variants,
 
-  // Pulse effect animations
-  pulse: {
-    initial: {
-      opacity: 0,
-      scale: 0.8
-    },
-    animate: {
-      opacity: [0, 0.4, 0],
-      scale: [0.8, 1.05, 1.1],
-      transition: { 
-        duration: 1.5, 
-        repeat: Infinity,
-        ease: "easeInOut" 
-      }
-    }
-  } as Variants
+  // Pulse animation removed
 };
 
 /**
@@ -181,17 +141,9 @@ const getClasses = () => ({
     "touch-action-manipulation" // Improved touch handling
   ].join(' '),
 
-  backgroundGradient: [
-    "absolute -right-20 -top-20 w-60 h-60 rounded-full", 
-    "bg-gradient-to-br from-emerald-500/10 to-emerald-500/5", 
-    "blur-xl opacity-60"
-  ].join(' '),
-
-  backgroundGlow: [
-    "absolute -right-10 -bottom-10 w-40 h-40 rounded-full", 
-    "bg-emerald-500/10 blur-xl z-0 opacity-0 group-hover:opacity-100", 
-    "transition-opacity duration-700"
-  ].join(' '),
+  // Background effects removed as requested
+  backgroundGradient: "",
+  backgroundGlow: "",
 
   iconContainer: [
     "relative text-emerald-500 mb-4 sm:mb-5", // Reduced margin on mobile
@@ -219,7 +171,6 @@ const getClasses = () => ({
     "transition-all duration-300 mx-auto" // Center the highlight line
   ].join(' '),
 
-  pulseEffect: "absolute inset-0 rounded-xl border-2 border-emerald-500/30 z-0"
 });
 
 /**
@@ -248,40 +199,7 @@ const utils = {
   }
 };
 
-/**
- * BackgroundEffects Component - Renders the decorative background elements
- */
-const BackgroundEffects: React.FC<{ isHovering: boolean }> = ({ isHovering }) => {
-  const classes = getClasses();
-  
-  return (
-    <>
-      <motion.div 
-        className={classes.backgroundGradient}
-        variants={animations.background}
-        animate={isHovering ? 'hover' : 'initial'}
-        aria-hidden="true"
-      />
-      
-      <motion.div 
-        className={classes.backgroundGlow}
-        variants={animations.glow}
-        animate={isHovering ? 'hover' : 'initial'}
-        aria-hidden="true"
-      />
-      
-      {isHovering && (
-        <motion.div 
-          className={classes.pulseEffect}
-          variants={animations.pulse}
-          initial="initial"
-          animate="animate"
-          aria-hidden="true"
-        />
-      )}
-    </>
-  );
-};
+// BackgroundEffects component completely removed
 
 /**
  * StatIcon Component - Renders the animated icon
@@ -438,8 +356,7 @@ const StatItem: React.FC<StatItemProps> = ({ icon, count, label, onClick }) => {
       onKeyDown={onClick ? handleKeyDown : undefined}
       aria-label={`Statistic: ${label} - ${utils.formatCountValue(count, countValue)}`}
     >
-      {/* Background and decorative effects */}
-      <BackgroundEffects isHovering={hovering} />
+      {/* Background and decorative effects removed */}
       
       {/* Stat icon */}
       <StatIcon icon={icon} isHovering={hovering} />

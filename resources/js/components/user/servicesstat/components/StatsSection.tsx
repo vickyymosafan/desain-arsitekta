@@ -39,15 +39,7 @@ const StatsFullscreenContent: React.FC = () => (
         ))}
       </motion.div>
       
-      {/* Background decorative elements for modern look */}
-      <div 
-        className="absolute -left-32 top-1/4 w-64 h-64 rounded-full bg-gradient-to-tr from-emerald-500/5 to-transparent blur-3xl opacity-60"
-        aria-hidden="true"
-      />
-      <div 
-        className="absolute -right-32 bottom-1/4 w-64 h-64 rounded-full bg-gradient-to-tl from-emerald-500/5 to-transparent blur-3xl opacity-60"
-        aria-hidden="true"
-      />
+      {/* Background decorative elements completely removed */}
     </div>
   </section>
 );
