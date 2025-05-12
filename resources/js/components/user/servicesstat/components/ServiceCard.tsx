@@ -27,13 +27,72 @@ const animations = {
     }
   } as Variants,
 
-  // Background gradient animations
+  // Primary glow effect with organic fluid movement
   background: {
-    initial: {},
+    initial: { 
+      scale: 1,
+      opacity: 0.6,
+      rotate: 0,
+      x: 0,
+      y: 0
+    },
+    animate: {
+      scale: [1, 1.05, 0.98, 1.08, 1.02, 1],
+      opacity: [0.5, 0.65, 0.58, 0.7, 0.62, 0.5],
+      rotate: [0, 2, -1, 3, -2, 0],
+      x: [0, -8, 4, -12, 6, 0],
+      y: [0, 6, -8, 3, -4, 0],
+      transition: {
+        repeat: Infinity,
+        repeatType: 'loop',
+        duration: 12,
+        times: [0, 0.2, 0.4, 0.6, 0.8, 1],
+        ease: 'easeInOut'
+      }
+    },
     hover: { 
-      scale: 1.1, 
+      scale: 1.25, 
       x: -10,
-      transition: transitions.slow
+      y: 5,
+      opacity: 0.85,
+      rotate: 5,
+      transition: {
+        duration: 1.2,
+        ease: [0.25, 0.1, 0.25, 1]
+      }
+    }
+  } as Variants,
+  
+  // Secondary glow layer for added dimension
+  backgroundSecondary: {
+    initial: {
+      scale: 0.8,
+      opacity: 0.4,
+      x: -15,
+      y: 10
+    },
+    animate: {
+      scale: [0.8, 0.85, 0.9, 0.87, 0.83, 0.8],
+      opacity: [0.4, 0.55, 0.5, 0.6, 0.45, 0.4],
+      x: [-15, -20, -5, -25, -10, -15],
+      y: [10, 15, 5, 18, 8, 10],
+      transition: {
+        repeat: Infinity,
+        repeatType: 'loop',
+        duration: 15,
+        times: [0, 0.2, 0.4, 0.6, 0.8, 1],
+        ease: 'easeInOut'
+      }
+    },
+    hover: {
+      scale: 1.15,
+      opacity: 0.7,
+      x: -25,
+      y: 15,
+      transition: {
+        duration: 1.5,
+        ease: 'easeOut'
+      }
     }
   } as Variants,
 
@@ -125,15 +184,23 @@ const animations = {
  */
 const getClasses = () => ({
   card: [
-    "bg-neutral-900 p-8 rounded-xl group border border-neutral-800", 
-    "hover:border-emerald-500/50 focus-within:border-emerald-500", 
-    "h-full relative transition-all duration-300"
+    "bg-neutral-900/90 p-8 rounded-xl group border border-neutral-800", 
+    "hover:border-emerald-500/60 focus-within:border-emerald-500/80", 
+    "h-full relative backdrop-blur-sm transition-all duration-700 overflow-hidden"
   ].join(' '),
   
+  // Primary glow effect with soft edges
   backgroundEffect: [
-    "absolute -right-20 -top-20 w-60 h-60 rounded-full", 
-    "bg-gradient-to-br from-emerald-500/15 to-emerald-500/5", 
-    "blur-xl opacity-70 transition-all duration-500"
+    "absolute -right-32 -top-28 w-96 h-96 rounded-[65%] transform-gpu will-change-transform", 
+    "bg-gradient-radial from-emerald-400/30 via-emerald-500/20 to-transparent", 
+    "blur-3xl mix-blend-soft-light transition-all duration-1000"
+  ].join(' '),
+  
+  // Secondary subtle glow for added dimension
+  backgroundSecondaryEffect: [
+    "absolute -right-20 -top-36 w-80 h-80 rounded-[40%] transform-gpu will-change-transform", 
+    "bg-gradient-to-br from-teal-400/20 via-emerald-300/15 to-transparent", 
+    "blur-2xl mix-blend-screen transition-all duration-1000"
   ].join(' '),
   
   icon: [
@@ -278,10 +345,20 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
       onKeyDown={handleKeyDown}
       aria-label={`Service: ${title}`}
     >
-      {/* Background gradient effect */}
+      {/* Multi-layered glow effects with organic fluid animations */}
       <motion.div 
         className={classes.backgroundEffect}
         variants={animations.background}
+        initial="initial"
+        animate="animate"
+        whileHover="hover"
+        aria-hidden="true"
+      />
+      <motion.div 
+        className={classes.backgroundSecondaryEffect}
+        variants={animations.backgroundSecondary}
+        initial="initial"
+        animate="animate"
         whileHover="hover"
         aria-hidden="true"
       />
