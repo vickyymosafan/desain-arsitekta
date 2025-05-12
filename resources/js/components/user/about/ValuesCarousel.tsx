@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { transitions, itemVariants, getAnimationWithDelay } from '../../../utils/animations';
+import { transitions, itemVariants} from '../../../utils/animations';
 import { useResponsive } from '../../../utils/hooks';
 import { companyValues } from '../../../utils/data/companyValues';
 
