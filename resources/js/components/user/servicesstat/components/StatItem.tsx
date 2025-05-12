@@ -175,7 +175,7 @@ const getClasses = () => ({
   container: [
     "bg-neutral-900 p-5 sm:p-8 rounded-xl group border border-neutral-800", // Reduced padding on mobile
     "hover:border-emerald-500/50 focus-within:border-emerald-500 active:border-emerald-500", // Added active state for touch
-    "relative overflow-hidden cursor-pointer h-full",
+    "relative overflow-hidden cursor-pointer h-full flex flex-col items-center text-center",
     "focus:outline-none focus-visible:ring-2 ring-emerald-500",
     "focus-within:ring-offset-2 focus-within:ring-offset-neutral-900",
     "touch-action-manipulation" // Improved touch handling
@@ -194,8 +194,8 @@ const getClasses = () => ({
   ].join(' '),
 
   iconContainer: [
-    "relative text-emerald-500 mb-4 sm:mb-6", // Reduced margin on mobile
-    "bg-emerald-500/10 p-4 sm:p-5 rounded-xl w-fit", // Reduced padding on mobile
+    "relative text-emerald-500 mb-4 sm:mb-5", // Reduced margin on mobile
+    "bg-emerald-500/10 p-4 rounded-xl w-fit mx-auto", // Centered icon with mx-auto
     "group-hover:text-emerald-400"
   ].join(' '),
 
@@ -206,17 +206,17 @@ const getClasses = () => ({
 
   countValue: [
     "text-4xl sm:text-5xl font-playfair font-bold text-white mb-1 transition-colors duration-300",
-    "relative z-10" // Ensure text is above backgrounds and interactions work properly
+    "relative z-10 mx-auto text-center" // Ensure text is above backgrounds and centered
   ].join(' '),
 
   label: [
-    "text-base sm:text-lg font-nunito text-neutral-300 relative",
-    "transition-colors duration-300"
+    "text-base sm:text-lg font-nunito text-neutral-300 relative text-center",
+    "transition-colors duration-300 mx-auto"
   ].join(' '),
 
   highlightLine: [
-    "h-1 bg-emerald-500/50 rounded-full mt-2 w-0 group-hover:w-24",
-    "transition-all duration-300"
+    "h-1 bg-emerald-500/50 rounded-full mt-2 w-0 group-hover:w-16",
+    "transition-all duration-300 mx-auto" // Center the highlight line
   ].join(' '),
 
   pulseEffect: "absolute inset-0 rounded-xl border-2 border-emerald-500/30 z-0"
