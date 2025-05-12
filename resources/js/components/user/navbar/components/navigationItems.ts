@@ -9,6 +9,5 @@ export const navItems: NavItem[] = [
     { href: '#services', label: 'Layanan' },
     { href: '#about', label: 'Tentang Kami' },
     { href: '#portfolio', label: 'Portofolio' },
-    { href: '#blog', label: 'Blog' },
     { href: '#contact', label: 'Kontak' }
 ];
