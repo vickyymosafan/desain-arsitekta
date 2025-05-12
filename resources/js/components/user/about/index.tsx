@@ -176,18 +176,18 @@ export default function AboutSection() {
         <section 
             id="about-section" 
             ref={sectionRef}
-            className="min-h-screen flex items-center relative overflow-hidden py-12 md:py-24"
+            className="min-h-screen flex items-center justify-center relative overflow-hidden py-0 md:py-4 -mt-8 md:-mt-12"
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
         >
             {/* Background now clean without circular blur elements */}
             
-            <div className="container mx-auto px-4 py-10">
+            <div className="container mx-auto px-4 py-2 md:py-4">
                 <motion.div 
                     initial="hidden" 
                     animate={isVisible ? "visible" : "hidden"}
                     variants={fadeIn}
-                    className="mb-12 text-center"
+                    className="mb-8 md:mb-10 text-center"
                 >
                     <h2 className="mb-3 text-emerald-500 text-xs md:text-sm font-bold tracking-widest uppercase inline-flex items-center">
                         <motion.span 
@@ -217,7 +217,7 @@ export default function AboutSection() {
                     </p>
                 </motion.div>
 
-                <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 items-center">
+                <div className="flex flex-col lg:flex-row gap-8 lg:gap-14 items-center">
                     {/* Left Column - Image & Experience */}
                     <motion.div 
                         initial="hidden" 
@@ -281,7 +281,7 @@ export default function AboutSection() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.5 }}
-                            className="text-gray-300 mb-8 leading-relaxed"
+                            className="text-gray-300 mb-6 leading-relaxed"
                         >
                             Kami percaya bahwa arsitektur yang baik harus mencerminkan kebutuhan dan kepribadian klien, sambil tetap memperhatikan konteks lingkungan dan sosial. Setiap proyek kami, mulai dari rumah hunian hingga bangunan komersial, dirancang dengan perhatian mendalam terhadap detail dan kualitas.
                         </motion.p>
@@ -291,7 +291,7 @@ export default function AboutSection() {
                             variants={staggerContainer}
                             initial="hidden" 
                             animate={isVisible ? "visible" : "hidden"}
-                            className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-5 mb-6 md:mb-8"
+                            className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-5 mb-5 md:mb-6"
                             onMouseEnter={() => setIsHovering(true)}
                             onMouseLeave={() => setIsHovering(false)}
                         >
