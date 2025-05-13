@@ -22,10 +22,10 @@ interface StatCardProps {
 
 const StatCard: React.FC<StatCardProps> = ({ title, value, icon, change, trend }) => {
     return (
-        <div className="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+        <div className="bg-white dark:bg-gray-900 shadow rounded-lg overflow-hidden">
             <div className="p-5">
                 <div className="flex items-start">
-                    <div className="flex-shrink-0 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg p-3">
+                    <div className="flex-shrink-0 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg p-3">
                         {icon}
                     </div>
                     <div className="ml-4 flex-1">
@@ -40,10 +40,10 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, icon, change, trend }
                         {change && (
                             <dd className="flex items-center text-xs mt-1">
                                 {trend === 'up' && (
-                                    <span className="text-emerald-600 font-medium">↑ {change}</span>
+                                    <span className="text-indigo-600 dark:text-indigo-400 font-medium">↑ {change}</span>
                                 )}
                                 {trend === 'down' && (
-                                    <span className="text-red-600 font-medium">↓ {change}</span>
+                                    <span className="text-red-600 dark:text-red-400 font-medium">↓ {change}</span>
                                 )}
                                 {trend === 'neutral' && (
                                     <span className="text-gray-600 dark:text-gray-400 font-medium">• {change}</span>
@@ -89,13 +89,13 @@ export default function Dashboard({
                 
                 <div className="container mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     {/* Admin Header */}
-                    <div className="bg-emerald-700 shadow rounded-lg overflow-hidden mb-6">
+                    <div className="bg-gray-800 dark:bg-gray-900 shadow rounded-lg overflow-hidden mb-6">
                         <div className="px-6 py-6">
                             <h1 className="text-xl font-semibold text-white">Admin Dashboard</h1>
-                            <p className="mt-1 text-emerald-100">
+                            <p className="mt-1 text-gray-300">
                                 Kelola konsultasi, pengguna, dan layanan Arsitekta
                             </p>
-                            <div className="mt-2 flex items-center text-emerald-100 text-sm">
+                            <div className="mt-2 flex items-center text-gray-300 text-sm">
                                 <CalendarIcon className="h-4 w-4 mr-1" />
                                 <span>{new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
                             </div>
@@ -107,41 +107,41 @@ export default function Dashboard({
                         <StatCard
                             title="Total Pengguna"
                             value={dashboardStats.users}
-                            icon={<UserGroupIcon className="h-5 w-5 text-emerald-600" />}
+                            icon={<UserGroupIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />}
                             change="12% dari bulan lalu"
                             trend="up"
                         />
                         <StatCard
                             title="Konsultasi Menunggu"
                             value={dashboardStats.pendingConsultations}
-                            icon={<ClipboardDocumentListIcon className="h-5 w-5 text-emerald-600" />}
+                            icon={<ClipboardDocumentListIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />}
                         />
                         <StatCard
                             title="Konsultasi Selesai"
                             value={dashboardStats.completedConsultations}
-                            icon={<ClipboardDocumentCheckIcon className="h-5 w-5 text-emerald-600" />}
+                            icon={<ClipboardDocumentCheckIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />}
                             change="18% dari bulan lalu"
                             trend="up"
                         />
                         <StatCard
                             title="Pendapatan"
                             value={`Rp ${dashboardStats.revenue.toLocaleString('id-ID')}`}
-                            icon={<BanknotesIcon className="h-5 w-5 text-emerald-600" />}
+                            icon={<BanknotesIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />}
                             change="5% dari bulan lalu"
                             trend="up"
                         />
                     </div>
 
                     {/* Main Content */}
-                    <div className="bg-white shadow rounded-lg mb-6">
-                        <div className="px-6 py-5 border-b border-gray-200">
+                    <div className="bg-white dark:bg-gray-900 shadow rounded-lg mb-6">
+                        <div className="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
                             <div className="flex items-center">
-                                <ClipboardDocumentListIcon className="h-5 w-5 text-emerald-600 mr-2" />
-                                <h3 className="text-lg font-medium text-gray-900">
+                                <ClipboardDocumentListIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400 mr-2" />
+                                <h3 className="text-lg font-medium text-gray-900 dark:text-white">
                                     Permintaan Konsultasi Menunggu
                                 </h3>
                             </div>
-                            <p className="mt-1 text-sm text-gray-500">
+                            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                                 Daftar permintaan konsultasi yang perlu ditanggapi
                             </p>
                         </div>
@@ -151,15 +151,15 @@ export default function Dashboard({
                     </div>
 
                     {/* Recent Activity */}
-                    <div className="bg-white shadow rounded-lg overflow-hidden">
-                        <div className="px-6 py-5 border-b border-gray-200">
+                    <div className="bg-white dark:bg-gray-900 shadow rounded-lg overflow-hidden">
+                        <div className="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
                             <div className="flex items-center">
-                                <CalendarIcon className="h-5 w-5 text-emerald-600 mr-2" />
-                                <h3 className="text-lg font-medium text-gray-900">
+                                <CalendarIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400 mr-2" />
+                                <h3 className="text-lg font-medium text-gray-900 dark:text-white">
                                     Aktivitas Terbaru
                                 </h3>
                             </div>
-                            <p className="mt-1 text-sm text-gray-500">
+                            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                                 Daftar aktivitas terbaru dalam sistem
                             </p>
                         </div>
@@ -170,8 +170,8 @@ export default function Dashboard({
                                     <div key={index} className="p-4">
                                         <div className="flex items-start space-x-3">
                                             <div className="flex-shrink-0">
-                                                <div className="h-10 w-10 rounded-full bg-emerald-100 flex items-center justify-center">
-                                                    <UserGroupIcon className="h-5 w-5 text-emerald-600" />
+                                                <div className="h-10 w-10 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
+                                                    <UserGroupIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
                                                 </div>
                                             </div>
                                             <div className="flex-1 min-w-0">
@@ -192,8 +192,8 @@ export default function Dashboard({
                                 ))
                             ) : (
                                 <div className="py-6 px-4 text-center">
-                                    <div className="mx-auto h-12 w-12 rounded-full bg-emerald-100 flex items-center justify-center mb-3">
-                                        <CalendarIcon className="h-6 w-6 text-emerald-600" />
+                                    <div className="mx-auto h-12 w-12 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center mb-3">
+                                        <CalendarIcon className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
                                     </div>
                                     <p className="text-sm text-gray-500">
                                         Belum ada aktivitas terbaru
