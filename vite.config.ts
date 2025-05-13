@@ -10,10 +10,25 @@ export default defineConfig({
             input: ['resources/css/app.css', 'resources/js/app.tsx'],
             ssr: 'resources/js/ssr.tsx',
             refresh: true,
+            // Add this to ensure all page components are processed
+            buildDirectory: 'build',
         }),
         react(),
         tailwindcss(),
     ],
+    build: {
+        // Ensure chunks are properly named and preserved
+        rollupOptions: {
+            output: {
+                manualChunks(id) {
+                    // Put page components in their own chunk
+                    if (id.includes('/pages/')) {
+                        return id.toString().split('/pages/')[1].split('.')[0].replace(/\//g, '_');
+                    }
+                }
+            }
+        }
+    },
     esbuild: {
         jsx: 'automatic',
     },
