@@ -44,12 +44,12 @@ const ConsultationRequest: React.FC = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-emerald-200/30 dark:border-emerald-900/30"
+        className="bg-white dark:bg-[#1e293b] p-6 rounded-lg shadow-lg border border-gray-200 dark:border-[#374151]"
       >
         <div className="flex items-start sm:items-center flex-col sm:flex-row">
           <div className="flex-shrink-0 mb-4 sm:mb-0 sm:mr-4">
-            <div className="p-3 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl">
-              <CalendarIcon className="h-10 w-10 text-emerald-600 dark:text-emerald-400" />
+            <div className="p-3 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg">
+              <CalendarIcon className="h-10 w-10 text-indigo-600 dark:text-indigo-400" />
             </div>
           </div>
           <div className="flex-1">
@@ -59,7 +59,7 @@ const ConsultationRequest: React.FC = () => {
             </p>
             
             <div className="mb-5 flex items-center text-sm text-gray-500 dark:text-gray-400">
-              <ClockIcon className="mr-2 h-5 w-5 text-emerald-500 dark:text-emerald-400" />
+              <ClockIcon className="mr-2 h-5 w-5 text-indigo-500 dark:text-indigo-400" />
               <span>Durasi konsultasi: 45-60 menit</span>
             </div>
             
@@ -68,7 +68,7 @@ const ConsultationRequest: React.FC = () => {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className="mb-4 p-3 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 rounded-lg text-sm"
+                className="mb-4 p-3 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-lg text-sm"
               >
                 Permintaan konsultasi berhasil dibuat! Mengalihkan ke dashboard Anda...
               </motion.div>
@@ -78,7 +78,7 @@ const ConsultationRequest: React.FC = () => {
               type="button"
               onClick={openDatePicker}
               disabled={isLoading || !auth?.user}
-              className="inline-flex items-center px-5 py-3 rounded-xl bg-emerald-600 text-white font-medium shadow-sm hover:bg-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
+              className="inline-flex items-center px-5 py-3 rounded-md bg-indigo-600 text-white font-medium shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-[#1e293b] transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <>

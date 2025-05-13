@@ -50,7 +50,7 @@ const ConsultationStatus: React.FC<ConsultationStatusProps> = ({ consultation })
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div className="bg-white dark:bg-[#1e293b] rounded-lg shadow-md border border-gray-200 dark:border-[#374151] overflow-hidden">
       <div className="p-6">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -60,7 +60,7 @@ const ConsultationStatus: React.FC<ConsultationStatusProps> = ({ consultation })
         </div>
         
         <div className="flex items-center mb-3">
-          <CalendarIcon className="h-5 w-5 text-emerald-500 dark:text-emerald-400 mr-2" />
+          <CalendarIcon className="h-5 w-5 text-indigo-500 dark:text-indigo-400 mr-2" />
           <span className="text-gray-700 dark:text-gray-300">
             {formatDate(consultation.consultation_date)}
           </span>
@@ -76,7 +76,7 @@ const ConsultationStatus: React.FC<ConsultationStatusProps> = ({ consultation })
           <div className="mt-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4 text-yellow-800 dark:text-yellow-300 text-sm">
             <div className="flex">
               <div className="flex-shrink-0">
-                <ClockIcon className="h-5 w-5 text-yellow-500 dark:text-yellow-400" aria-hidden="true" />
+                <ClockIcon className="h-5 w-5 text-yellow-600 dark:text-yellow-400" aria-hidden="true" />
               </div>
               <div className="ml-3">
                 <p className="font-medium">Menunggu respon dari admin</p>
@@ -90,7 +90,7 @@ const ConsultationStatus: React.FC<ConsultationStatusProps> = ({ consultation })
           <div className="mt-4 bg-green-50 dark:bg-green-900/20 rounded-lg p-4 text-green-800 dark:text-green-300 text-sm">
             <div className="flex">
               <div className="flex-shrink-0">
-                <CheckCircleIcon className="h-5 w-5 text-green-500 dark:text-green-400" aria-hidden="true" />
+                <CheckCircleIcon className="h-5 w-5 text-green-600 dark:text-green-400" aria-hidden="true" />
               </div>
               <div className="ml-3">
                 <p className="font-medium">Konsultasi Diterima</p>
@@ -100,17 +100,15 @@ const ConsultationStatus: React.FC<ConsultationStatusProps> = ({ consultation })
           </div>
         )}
 
-        {consultation.status === 'rejected' && (
+        {consultation.status === 'rejected' && consultation.rejection_reason && (
           <div className="mt-4 bg-red-50 dark:bg-red-900/20 rounded-lg p-4 text-red-800 dark:text-red-300 text-sm">
             <div className="flex">
               <div className="flex-shrink-0">
-                <XCircleIcon className="h-5 w-5 text-red-500 dark:text-red-400" aria-hidden="true" />
+                <XCircleIcon className="h-5 w-5 text-red-600 dark:text-red-400" aria-hidden="true" />
               </div>
               <div className="ml-3">
                 <p className="font-medium">Konsultasi Ditolak</p>
-                {consultation.rejection_reason && (
-                  <p className="mt-1">Alasan: {consultation.rejection_reason}</p>
-                )}
+                <p className="mt-1">Alasan: {consultation.rejection_reason}</p>
                 <p className="mt-2">Anda dapat mengajukan permintaan konsultasi baru dengan tanggal yang berbeda.</p>
               </div>
             </div>
