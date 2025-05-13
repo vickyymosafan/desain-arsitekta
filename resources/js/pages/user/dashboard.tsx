@@ -29,18 +29,18 @@ export default function Dashboard({ consultations = [] }: DashboardProps) {
             <AppLayout breadcrumbs={breadcrumbs}>
                 <Head title="Dashboard" />
                 
-                <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 dark:bg-[#0f172a]">
-                    <div className="px-4 py-6 sm:px-0 dark:bg-[#0f172a]">
+                <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                    <div className="px-4 py-6 sm:px-0">
                         <div className="flex flex-col space-y-8">
                             {/* Welcome Section */}
-                            <div className="bg-[#1e293b] dark:bg-[#1e293b] rounded-lg shadow-lg overflow-hidden">
+                            <div className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-lg shadow-lg overflow-hidden">
                                 <div className="px-6 py-8 sm:p-10">
                                     <div className="flex items-center justify-between">
                                         <h2 className="text-2xl font-bold text-white">
                                             Selamat Datang di Dashboard Anda
                                         </h2>
                                         <div className="hidden sm:block">
-                                            <PlaceholderPattern className="h-20 w-20 text-indigo-500/20" />
+                                            <PlaceholderPattern className="h-20 w-20 text-indigo-500/30" />
                                         </div>
                                     </div>
                                     <p className="mt-2 text-gray-300">
@@ -56,7 +56,7 @@ export default function Dashboard({ consultations = [] }: DashboardProps) {
                                     <div className="bg-white dark:bg-gray-900 overflow-hidden shadow rounded-lg">
                                         <div className="p-6">
                                             <div className="flex items-center">
-                                                <div className="flex-shrink-0 bg-indigo-100 dark:bg-indigo-900/20 rounded-md p-3">
+                                                <div className="flex-shrink-0 bg-indigo-100 dark:bg-indigo-900/30 rounded-md p-3">
                                                     <ChartBarIcon className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
                                                 </div>
                                                 <div className="ml-5 w-0 flex-1">
@@ -78,7 +78,7 @@ export default function Dashboard({ consultations = [] }: DashboardProps) {
                                     <div className="bg-white dark:bg-gray-900 overflow-hidden shadow rounded-lg">
                                         <div className="p-6">
                                             <div className="flex items-center">
-                                                <div className="flex-shrink-0 bg-indigo-100 dark:bg-indigo-900/20 rounded-md p-3">
+                                                <div className="flex-shrink-0 bg-indigo-100 dark:bg-indigo-900/30 rounded-md p-3">
                                                     <ClipboardDocumentListIcon className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
                                                 </div>
                                                 <div className="ml-5 w-0 flex-1">
@@ -114,7 +114,7 @@ export default function Dashboard({ consultations = [] }: DashboardProps) {
                                     {latestConsultation ? (
                                         <ConsultationStatus consultation={latestConsultation} />
                                     ) : (
-                                        <div className="bg-white dark:bg-[#1e293b] p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-800 text-center py-10">
+                                        <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 text-center py-10">
                                             <svg
                                                 className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500"
                                                 fill="none"

@@ -44,7 +44,7 @@ const ConsultationRequest: React.FC = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-white dark:bg-[#1e293b] p-6 rounded-lg shadow-lg border border-gray-200 dark:border-[#374151]"
+        className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700"
       >
         <div className="flex items-start sm:items-center flex-col sm:flex-row">
           <div className="flex-shrink-0 mb-4 sm:mb-0 sm:mr-4">
@@ -78,7 +78,7 @@ const ConsultationRequest: React.FC = () => {
               type="button"
               onClick={openDatePicker}
               disabled={isLoading || !auth?.user}
-              className="inline-flex items-center px-5 py-3 rounded-md bg-indigo-600 text-white font-medium shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-[#1e293b] transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
+              className="inline-flex items-center px-5 py-3 rounded-md bg-indigo-600 text-white font-medium shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <>

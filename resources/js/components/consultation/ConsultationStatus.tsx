@@ -50,7 +50,7 @@ const ConsultationStatus: React.FC<ConsultationStatusProps> = ({ consultation })
   };
 
   return (
-    <div className="bg-white dark:bg-[#1e293b] rounded-lg shadow-md border border-gray-200 dark:border-[#374151] overflow-hidden">
+    <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden">
       <div className="p-6">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
