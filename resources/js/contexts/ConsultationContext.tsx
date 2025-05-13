@@ -52,35 +52,19 @@ export const ConsultationProvider: React.FC<ConsultationProviderProps> = ({
   const submitConsultationRequest = (date: Date) => {
     setIsLoading(true);
     
-    // Create a new consultation request
-    const newConsultation: Consultation = {
-      consultation_date: date,
-      status: 'pending',
-      created_at: new Date().toISOString(),
-    };
-    
-    // Add it to our local state immediately for UI feedback
-    setConsultations([newConsultation, ...consultations]);
-    
-    // Using Inertia router to submit the request to the server
+    // Submit the request to the server
     router.post('/consultations', {
       consultation_date: date,
     }, {
-      preserveState: true,
       onSuccess: () => {
-        setIsLoading(false);
-        // Redirect user to dashboard after submission
-        router.visit('/dashboard', {
-          preserveScroll: true,
-          onSuccess: () => {
-            // Display a notification that could be shown on the dashboard
-            console.log('Consultation request submitted successfully');
-          }
-        });
+        // Redirect user to dashboard after submission with "Menunggu respon dari admin" status
+        router.visit('/dashboard');
       },
       onError: () => {
-        // Revert the local state change on error
-        setConsultations(consultations.filter(c => c !== newConsultation));
+        // Handle errors
+        alert('Terjadi kesalahan saat mengirim permintaan konsultasi. Silakan coba lagi.');
+      },
+      onFinish: () => {
         setIsLoading(false);
       }
     });
@@ -89,13 +73,15 @@ export const ConsultationProvider: React.FC<ConsultationProviderProps> = ({
   const approveConsultation = (id: number) => {
     setIsLoading(true);
     
-    router.put(`/consultations/${id}/approve`, {}, {
+    // Call the API to approve the consultation
+    router.post(`/admin/consultations/${id}/approve`, {}, {
       onSuccess: () => {
-        setIsLoading(false);
-        // Refresh consultations after approval
-        router.reload();
+        // Update will happen through the page refresh
       },
       onError: () => {
+        alert('Terjadi kesalahan saat menyetujui konsultasi');
+      },
+      onFinish: () => {
         setIsLoading(false);
       }
     });
@@ -104,15 +90,17 @@ export const ConsultationProvider: React.FC<ConsultationProviderProps> = ({
   const rejectConsultation = (id: number, reason: string) => {
     setIsLoading(true);
     
-    router.put(`/consultations/${id}/reject`, {
+    // Call the API to reject the consultation
+    router.post(`/admin/consultations/${id}/reject`, {
       rejection_reason: reason
     }, {
       onSuccess: () => {
-        setIsLoading(false);
-        // Refresh consultations after rejection
-        router.reload();
+        // Update will happen through the page refresh
       },
       onError: () => {
+        alert('Terjadi kesalahan saat menolak konsultasi');
+      },
+      onFinish: () => {
         setIsLoading(false);
       }
     });
@@ -122,16 +110,18 @@ export const ConsultationProvider: React.FC<ConsultationProviderProps> = ({
     return consultations.find(consultation => consultation.id === id);
   };
 
+  const value: ConsultationContextType = {
+    isLoading,
+    userConsultations,
+    pendingConsultations,
+    submitConsultationRequest,
+    approveConsultation,
+    rejectConsultation,
+    getConsultationById,
+  };
+
   return (
-    <ConsultationContext.Provider value={{
-      isLoading,
-      userConsultations,
-      pendingConsultations,
-      submitConsultationRequest,
-      approveConsultation,
-      rejectConsultation,
-      getConsultationById
-    }}>
+    <ConsultationContext.Provider value={value}>
       {children}
     </ConsultationContext.Provider>
   );
