@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
-import { CalendarIcon, ClockIcon } from '@heroicons/react/24/outline';
+import { CalendarIcon, ClockIcon, InformationCircleIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import DatePickerModal from './DatePickerModal';
 import { useConsultation } from '@/contexts/ConsultationContext';
 import { usePage } from '@inertiajs/react';
@@ -44,23 +44,34 @@ const ConsultationRequest: React.FC = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700"
+        className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700"
       >
         <div className="flex items-start sm:items-center flex-col sm:flex-row">
           <div className="flex-shrink-0 mb-4 sm:mb-0 sm:mr-4">
-            <div className="p-3 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg">
+            <div className="p-3 bg-indigo-100 dark:bg-indigo-900/30 rounded-full">
               <CalendarIcon className="h-10 w-10 text-indigo-600 dark:text-indigo-400" />
             </div>
           </div>
           <div className="flex-1">
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Jadwalkan Konsultasi Gratis</h3>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 flex items-center">
+              <span>Jadwalkan Konsultasi Gratis</span>
+              <span className="ml-2 inline-flex items-center rounded-md bg-indigo-50 dark:bg-indigo-900/30 px-2 py-1 text-xs font-medium text-indigo-700 dark:text-indigo-300 ring-1 ring-inset ring-indigo-600/20 dark:ring-indigo-500/30">
+                Gratis
+              </span>
+            </h3>
             <p className="text-gray-600 dark:text-gray-300 mb-4">
               Pilih tanggal untuk konsultasi dengan tim kami. Setelah Anda memilih tanggal, permintaan Anda akan dikirim ke admin untuk ditinjau.
             </p>
             
-            <div className="mb-5 flex items-center text-sm text-gray-500 dark:text-gray-400">
-              <ClockIcon className="mr-2 h-5 w-5 text-indigo-500 dark:text-indigo-400" />
-              <span>Durasi konsultasi: 45-60 menit</span>
+            <div className="mb-5 space-y-2">
+              <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                <ClockIcon className="mr-2 h-5 w-5 text-indigo-500 dark:text-indigo-400" />
+                <span>Durasi konsultasi: 45-60 menit</span>
+              </div>
+              <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                <InformationCircleIcon className="mr-2 h-5 w-5 text-indigo-500 dark:text-indigo-400" />
+                <span>Konsultasi dapat dilakukan secara tatap muka atau online</span>
+              </div>
             </div>
             
             {showSuccessMessage && (
@@ -68,9 +79,18 @@ const ConsultationRequest: React.FC = () => {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className="mb-4 p-3 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-lg text-sm"
+                className="mb-4 p-3 bg-green-50 dark:bg-green-900/20 rounded-md border border-green-200 dark:border-green-800 text-sm"
               >
-                Permintaan konsultasi berhasil dibuat! Mengalihkan ke dashboard Anda...
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <CheckCircleIcon className="h-5 w-5 text-green-500 dark:text-green-400" />
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-sm font-medium text-green-800 dark:text-green-300">
+                      Permintaan konsultasi berhasil dibuat! Mengalihkan ke dashboard Anda...
+                    </p>
+                  </div>
+                </div>
               </motion.div>
             )}
             
@@ -78,7 +98,7 @@ const ConsultationRequest: React.FC = () => {
               type="button"
               onClick={openDatePicker}
               disabled={isLoading || !auth?.user}
-              className="inline-flex items-center px-5 py-3 rounded-md bg-indigo-600 text-white font-medium shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
+              className="inline-flex items-center px-5 py-3 rounded-md bg-indigo-600 text-white font-medium shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <>
@@ -97,9 +117,21 @@ const ConsultationRequest: React.FC = () => {
             </button>
             
             {!auth?.user && (
-              <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
-                Anda perlu login terlebih dahulu untuk melakukan konsultasi.
-              </p>
+              <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-md border border-yellow-200 dark:border-yellow-800 text-sm">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <InformationCircleIcon className="h-5 w-5 text-yellow-500 dark:text-yellow-400" />
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-sm font-medium text-yellow-800 dark:text-yellow-300">
+                      Anda perlu login terlebih dahulu untuk melakukan konsultasi.
+                    </p>
+                    <p className="mt-1 text-sm text-yellow-700 dark:text-yellow-400">
+                      Silakan login atau daftar untuk mengakses layanan konsultasi gratis kami.
+                    </p>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
         </div>

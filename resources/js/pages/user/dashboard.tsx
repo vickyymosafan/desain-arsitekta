@@ -1,163 +1,212 @@
-import { useState } from 'react';
-import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
+import React from 'react';
+import { Head } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
-import { Head, usePage } from '@inertiajs/react';
-import { ConsultationProvider, Consultation } from '@/contexts/ConsultationContext';
+import { usePage } from '@inertiajs/react';
+import { SharedData } from '@/types';
+import { Consultation, ConsultationProvider } from '@/contexts/ConsultationContext';
 import ConsultationRequest from '@/components/consultation/ConsultationRequest';
 import ConsultationStatus from '@/components/consultation/ConsultationStatus';
-import { ChartBarIcon, ClipboardDocumentListIcon } from '@heroicons/react/24/outline';
+import { 
+  BuildingOffice2Icon, 
+  UserIcon, 
+  DocumentTextIcon, 
+  ClipboardDocumentListIcon,
+  ChartBarIcon,
+  CalendarIcon,
+  PlusCircleIcon
+} from '@heroicons/react/24/outline';
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/dashboard',
-    },
-];
-
-interface DashboardProps {
-    consultations?: Consultation[];
+interface BreadcrumbItem {
+  title: string;
+  href: string;
 }
 
+interface DashboardProps {
+  consultations?: Consultation[];
+}
+
+const breadcrumbs: BreadcrumbItem[] = [
+  {
+    title: 'Dashboard',
+    href: '/dashboard',
+  },
+];
+
 export default function Dashboard({ consultations = [] }: DashboardProps) {
-    const { props } = usePage();
-    const userConsultations: Consultation[] = (props.consultations as Consultation[] | undefined) || consultations;
-    const latestConsultation = userConsultations.length > 0 ? userConsultations[0] : null;
+  const { props } = usePage<SharedData>();
+  const { auth } = props;
+  const user = auth?.user;
+  const userConsultations: Consultation[] = (props.consultations as Consultation[] | undefined) || consultations;
+  const latestConsultation = userConsultations.length > 0 ? userConsultations[0] : null;
 
-    return (
-        <ConsultationProvider initialConsultations={userConsultations}>
-            <AppLayout breadcrumbs={breadcrumbs}>
-                <Head title="Dashboard" />
-                
-                <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-                    <div className="px-4 py-6 sm:px-0">
-                        <div className="flex flex-col space-y-8">
-                            {/* Welcome Section */}
-                            <div className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-lg shadow-lg overflow-hidden">
-                                <div className="px-6 py-8 sm:p-10">
-                                    <div className="flex items-center justify-between">
-                                        <h2 className="text-2xl font-bold text-white">
-                                            Selamat Datang di Dashboard Anda
-                                        </h2>
-                                        <div className="hidden sm:block">
-                                            <PlaceholderPattern className="h-20 w-20 text-indigo-500/30" />
-                                        </div>
-                                    </div>
-                                    <p className="mt-2 text-gray-300">
-                                        Pantau status konsultasi dan kelola proyek Anda dari satu tempat yang nyaman.
-                                    </p>
-                                </div>
+  const stats = [
+    { 
+      name: 'Total Proyek', 
+      value: '0', 
+      icon: BuildingOffice2Icon, 
+      color: 'text-blue-500 dark:text-blue-400', 
+      bgColor: 'bg-blue-100 dark:bg-blue-900/20' 
+    },
+    { 
+      name: 'Konsultasi', 
+      value: latestConsultation ? '1' : '0', 
+      icon: UserIcon, 
+      color: 'text-indigo-500 dark:text-indigo-400', 
+      bgColor: 'bg-indigo-100 dark:bg-indigo-900/20' 
+    },
+    { 
+      name: 'Dokumen', 
+      value: '0', 
+      icon: DocumentTextIcon, 
+      color: 'text-purple-500 dark:text-purple-400', 
+      bgColor: 'bg-purple-100 dark:bg-purple-900/20' 
+    },
+    { 
+      name: 'Penyelesaian', 
+      value: '0%', 
+      icon: ChartBarIcon, 
+      color: 'text-emerald-500 dark:text-emerald-400', 
+      bgColor: 'bg-emerald-100 dark:bg-emerald-900/20' 
+    },
+  ];
+
+  return (
+    <ConsultationProvider initialConsultations={latestConsultation ? [latestConsultation] : []}>
+      <AppLayout breadcrumbs={breadcrumbs}>
+        <Head title="Dashboard" />
+        <div className="py-8 sm:py-12">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Welcome Header */}
+            <div className="mb-8">
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                Selamat datang, {user?.name}
+              </h1>
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Berikut adalah rangkuman dashboard Anda
+              </p>
+            </div>
+            
+            {/* Stats Grid */}
+            <div className="mt-6 mb-8">
+              <dl className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                {stats.map((stat) => (
+                  <div 
+                    key={stat.name} 
+                    className="px-4 py-5 bg-white dark:bg-gray-900 shadow rounded-lg overflow-hidden sm:p-6 transition duration-200 hover:shadow-md border border-gray-100 dark:border-gray-800"
+                  >
+                    <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate flex items-center">
+                      <div className={`mr-2 flex items-center justify-center p-1.5 rounded-md ${stat.bgColor}`}>
+                        <stat.icon className={`h-5 w-5 ${stat.color}`} aria-hidden="true" />
+                      </div>
+                      {stat.name}
+                    </dt>
+                    <dd className="mt-3 text-3xl font-semibold text-gray-900 dark:text-white">{stat.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+
+            {/* Main Content */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Left Column - Quick Stats */}
+              <div className="lg:col-span-1 space-y-6">
+                <div className="bg-white dark:bg-gray-900 overflow-hidden shadow rounded-lg border border-gray-100 dark:border-gray-800">
+                  <div className="p-6">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0 bg-indigo-100 dark:bg-indigo-900/30 rounded-full p-3">
+                        <CalendarIcon className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+                      </div>
+                      <div className="ml-5 w-0 flex-1">
+                        <dl>
+                          <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                            Total Konsultasi
+                          </dt>
+                          <dd>
+                            <div className="text-lg font-medium text-gray-900 dark:text-white">
+                              {userConsultations.length}
                             </div>
-
-                            {/* Main Content */}
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                                {/* Left Column - Stats */}
-                                <div className="md:col-span-1 space-y-6">
-                                    <div className="bg-white dark:bg-gray-900 overflow-hidden shadow rounded-lg">
-                                        <div className="p-6">
-                                            <div className="flex items-center">
-                                                <div className="flex-shrink-0 bg-indigo-100 dark:bg-indigo-900/30 rounded-md p-3">
-                                                    <ChartBarIcon className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
-                                                </div>
-                                                <div className="ml-5 w-0 flex-1">
-                                                    <dl>
-                                                        <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
-                                                            Total Konsultasi
-                                                        </dt>
-                                                        <dd>
-                                                            <div className="text-lg font-medium text-gray-900 dark:text-white">
-                                                                {userConsultations.length}
-                                                            </div>
-                                                        </dd>
-                                                    </dl>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="bg-white dark:bg-gray-900 overflow-hidden shadow rounded-lg">
-                                        <div className="p-6">
-                                            <div className="flex items-center">
-                                                <div className="flex-shrink-0 bg-indigo-100 dark:bg-indigo-900/30 rounded-md p-3">
-                                                    <ClipboardDocumentListIcon className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
-                                                </div>
-                                                <div className="ml-5 w-0 flex-1">
-                                                    <dl>
-                                                        <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
-                                                            Status Terkini
-                                                        </dt>
-                                                        <dd>
-                                                            <div className="text-lg font-medium text-gray-900 dark:text-white">
-                                                                {latestConsultation?.status === 'pending' && 'Menunggu'}
-                                                                {latestConsultation?.status === 'approved' && 'Disetujui'}
-                                                                {latestConsultation?.status === 'rejected' && 'Ditolak'}
-                                                                {!latestConsultation && 'Belum Ada'}
-                                                            </div>
-                                                        </dd>
-                                                    </dl>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {!latestConsultation && (
-                                        <ConsultationRequest />
-                                    )}
-                                </div>
-
-                                {/* Right Column - Status */}
-                                <div className="md:col-span-2 space-y-6">
-                                    <h3 className="text-lg font-medium leading-6 text-gray-900 dark:text-white mb-4">
-                                        Status Konsultasi
-                                    </h3>
-
-                                    {latestConsultation ? (
-                                        <ConsultationStatus consultation={latestConsultation} />
-                                    ) : (
-                                        <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 text-center py-10">
-                                            <svg
-                                                className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke="currentColor"
-                                                aria-hidden="true"
-                                            >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={1.5}
-                                                    d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                                                />
-                                            </svg>
-                                            <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">
-                                                Belum Ada Konsultasi
-                                            </h3>
-                                            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                                                Anda belum mengajukan permintaan konsultasi.
-                                            </p>
-                                            <div className="mt-6">
-                                                <button
-                                                    type="button"
-                                                    className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                                                >
-                                                    Ajukan Konsultasi
-                                                </button>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {latestConsultation && (
-                                        <div className="mt-8">
-                                            <ConsultationRequest />
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
+                          </dd>
+                        </dl>
+                      </div>
                     </div>
+                  </div>
                 </div>
-            </AppLayout>
-        </ConsultationProvider>
-    );
+
+                <div className="bg-white dark:bg-gray-900 overflow-hidden shadow rounded-lg border border-gray-100 dark:border-gray-800">
+                  <div className="p-6">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0 bg-indigo-100 dark:bg-indigo-900/30 rounded-full p-3">
+                        <ClipboardDocumentListIcon className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+                      </div>
+                      <div className="ml-5 w-0 flex-1">
+                        <dl>
+                          <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                            Status Terkini
+                          </dt>
+                          <dd>
+                            <div className="text-lg font-medium text-gray-900 dark:text-white">
+                              {latestConsultation?.status === 'pending' && 'Menunggu'}
+                              {latestConsultation?.status === 'approved' && 'Disetujui'}
+                              {latestConsultation?.status === 'rejected' && 'Ditolak'}
+                              {!latestConsultation && 'Belum Ada'}
+                            </div>
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {!latestConsultation && (
+                  <ConsultationRequest />
+                )}
+              </div>
+
+              {/* Right Column - Consultation Status */}
+              <div className="lg:col-span-2 space-y-6">
+                <h3 className="text-lg font-medium leading-6 text-gray-900 dark:text-white mb-4 flex items-center">
+                  <ClipboardDocumentListIcon className="h-5 w-5 mr-2 text-indigo-600 dark:text-indigo-400" />
+                  Status Konsultasi
+                </h3>
+
+                {latestConsultation ? (
+                  <ConsultationStatus consultation={latestConsultation} />
+                ) : (
+                  <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 text-center py-10">
+                    <PlusCircleIcon className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" />
+                    <h3 className="mt-4 text-sm font-medium text-gray-900 dark:text-white">
+                      Belum Ada Konsultasi
+                    </h3>
+                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                      Anda belum mengajukan permintaan konsultasi.
+                    </p>
+                    <div className="mt-6">
+                      <button
+                        type="button"
+                        className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+                        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                      >
+                        <CalendarIcon className="-ml-1 mr-2 h-4 w-4" />
+                        Ajukan Konsultasi
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {latestConsultation && (
+                  <div className="mt-8">
+                    <h3 className="text-lg font-medium leading-6 text-gray-900 dark:text-white mb-4 flex items-center">
+                      <CalendarIcon className="h-5 w-5 mr-2 text-indigo-600 dark:text-indigo-400" />
+                      Jadwalkan Konsultasi Lanjutan
+                    </h3>
+                    <ConsultationRequest />
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </AppLayout>
+    </ConsultationProvider>
+  );
 }
