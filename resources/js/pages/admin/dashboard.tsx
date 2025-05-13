@@ -1,9 +1,20 @@
+import React from 'react';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
 import { ConsultationProvider, Consultation } from '@/contexts/ConsultationContext';
 import AdminConsultationList from '@/components/consultation/AdminConsultationList';
-import { UserGroupIcon, ClipboardDocumentCheckIcon, ClipboardDocumentListIcon, BanknotesIcon, CalendarIcon } from '@heroicons/react/24/outline';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  UserGroupIcon, 
+  ClipboardDocumentCheckIcon, 
+  ClipboardDocumentListIcon, 
+  BanknotesIcon, 
+  CalendarIcon,
+  ChartBarIcon,
+  ArrowTrendingUpIcon,
+  SparklesIcon
+} from '@heroicons/react/24/outline';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -22,10 +33,14 @@ interface StatCardProps {
 
 const StatCard: React.FC<StatCardProps> = ({ title, value, icon, change, trend }) => {
     return (
-        <div className="bg-white dark:bg-gray-900 shadow rounded-lg overflow-hidden">
+        <motion.div 
+            whileHover={{ y: -5 }}
+            transition={{ duration: 0.2 }}
+            className="bg-white dark:bg-gray-900 shadow-md rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800 hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800"
+        >
             <div className="p-5">
                 <div className="flex items-start">
-                    <div className="flex-shrink-0 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg p-3">
+                    <div className="flex-shrink-0 bg-gradient-to-br from-indigo-100 to-emerald-100 dark:from-indigo-900/30 dark:to-emerald-900/30 rounded-lg p-3 shadow-sm">
                         {icon}
                     </div>
                     <div className="ml-4 flex-1">
@@ -33,27 +48,36 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, icon, change, trend }
                             {title}
                         </dt>
                         <dd className="mt-1">
-                            <div className="text-xl font-semibold text-gray-900 dark:text-white">
+                            <div className="text-xl font-bold text-gray-900 dark:text-white">
                                 {value}
                             </div>
                         </dd>
                         {change && (
                             <dd className="flex items-center text-xs mt-1">
                                 {trend === 'up' && (
-                                    <span className="text-indigo-600 dark:text-indigo-400 font-medium">↑ {change}</span>
+                                    <span className="flex items-center text-emerald-600 dark:text-emerald-400 font-medium">
+                                        <ArrowTrendingUpIcon className="h-3 w-3 mr-1" />
+                                        {change}
+                                    </span>
                                 )}
                                 {trend === 'down' && (
-                                    <span className="text-red-600 dark:text-red-400 font-medium">↓ {change}</span>
+                                    <span className="flex items-center text-red-600 dark:text-red-400 font-medium">
+                                        <ArrowTrendingUpIcon className="h-3 w-3 mr-1 rotate-180" />
+                                        {change}
+                                    </span>
                                 )}
                                 {trend === 'neutral' && (
-                                    <span className="text-gray-600 dark:text-gray-400 font-medium">• {change}</span>
+                                    <span className="flex items-center text-gray-600 dark:text-gray-400 font-medium">
+                                        <span className="h-2 w-2 rounded-full bg-gray-400 mr-1"></span>
+                                        {change}
+                                    </span>
                                 )}
                             </dd>
                         )}
                     </div>
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 };
 
@@ -81,18 +105,61 @@ export default function Dashboard({
     
     // Cast stats props with correct type
     const dashboardStats = (props.stats as typeof stats | undefined) || stats;
+    
+    // Animation variants
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1
+            }
+        }
+    };
+    
+    const itemVariants = {
+        hidden: { y: 20, opacity: 0 },
+        visible: {
+            y: 0,
+            opacity: 1,
+            transition: {
+                type: 'spring',
+                stiffness: 300,
+                damping: 24
+            }
+        }
+    };
 
     return (
         <ConsultationProvider initialConsultations={adminConsultations}>
             <AppLayout breadcrumbs={breadcrumbs}>
                 <Head title="Admin Dashboard" />
                 
-                <div className="container mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <div className="container mx-auto py-6 px-4 sm:px-6 lg:px-8 relative">
+                    {/* Decorative elements for Gen Z aesthetic */}
+                    <div className="absolute -top-10 -right-20 w-72 h-72 bg-gradient-to-br from-indigo-400 to-emerald-400 rounded-full filter blur-3xl opacity-10 animate-pulse"></div>
+                    <div className="absolute top-40 -left-20 w-72 h-72 bg-gradient-to-br from-purple-300 to-emerald-300 rounded-full filter blur-3xl opacity-10 animate-pulse delay-700"></div>
+                    
                     {/* Admin Header */}
-                    <div className="bg-gray-800 dark:bg-gray-900 shadow rounded-lg overflow-hidden mb-6">
+                    <motion.div 
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="bg-gradient-to-r from-gray-800 to-gray-900 dark:from-gray-900 dark:to-black shadow-lg rounded-xl overflow-hidden mb-6"
+                    >
                         <div className="px-6 py-6">
-                            <h1 className="text-xl font-semibold text-white">Admin Dashboard</h1>
-                            <p className="mt-1 text-gray-300">
+                            <div className="flex items-center">
+                                <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 via-emerald-300 to-indigo-400 bg-clip-text text-transparent">Admin Dashboard</h1>
+                                <motion.div 
+                                    initial={{ scale: 0.8, opacity: 0 }}
+                                    animate={{ scale: 1, opacity: 1 }}
+                                    transition={{ delay: 0.3, duration: 0.5 }}
+                                    className="ml-2"
+                                >
+                                    <SparklesIcon className="h-5 w-5 text-emerald-500 animate-pulse" />
+                                </motion.div>
+                            </div>
+                            <p className="mt-2 text-gray-300">
                                 Kelola konsultasi, pengguna, dan layanan Arsitekta
                             </p>
                             <div className="mt-2 flex items-center text-gray-300 text-sm">
@@ -100,108 +167,157 @@ export default function Dashboard({
                                 <span>{new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
                             </div>
                         </div>
-                    </div>
+                    </motion.div>
 
-                    {/* Stats Section */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                        <StatCard
-                            title="Total Pengguna"
-                            value={dashboardStats.users}
-                            icon={<UserGroupIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />}
-                            change="12% dari bulan lalu"
-                            trend="up"
-                        />
-                        <StatCard
-                            title="Konsultasi Menunggu"
-                            value={dashboardStats.pendingConsultations}
-                            icon={<ClipboardDocumentListIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />}
-                        />
-                        <StatCard
-                            title="Konsultasi Selesai"
-                            value={dashboardStats.completedConsultations}
-                            icon={<ClipboardDocumentCheckIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />}
-                            change="18% dari bulan lalu"
-                            trend="up"
-                        />
-                        <StatCard
-                            title="Pendapatan"
-                            value={`Rp ${dashboardStats.revenue.toLocaleString('id-ID')}`}
-                            icon={<BanknotesIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />}
-                            change="5% dari bulan lalu"
-                            trend="up"
-                        />
-                    </div>
+                    {/* Stats Section with staggered animation */}
+                    <motion.div 
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6"
+                    >
+                        <motion.div variants={itemVariants}>
+                            <StatCard
+                                title="Total Pengguna"
+                                value={dashboardStats.users}
+                                icon={<UserGroupIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />}
+                                change="12% dari bulan lalu"
+                                trend="up"
+                            />
+                        </motion.div>
+                        <motion.div variants={itemVariants}>
+                            <StatCard
+                                title="Konsultasi Menunggu"
+                                value={dashboardStats.pendingConsultations}
+                                icon={<ClipboardDocumentListIcon className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />}
+                            />
+                        </motion.div>
+                        <motion.div variants={itemVariants}>
+                            <StatCard
+                                title="Konsultasi Selesai"
+                                value={dashboardStats.completedConsultations}
+                                icon={<ClipboardDocumentCheckIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />}
+                                change="18% dari bulan lalu"
+                                trend="up"
+                            />
+                        </motion.div>
+                        <motion.div variants={itemVariants}>
+                            <StatCard
+                                title="Pendapatan"
+                                value={`Rp ${dashboardStats.revenue.toLocaleString('id-ID')}`}
+                                icon={<BanknotesIcon className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />}
+                                change="5% dari bulan lalu"
+                                trend="up"
+                            />
+                        </motion.div>
+                    </motion.div>
 
-                    {/* Main Content */}
-                    <div className="bg-white dark:bg-gray-900 shadow rounded-lg mb-6">
+                    {/* Main Content - Consultation Requests */}
+                    <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.3 }}
+                        className="bg-white dark:bg-gray-900 shadow-md rounded-xl mb-6 overflow-hidden border border-gray-100 dark:border-gray-800 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800"
+                    >
                         <div className="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
                             <div className="flex items-center">
-                                <ClipboardDocumentListIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400 mr-2" />
-                                <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                                <div className="mr-2 flex items-center justify-center p-1.5 rounded-md bg-emerald-100 dark:bg-emerald-900/30">
+                                    <ClipboardDocumentListIcon className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+                                </div>
+                                <h3 className="text-lg font-bold bg-gradient-to-r from-indigo-600 to-emerald-500 bg-clip-text text-transparent">
                                     Permintaan Konsultasi Menunggu
                                 </h3>
                             </div>
-                            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                                 Daftar permintaan konsultasi yang perlu ditanggapi
                             </p>
                         </div>
                         <div className="p-6">
                             <AdminConsultationList />
                         </div>
-                    </div>
+                    </motion.div>
 
                     {/* Recent Activity */}
-                    <div className="bg-white dark:bg-gray-900 shadow rounded-lg overflow-hidden">
+                    <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.4 }}
+                        className="bg-white dark:bg-gray-900 shadow-md rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800"
+                    >
                         <div className="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
                             <div className="flex items-center">
-                                <CalendarIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400 mr-2" />
-                                <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                                <div className="mr-2 flex items-center justify-center p-1.5 rounded-md bg-indigo-100 dark:bg-indigo-900/30">
+                                    <CalendarIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                                </div>
+                                <h3 className="text-lg font-bold bg-gradient-to-r from-indigo-600 to-emerald-500 bg-clip-text text-transparent">
                                     Aktivitas Terbaru
                                 </h3>
                             </div>
-                            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                                 Daftar aktivitas terbaru dalam sistem
                             </p>
                         </div>
                         
-                        <div className="divide-y divide-gray-200">
-                            {adminConsultations.length > 0 ? (
-                                adminConsultations.slice(0, 5).map((consultation, index) => (
-                                    <div key={index} className="p-4">
-                                        <div className="flex items-start space-x-3">
-                                            <div className="flex-shrink-0">
-                                                <div className="h-10 w-10 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
-                                                    <UserGroupIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                        <div className="divide-y divide-gray-200 dark:divide-gray-700">
+                            <AnimatePresence>
+                                {adminConsultations.length > 0 ? (
+                                    adminConsultations.slice(0, 5).map((consultation, index) => (
+                                        <motion.div 
+                                            key={index} 
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: index * 0.1 }}
+                                            className="p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150"
+                                        >
+                                            <div className="flex items-start space-x-3">
+                                                <div className="flex-shrink-0">
+                                                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-100 to-emerald-100 dark:from-indigo-900/30 dark:to-emerald-900/30 flex items-center justify-center shadow-sm">
+                                                        <UserGroupIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                                                    </div>
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                                                        {consultation.user_id ? `User ID: ${consultation.user_id}` : 'Pengguna'}
+                                                    </p>
+                                                    <p className="text-sm">
+                                                        <span className={
+                                                            consultation.status === 'pending' ? 'text-amber-600 dark:text-amber-400' :
+                                                            consultation.status === 'approved' ? 'text-emerald-600 dark:text-emerald-400' :
+                                                            'text-red-600 dark:text-red-400'
+                                                        }>
+                                                            {consultation.status === 'pending' && 'Mengajukan permintaan konsultasi'}
+                                                            {consultation.status === 'approved' && 'Konsultasi diterima'}
+                                                            {consultation.status === 'rejected' && 'Konsultasi ditolak'}
+                                                        </span>
+                                                    </p>
+                                                    <p className="text-xs text-gray-400 mt-1 flex items-center">
+                                                        <CalendarIcon className="h-3 w-3 mr-1" />
+                                                        {new Date(consultation.created_at || new Date()).toLocaleDateString('id-ID')}
+                                                    </p>
                                                 </div>
                                             </div>
-                                            <div className="flex-1 min-w-0">
-                                                <p className="text-sm font-medium text-gray-900">
-                                                    {consultation.user_id ? `User ID: ${consultation.user_id}` : 'Pengguna'}
-                                                </p>
-                                                <p className="text-sm text-gray-500">
-                                                    {consultation.status === 'pending' && 'Mengajukan permintaan konsultasi'}
-                                                    {consultation.status === 'approved' && 'Konsultasi diterima'}
-                                                    {consultation.status === 'rejected' && 'Konsultasi ditolak'}
-                                                </p>
-                                                <p className="text-xs text-gray-400 mt-1">
-                                                    {new Date().toLocaleDateString('id-ID')}
-                                                </p>
-                                            </div>
+                                        </motion.div>
+                                    ))
+                                ) : (
+                                    <motion.div 
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        className="py-8 px-4 text-center"
+                                    >
+                                        <div className="mx-auto h-14 w-14 rounded-full bg-gradient-to-br from-gray-100 to-indigo-100 dark:from-gray-800 dark:to-indigo-900/30 flex items-center justify-center mb-4 shadow-sm">
+                                            <CalendarIcon className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
                                         </div>
-                                    </div>
-                                ))
-                            ) : (
-                                <div className="py-6 px-4 text-center">
-                                    <div className="mx-auto h-12 w-12 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center mb-3">
-                                        <CalendarIcon className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
-                                    </div>
-                                    <p className="text-sm text-gray-500">
-                                        Belum ada aktivitas terbaru
-                                    </p>
-                                </div>
-                            )}
+                                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                                            Belum ada aktivitas terbaru
+                                        </p>
+                                        <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                                            Aktivitas akan muncul setelah ada interaksi pengguna
+                                        </p>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
             </AppLayout>
         </ConsultationProvider>
