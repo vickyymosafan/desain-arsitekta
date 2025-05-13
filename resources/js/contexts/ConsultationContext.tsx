@@ -52,9 +52,12 @@ export const ConsultationProvider: React.FC<ConsultationProviderProps> = ({
   const submitConsultationRequest = (date: Date) => {
     setIsLoading(true);
     
+    // Format tanggal dalam format YYYY-MM-DD untuk dikirim ke server
+    const formattedDate = date.toISOString().split('T')[0];
+    
     // Submit the request to the server
     router.post('/consultations', {
-      consultation_date: date,
+      consultation_date: formattedDate,
     }, {
       onSuccess: () => {
         // Redirect user to dashboard after submission with "Menunggu respon dari admin" status

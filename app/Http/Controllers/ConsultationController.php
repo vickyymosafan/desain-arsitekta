@@ -6,6 +6,7 @@ use App\Models\Consultation;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
@@ -56,17 +57,32 @@ class ConsultationController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'consultation_date' => 'required|date|after_or_equal:today',
-        ]);
-        
-        $consultation = Consultation::create([
-            'user_id' => Auth::id(),
-            'consultation_date' => $request->consultation_date,
-            'status' => 'pending',
-        ]);
-        
-        return Redirect::route('dashboard');
+        try {
+            $request->validate([
+                'consultation_date' => 'required|date|after_or_equal:today',
+            ]);
+            
+            // Pastikan format tanggal benar sebelum disimpan
+            $date = date('Y-m-d', strtotime($request->consultation_date));
+            
+            $consultation = Consultation::create([
+                'user_id' => Auth::id(),
+                'consultation_date' => $date,
+                'status' => 'pending',
+            ]);
+            
+            return Redirect::route('dashboard')->with('success', 'Permintaan konsultasi berhasil dikirim.');
+        } catch (\Exception $e) {
+            // Log error untuk debugging
+            Log::error('Error creating consultation: ' . $e->getMessage());
+            
+            // Tambahkan error message yang lebih detail saat development
+            $errorMessage = app()->environment('local') ?
+                'Error: ' . $e->getMessage() :
+                'Terjadi kesalahan saat mengirim permintaan konsultasi. Silakan coba lagi.';
+                
+            return Redirect::back()->with('error', $errorMessage);
+        }
     }
 
     /**
