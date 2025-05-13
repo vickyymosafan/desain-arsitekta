@@ -27,10 +27,17 @@ const DatePickerModal: React.FC<DatePickerModalProps> = ({
     setSelectedDate(day);
   };
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
   const handleSubmit = () => {
-    if (selectedDate) {
-      onSubmit(selectedDate);
-      onClose();
+    if (selectedDate && !isSubmitting) {
+      setIsSubmitting(true);
+      
+      // Show loading state before redirecting
+      setTimeout(() => {
+        onSubmit(selectedDate);
+        onClose();
+      }, 500); // Small delay to show feedback before transition
     }
   };
 

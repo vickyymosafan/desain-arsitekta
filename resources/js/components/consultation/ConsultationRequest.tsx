@@ -1,18 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { CalendarIcon, ClockIcon } from '@heroicons/react/24/outline';
 import DatePickerModal from './DatePickerModal';
 import { useConsultation } from '@/contexts/ConsultationContext';
+import { usePage } from '@inertiajs/react';
+import { SharedData } from '@/types';
 
 const ConsultationRequest: React.FC = () => {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const { submitConsultationRequest, isLoading } = useConsultation();
+  const { auth } = usePage<SharedData>().props;
 
   const handleDateSelect = (date: Date) => {
+    // Show a brief success message before redirecting
+    setShowSuccessMessage(true);
+    
+    // Submit the consultation request which will redirect to dashboard
     submitConsultationRequest(date);
   };
+  
+  // Reset success message if shown
+  useEffect(() => {
+    if (showSuccessMessage) {
+      const timer = setTimeout(() => setShowSuccessMessage(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showSuccessMessage]);
 
   const openDatePicker = () => {
     setIsDatePickerOpen(true);
@@ -39,7 +55,7 @@ const ConsultationRequest: React.FC = () => {
           <div className="flex-1">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Jadwalkan Konsultasi Gratis</h3>
             <p className="text-gray-600 dark:text-gray-300 mb-4">
-              Pilih tanggal dan waktu yang sesuai untuk konsultasi dengan tim kami. Kami akan menghubungi Anda untuk mengkonfirmasi jadwal konsultasi.
+              Pilih tanggal untuk konsultasi dengan tim kami. Setelah Anda memilih tanggal, permintaan Anda akan dikirim ke admin untuk ditinjau.
             </p>
             
             <div className="mb-5 flex items-center text-sm text-gray-500 dark:text-gray-400">
@@ -47,10 +63,21 @@ const ConsultationRequest: React.FC = () => {
               <span>Durasi konsultasi: 45-60 menit</span>
             </div>
             
+            {showSuccessMessage && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="mb-4 p-3 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 rounded-lg text-sm"
+              >
+                Permintaan konsultasi berhasil dibuat! Mengalihkan ke dashboard Anda...
+              </motion.div>
+            )}
+            
             <button
               type="button"
               onClick={openDatePicker}
-              disabled={isLoading}
+              disabled={isLoading || !auth?.user}
               className="inline-flex items-center px-5 py-3 rounded-xl bg-emerald-600 text-white font-medium shadow-sm hover:bg-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {isLoading ? (
@@ -68,6 +95,12 @@ const ConsultationRequest: React.FC = () => {
                 </>
               )}
             </button>
+            
+            {!auth?.user && (
+              <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
+                Anda perlu login terlebih dahulu untuk melakukan konsultasi.
+              </p>
+            )}
           </div>
         </div>
       </motion.div>

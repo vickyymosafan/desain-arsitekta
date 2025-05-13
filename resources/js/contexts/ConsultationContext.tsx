@@ -52,16 +52,35 @@ export const ConsultationProvider: React.FC<ConsultationProviderProps> = ({
   const submitConsultationRequest = (date: Date) => {
     setIsLoading(true);
     
-    // Using Inertia router to submit the request
+    // Create a new consultation request
+    const newConsultation: Consultation = {
+      consultation_date: date,
+      status: 'pending',
+      created_at: new Date().toISOString(),
+    };
+    
+    // Add it to our local state immediately for UI feedback
+    setConsultations([newConsultation, ...consultations]);
+    
+    // Using Inertia router to submit the request to the server
     router.post('/consultations', {
       consultation_date: date,
     }, {
+      preserveState: true,
       onSuccess: () => {
         setIsLoading(false);
-        // Redirect to dashboard
-        router.visit('/dashboard');
+        // Redirect user to dashboard after submission
+        router.visit('/dashboard', {
+          preserveScroll: true,
+          onSuccess: () => {
+            // Display a notification that could be shown on the dashboard
+            console.log('Consultation request submitted successfully');
+          }
+        });
       },
       onError: () => {
+        // Revert the local state change on error
+        setConsultations(consultations.filter(c => c !== newConsultation));
         setIsLoading(false);
       }
     });
