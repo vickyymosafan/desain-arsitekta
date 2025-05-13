@@ -2,6 +2,7 @@ import { type SharedData } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
 import { lazy, Suspense, useState, useEffect } from 'react';
 import Navbar from '@/components/user/navbar';
+import { ConsultationProvider } from '@/contexts/ConsultationContext';
 import { 
     animationVariants, 
     createAnimationProps,
@@ -93,10 +94,12 @@ export default function Welcome() {
             
             <div className="flex flex-col min-h-screen bg-black">
                 <main>
-                    {/* Hero Section */}
+                    {/* Hero Section - Wrapped in ConsultationProvider for direct date picker integration */}
                     <SectionWrapper id="home">
                         <Suspense fallback={<LoadingSpinner minHeight="100vh" />}>
-                            <HeroSection />
+                            <ConsultationProvider initialConsultations={[]}>
+                                <HeroSection />
+                            </ConsultationProvider>
                         </Suspense>
                     </SectionWrapper>
                     

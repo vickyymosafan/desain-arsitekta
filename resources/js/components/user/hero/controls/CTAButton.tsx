@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { Link, usePage } from '@inertiajs/react';
 import { ButtonVariant, CTAButton } from '../utils/types';
 import AuthRequiredModal from '../../../modals/AuthRequiredModal';
+import DatePickerModal from '../../../consultation/DatePickerModal';
+import { useConsultation } from '../../../../contexts/ConsultationContext';
 import { SharedData } from '../../../../types';
 
 // Variasi gaya tombol dengan estetika modern untuk Gen-Z dan profesional arsitektur
@@ -52,11 +54,21 @@ interface CTAButtonComponentProps {
 }
 
 const CTAButtonComponent: FC<CTAButtonComponentProps> = ({ button, index }) => {
-    const { text, href, variant = 'primary', icon = true, external = false } = button;
+    const { text, href = '#', variant = 'primary', icon = true, external = false, onClick, openDatePicker = false } = button;
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+    const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
     
     // Get auth state from page props
     const { auth } = usePage<SharedData>().props;
+    
+    // Get consultation context if available
+    let consultationContext;
+    try {
+        consultationContext = useConsultation();
+    } catch (error) {
+        // ConsultationProvider not available, which is fine for regular buttons
+        consultationContext = null;
+    }
     
     // Mendapatkan ikon berdasarkan teks tombol atau menggunakan default
     const getButtonIcon = (buttonText: string) => {
@@ -71,24 +83,63 @@ const CTAButtonComponent: FC<CTAButtonComponentProps> = ({ button, index }) => {
 
     // We'll use getButtonIcon directly in the render rather than storing in a variable
     
+    // Handle date selection from date picker
+    const handleDateSelection = (date: Date) => {
+        if (consultationContext) {
+            consultationContext.submitConsultationRequest(date);
+        }
+    };
+
     // Handle button click for consultation
     const handleConsultationClick = (e: React.MouseEvent) => {
-        // Check if this is a consultation button and user is not authenticated
+        // If custom onClick handler is provided, use it
+        if (onClick) {
+            e.preventDefault();
+            onClick();
+            return;
+        }
+        
+        // Handle opening date picker directly
+        if (openDatePicker) {
+            e.preventDefault();
+            
+            // Check if user is authenticated
+            const isAuthenticated = auth?.user;
+            
+            if (!isAuthenticated) {
+                setIsAuthModalOpen(true);
+            } else {
+                setIsDatePickerOpen(true);
+            }
+            return;
+        }
+        
+        // For other consultation buttons without specific handlers
         const isConsultation = text.toLowerCase().includes('konsultasi');
         const isAuthenticated = auth?.user;
         
         if (isConsultation && !isAuthenticated) {
             e.preventDefault();
             setIsAuthModalOpen(true);
-            return;
         }
     };
     
     // Menentukan komponen tombol berdasarkan flag external
-    const ButtonComponent = external ? 'a' : Link;
-    const buttonProps = external ? 
-        { href, target: "_blank", rel: "noopener noreferrer", onClick: handleConsultationClick } : 
-        { href, onClick: handleConsultationClick };
+    const ButtonComponent = external ? 'a' : href === '#' ? 'button' : Link;
+    
+    // Build button props based on component type
+    let buttonProps: any = { onClick: handleConsultationClick };
+    
+    if (external) {
+        buttonProps = { 
+            ...buttonProps, 
+            href, 
+            target: "_blank", 
+            rel: "noopener noreferrer" 
+        };
+    } else if (href !== '#') {
+        buttonProps = { ...buttonProps, href };
+    }
     
     return (
         <>
@@ -139,6 +190,15 @@ const CTAButtonComponent: FC<CTAButtonComponentProps> = ({ button, index }) => {
                 isOpen={isAuthModalOpen} 
                 onClose={() => setIsAuthModalOpen(false)} 
             />
+            
+            {/* Date picker modal for consultation */}
+            {openDatePicker && (
+                <DatePickerModal
+                    isOpen={isDatePickerOpen}
+                    onClose={() => setIsDatePickerOpen(false)}
+                    onSubmit={handleDateSelection}
+                />
+            )}
         </>
     );
 };

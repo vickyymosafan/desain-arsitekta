@@ -95,13 +95,17 @@ export interface CTAButton {
     /** Teks tombol */
     text: string;
     /** URL tujuan */
-    href: string;
+    href?: string;
     /** Varian tampilan tombol */
     variant?: ButtonVariant;
     /** Apakah menampilkan ikon */
     icon?: boolean;
     /** Apakah link eksternal */
     external?: boolean;
+    /** Fungsi onClick untuk tombol */
+    onClick?: () => void;
+    /** Flag untuk menentukan apakah tombol membuka date picker */
+    openDatePicker?: boolean;
 }
 
 /**

@@ -57,9 +57,10 @@ export const getHeroContent = (contentAnimation: string | undefined): HeroConten
     description: "Desain modern, konstruksi berkualitas, dan solusi yang berkelanjutan untuk mewujudkan hunian ideal sesuai gaya hidup Anda.",
     ctaPrimary: { 
         text: "Mulai Konsultasi Gratis", 
-        href: "/contact", 
+        href: "#", 
         variant: 'primary' as ButtonVariant, 
-        icon: true
+        icon: true,
+        openDatePicker: true // This will open date picker directly instead of navigating
     },
     ctaSecondary: { 
         text: "Lihat Hasil Karya", 
