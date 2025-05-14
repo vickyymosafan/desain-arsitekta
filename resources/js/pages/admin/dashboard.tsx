@@ -181,7 +181,6 @@ export default function Dashboard({
                                 title="Total Pengguna"
                                 value={dashboardStats.users}
                                 icon={<UserGroupIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />}
-                                change="12% dari bulan lalu"
                                 trend="up"
                             />
                         </motion.div>
@@ -197,7 +196,6 @@ export default function Dashboard({
                                 title="Konsultasi Selesai"
                                 value={dashboardStats.completedConsultations}
                                 icon={<ClipboardDocumentCheckIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />}
-                                change="18% dari bulan lalu"
                                 trend="up"
                             />
                         </motion.div>
@@ -206,7 +204,6 @@ export default function Dashboard({
                                 title="Pendapatan"
                                 value={`Rp ${dashboardStats.revenue.toLocaleString('id-ID')}`}
                                 icon={<BanknotesIcon className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />}
-                                change="5% dari bulan lalu"
                                 trend="up"
                             />
                         </motion.div>
