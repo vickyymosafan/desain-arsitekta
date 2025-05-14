@@ -101,7 +101,7 @@ export default function Dashboard({ consultations = [] }: DashboardProps) {
                   Selamat datang, {user?.name}
                 </h1>
               </div>
-              <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+              <p className="mt-2 text-sm text-white">
                 Berikut adalah rangkuman dashboard Anda
               </p>
             </motion.div>
@@ -204,11 +204,6 @@ export default function Dashboard({ consultations = [] }: DashboardProps) {
                 variants={itemVariants}
                 className="lg:col-span-2 space-y-6"
               >
-                <h3 className="text-lg font-medium leading-6 bg-gradient-to-r from-indigo-600 to-emerald-500 bg-clip-text text-transparent mb-4 flex items-center">
-                  <ClipboardDocumentListIcon className="h-5 w-5 mr-2 text-indigo-600 dark:text-indigo-400" />
-                  Status Konsultasi
-                </h3>
-
                 <AnimatePresence mode="wait">
                   {latestConsultation ? (
                     <motion.div
@@ -257,10 +252,6 @@ export default function Dashboard({ consultations = [] }: DashboardProps) {
                     transition={{ delay: 0.6, duration: 0.5 }}
                     className="mt-8"
                   >
-                    <h3 className="text-lg font-medium leading-6 bg-gradient-to-r from-indigo-600 to-emerald-500 bg-clip-text text-transparent mb-4 flex items-center">
-                      <CalendarIcon className="h-5 w-5 mr-2 text-indigo-600 dark:text-indigo-400" />
-                      Jadwalkan Konsultasi Lanjutan
-                    </h3>
                     <ConsultationRequest />
                   </motion.div>
                 )}
