@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { format, parseISO } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { 
@@ -10,12 +10,30 @@ import {
   InformationCircleIcon
 } from '@heroicons/react/24/outline';
 import { Consultation } from '@/contexts/ConsultationContext';
+import DatePickerModal from './DatePickerModal';
+import { useConsultation } from '@/contexts/ConsultationContext';
 
 interface ConsultationStatusProps {
   consultation: Consultation;
 }
 
 const ConsultationStatus: React.FC<ConsultationStatusProps> = ({ consultation }) => {
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const { submitConsultationRequest, isLoading } = useConsultation();
+  
+  const openDatePicker = () => {
+    setIsDatePickerOpen(true);
+  };
+
+  const closeDatePicker = () => {
+    setIsDatePickerOpen(false);
+  };
+  
+  const handleDateSelect = (date: Date) => {
+    // Submit the consultation request which will redirect to dashboard
+    submitConsultationRequest(date);
+    closeDatePicker();
+  };
   const formatDate = (dateString: string | Date) => {
     if (typeof dateString === 'string') {
       return format(parseISO(dateString), 'EEEE, d MMMM yyyy', { locale: id });
@@ -102,10 +120,18 @@ const ConsultationStatus: React.FC<ConsultationStatusProps> = ({ consultation })
                 <div className="mt-3 flex items-center justify-start">
                   <button
                     type="button"
-                    className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors duration-200"
+                    onClick={openDatePicker}
+                    disabled={isLoading}
+                    className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
                   >
-                    <CalendarIcon className="-ml-0.5 mr-1.5 h-3 w-3" />
-                    Ajukan Konsultasi Baru
+                    {isLoading ? (
+                      "Memproses..."
+                    ) : (
+                      <>
+                        <CalendarIcon className="-ml-0.5 mr-1.5 h-3 w-3" />
+                        Ajukan Konsultasi Baru
+                      </>
+                    )}
                   </button>
                 </div>
               </>
@@ -113,6 +139,13 @@ const ConsultationStatus: React.FC<ConsultationStatusProps> = ({ consultation })
           </div>
         </div>
       </div>
+      
+      {/* Date Picker Modal */}
+      <DatePickerModal 
+        isOpen={isDatePickerOpen} 
+        onClose={closeDatePicker} 
+        onSubmit={handleDateSelect} 
+      />
     </div>
   );
 };

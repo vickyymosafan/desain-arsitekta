@@ -214,7 +214,7 @@ export default function Dashboard({ consultations = [] }: DashboardProps) {
                   </div>
                 </motion.div>
 
-                {!latestConsultation && (
+                {(!latestConsultation || latestConsultation.status === 'rejected') && (
                   <motion.div variants={itemVariants}>
                     <ConsultationRequest />
                   </motion.div>
@@ -272,7 +272,7 @@ export default function Dashboard({ consultations = [] }: DashboardProps) {
                   )}
                 </AnimatePresence>
                 
-                {latestConsultation && (
+                {latestConsultation && latestConsultation.status === 'approved' && (
                   <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
