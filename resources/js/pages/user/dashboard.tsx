@@ -80,27 +80,13 @@ export default function Dashboard({ consultations = [] }: DashboardProps) {
       color: 'text-indigo-500 dark:text-indigo-400', 
       bgColor: 'bg-indigo-100 dark:bg-indigo-900/20' 
     },
-    { 
-      name: 'Dokumen', 
-      value: '0', 
-      icon: DocumentTextIcon, 
-      color: 'text-purple-500 dark:text-purple-400', 
-      bgColor: 'bg-purple-100 dark:bg-purple-900/20' 
-    },
-    { 
-      name: 'Penyelesaian', 
-      value: '0%', 
-      icon: ChartBarIcon, 
-      color: 'text-emerald-500 dark:text-emerald-400', 
-      bgColor: 'bg-emerald-100 dark:bg-emerald-900/20' 
-    },
   ];
 
   return (
     <ConsultationProvider initialConsultations={latestConsultation ? [latestConsultation] : []}>
       <AppLayout breadcrumbs={breadcrumbs}>
         <Head title="Dashboard" />
-        <div className="py-8 sm:py-12 relative">
+        <div className="py-10 sm:py-14 relative">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             {/* Dashboard content starts here */}
             {/* Welcome Header with animated sparkle icon */}
@@ -133,23 +119,23 @@ export default function Dashboard({ consultations = [] }: DashboardProps) {
               variants={containerVariants}
               initial="hidden"
               animate="visible"
-              className="mt-6 mb-8"
+              className="mt-8 mb-10"
             >
-              <dl className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              <dl className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 {stats.map((stat) => (
                   <motion.div 
                     key={stat.name}
                     variants={itemVariants}
                     whileHover={{ y: -5, transition: { duration: 0.2 } }}
-                    className="px-4 py-5 bg-white dark:bg-gray-900 shadow rounded-xl overflow-hidden sm:p-6 transition duration-200 hover:shadow-xl border border-gray-100 dark:border-gray-800 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800"
+                    className="px-6 py-7 bg-white dark:bg-gray-900 shadow-lg rounded-xl overflow-hidden transition duration-200 hover:shadow-xl border border-gray-100 dark:border-gray-800 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800"
                   >
-                    <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate flex items-center">
-                      <div className={`mr-2 flex items-center justify-center p-1.5 rounded-md ${stat.bgColor}`}>
+                    <dt className="text-base font-medium text-gray-500 dark:text-gray-400 truncate flex items-center">
+                      <div className={`mr-3 flex items-center justify-center p-2 rounded-md ${stat.bgColor}`}>
                         <stat.icon className={`h-5 w-5 ${stat.color}`} aria-hidden="true" />
                       </div>
                       {stat.name}
                     </dt>
-                    <dd className="mt-3 text-3xl font-semibold text-gray-900 dark:text-white">{stat.value}</dd>
+                    <dd className="mt-4 text-4xl font-bold text-gray-900 dark:text-white">{stat.value}</dd>
                   </motion.div>
                 ))}
               </dl>
@@ -163,8 +149,8 @@ export default function Dashboard({ consultations = [] }: DashboardProps) {
               className="grid grid-cols-1 lg:grid-cols-3 gap-8"
             >
               {/* Left Column - Quick Stats */}
-              <div className="lg:col-span-1 space-y-6">
-                <motion.div variants={itemVariants} className="bg-white dark:bg-gray-900 overflow-hidden shadow-md rounded-xl border border-gray-100 dark:border-gray-800 hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
+              <div className="lg:col-span-1 space-y-8">
+                <motion.div variants={itemVariants} className="bg-white dark:bg-gray-900 overflow-hidden shadow-lg rounded-xl border border-gray-100 dark:border-gray-800 hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
                   <div className="p-6">
                     <div className="flex items-center">
                       <div className="flex-shrink-0 bg-indigo-100 dark:bg-indigo-900/30 rounded-full p-3">
