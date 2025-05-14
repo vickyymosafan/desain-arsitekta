@@ -136,9 +136,7 @@ export default function Dashboard({
                 <Head title="Admin Dashboard" />
                 
                 <div className="container mx-auto py-6 px-4 sm:px-6 lg:px-8 relative">
-                    {/* Decorative elements for Gen Z aesthetic */}
-                    <div className="absolute -top-10 -right-20 w-72 h-72 bg-gradient-to-br from-indigo-400 to-emerald-400 rounded-full filter blur-3xl opacity-10 animate-pulse"></div>
-                    <div className="absolute top-40 -left-20 w-72 h-72 bg-gradient-to-br from-purple-300 to-emerald-300 rounded-full filter blur-3xl opacity-10 animate-pulse delay-700"></div>
+                    {/* Admin dashboard content starts here */}
                     
                     {/* Admin Header */}
                     <motion.div 
