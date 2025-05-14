@@ -13,7 +13,8 @@ import {
   CalendarIcon,
   ChartBarIcon,
   ArrowTrendingUpIcon,
-  SparklesIcon
+  SparklesIcon,
+  RectangleGroupIcon
 } from '@heroicons/react/24/outline';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -36,10 +37,10 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, icon, change, trend }
         <motion.div 
             whileHover={{ y: -5 }}
             transition={{ duration: 0.2 }}
-            className="bg-white dark:bg-gray-900 shadow-md rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800 hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800"
+            className="h-full bg-white dark:bg-gray-900 shadow-md rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800 hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800"
         >
-            <div className="p-5">
-                <div className="flex items-start">
+            <div className="p-5 h-full flex flex-col">
+                <div className="flex items-center h-full">
                     <div className="flex-shrink-0 bg-gradient-to-br from-indigo-100 to-emerald-100 dark:from-indigo-900/30 dark:to-emerald-900/30 rounded-lg p-3 shadow-sm">
                         {icon}
                     </div>
@@ -135,7 +136,7 @@ export default function Dashboard({
             <AppLayout breadcrumbs={breadcrumbs}>
                 <Head title="Admin Dashboard" />
                 
-                <div className="container mx-auto py-6 px-4 sm:px-6 lg:px-8 relative">
+                <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 relative">
                     {/* Admin dashboard content starts here */}
                     
                     {/* Admin Header */}
@@ -143,10 +144,11 @@ export default function Dashboard({
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
-                        className="bg-gradient-to-r from-gray-800 to-gray-900 dark:from-gray-900 dark:to-black shadow-lg rounded-xl overflow-hidden mb-6"
+                        className="bg-gradient-to-r from-gray-800 to-gray-900 dark:from-gray-900 dark:to-black shadow-lg rounded-xl overflow-hidden mb-8"
                     >
-                        <div className="px-6 py-6">
+                        <div className="px-8 py-8">
                             <div className="flex items-center">
+                                <RectangleGroupIcon className="h-6 w-6 text-emerald-500 mr-3" />
                                 <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 via-emerald-300 to-indigo-400 bg-clip-text text-transparent">Admin Dashboard</h1>
                                 <motion.div 
                                     initial={{ scale: 0.8, opacity: 0 }}
@@ -160,8 +162,8 @@ export default function Dashboard({
                             <p className="mt-2 text-gray-300">
                                 Kelola konsultasi, pengguna, dan layanan Arsitekta
                             </p>
-                            <div className="mt-2 flex items-center text-gray-300 text-sm">
-                                <CalendarIcon className="h-4 w-4 mr-1" />
+                            <div className="mt-3 flex items-center text-gray-300 text-sm">
+                                <CalendarIcon className="h-4 w-4 mr-2" />
                                 <span>{new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
                             </div>
                         </div>
@@ -172,7 +174,7 @@ export default function Dashboard({
                         variants={containerVariants}
                         initial="hidden"
                         animate="visible"
-                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6"
+                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
                     >
                         <motion.div variants={itemVariants}>
                             <StatCard
@@ -215,22 +217,22 @@ export default function Dashboard({
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.3 }}
-                        className="bg-white dark:bg-gray-900 shadow-md rounded-xl mb-6 overflow-hidden border border-gray-100 dark:border-gray-800 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800"
+                        className="bg-white dark:bg-gray-900 shadow-md rounded-xl mb-8 overflow-hidden border border-gray-100 dark:border-gray-800 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800"
                     >
-                        <div className="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
+                        <div className="px-8 py-6 border-b border-gray-200 dark:border-gray-700">
                             <div className="flex items-center">
-                                <div className="mr-2 flex items-center justify-center p-1.5 rounded-md bg-emerald-100 dark:bg-emerald-900/30">
+                                <div className="mr-3 flex items-center justify-center p-2 rounded-md bg-emerald-100 dark:bg-emerald-900/30">
                                     <ClipboardDocumentListIcon className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                                 </div>
                                 <h3 className="text-lg font-bold bg-gradient-to-r from-indigo-600 to-emerald-500 bg-clip-text text-transparent">
                                     Permintaan Konsultasi Menunggu
                                 </h3>
                             </div>
-                            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                                 Daftar permintaan konsultasi yang perlu ditanggapi
                             </p>
                         </div>
-                        <div className="p-6">
+                        <div className="p-8">
                             <AdminConsultationList />
                         </div>
                     </motion.div>
@@ -242,16 +244,16 @@ export default function Dashboard({
                         transition={{ duration: 0.5, delay: 0.4 }}
                         className="bg-white dark:bg-gray-900 shadow-md rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800"
                     >
-                        <div className="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
+                        <div className="px-8 py-6 border-b border-gray-200 dark:border-gray-700">
                             <div className="flex items-center">
-                                <div className="mr-2 flex items-center justify-center p-1.5 rounded-md bg-indigo-100 dark:bg-indigo-900/30">
+                                <div className="mr-3 flex items-center justify-center p-2 rounded-md bg-indigo-100 dark:bg-indigo-900/30">
                                     <CalendarIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
                                 </div>
                                 <h3 className="text-lg font-bold bg-gradient-to-r from-indigo-600 to-emerald-500 bg-clip-text text-transparent">
                                     Aktivitas Terbaru
                                 </h3>
                             </div>
-                            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                                 Daftar aktivitas terbaru dalam sistem
                             </p>
                         </div>
@@ -267,13 +269,13 @@ export default function Dashboard({
                                             transition={{ delay: index * 0.1 }}
                                             className="p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150"
                                         >
-                                            <div className="flex items-start space-x-3">
+                                            <div className="flex items-center space-x-4">
                                                 <div className="flex-shrink-0">
-                                                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-100 to-emerald-100 dark:from-indigo-900/30 dark:to-emerald-900/30 flex items-center justify-center shadow-sm">
+                                                    <div className="h-12 w-12 rounded-full bg-gradient-to-br from-indigo-100 to-emerald-100 dark:from-indigo-900/30 dark:to-emerald-900/30 flex items-center justify-center shadow-sm">
                                                         <UserGroupIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
                                                     </div>
                                                 </div>
-                                                <div className="flex-1 min-w-0">
+                                                <div className="flex-1 min-w-0 ml-1">
                                                     <p className="text-sm font-medium text-gray-900 dark:text-white">
                                                         {consultation.user_id ? `User ID: ${consultation.user_id}` : 'Pengguna'}
                                                     </p>
@@ -302,13 +304,13 @@ export default function Dashboard({
                                         animate={{ opacity: 1 }}
                                         className="py-8 px-4 text-center"
                                     >
-                                        <div className="mx-auto h-14 w-14 rounded-full bg-gradient-to-br from-gray-100 to-indigo-100 dark:from-gray-800 dark:to-indigo-900/30 flex items-center justify-center mb-4 shadow-sm">
+                                        <div className="mx-auto h-16 w-16 rounded-full bg-gradient-to-br from-gray-100 to-indigo-100 dark:from-gray-800 dark:to-indigo-900/30 flex items-center justify-center mb-6 shadow-sm">
                                             <CalendarIcon className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
                                         </div>
-                                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                                        <p className="text-base text-gray-600 dark:text-gray-400 font-medium">
                                             Belum ada aktivitas terbaru
                                         </p>
-                                        <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                                        <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
                                             Aktivitas akan muncul setelah ada interaksi pengguna
                                         </p>
                                     </motion.div>
