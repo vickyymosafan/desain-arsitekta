@@ -88,7 +88,6 @@ interface DashboardProps {
         users: number;
         pendingConsultations: number;
         completedConsultations: number;
-        revenue: number;
     };
 }
 
@@ -97,8 +96,7 @@ export default function Dashboard({
     stats = {
         users: 0,
         pendingConsultations: 0,
-        completedConsultations: 0,
-        revenue: 0
+        completedConsultations: 0
     }
 }: DashboardProps) {
     const { props } = usePage();
@@ -199,14 +197,7 @@ export default function Dashboard({
                                 trend="up"
                             />
                         </motion.div>
-                        <motion.div variants={itemVariants}>
-                            <StatCard
-                                title="Pendapatan"
-                                value={`Rp ${dashboardStats.revenue.toLocaleString('id-ID')}`}
-                                icon={<BanknotesIcon className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />}
-                                trend="up"
-                            />
-                        </motion.div>
+
                     </motion.div>
 
                     {/* Main Content - Consultation Requests */}
