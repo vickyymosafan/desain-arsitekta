@@ -53,13 +53,34 @@ const AdminConsultationList: React.FC = () => {
   };
 
   const handleReject = () => {
-    if (activeConsultation && rejectReason.trim()) {
+    if (!activeConsultation) {
+      setNotificationMessage('ID konsultasi tidak valid.');
+      setNotificationType('error');
+      return;
+    }
+    
+    if (!rejectReason.trim() || rejectReason.length < 5) {
+      setNotificationMessage('Alasan penolakan harus diisi minimal 5 karakter.');
+      setNotificationType('error');
+      return;
+    }
+    
+    try {
+      // Call the rejection function from context which internally manages loading state
       rejectConsultation(activeConsultation, rejectReason);
-      setNotificationMessage('Konsultasi berhasil ditolak dengan alasan yang diberikan.');
-      setNotificationType('success');
+      
+      // Clean up form state (these will run if no exception is thrown)
       setRejectReason('');
       setActiveConsultation(null);
       setIsRejectModalOpen(false);
+      
+      // Show success notification
+      setNotificationMessage('Konsultasi berhasil ditolak dengan alasan yang diberikan.');
+      setNotificationType('success');
+    } catch (error) {
+      console.error('Error in reject handler:', error);
+      setNotificationMessage('Terjadi kesalahan saat menolak konsultasi. Silakan coba lagi.');
+      setNotificationType('error');
     }
   };
 

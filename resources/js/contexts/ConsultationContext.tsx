@@ -100,8 +100,16 @@ export const ConsultationProvider: React.FC<ConsultationProviderProps> = ({
       onSuccess: () => {
         // Update will happen through the page refresh
       },
-      onError: () => {
-        alert('Terjadi kesalahan saat menolak konsultasi');
+      onError: (errors) => {
+        console.error('Rejection error:', errors);
+        let errorMessage = 'Terjadi kesalahan saat menolak konsultasi';
+        
+        // Check if we have validation errors
+        if (errors.rejection_reason) {
+          errorMessage = `Error: ${errors.rejection_reason}`;
+        }
+        
+        alert(errorMessage);
       },
       onFinish: () => {
         setIsLoading(false);

@@ -116,22 +116,30 @@ class ConsultationController extends Controller
      */
     public function reject(Request $request, Consultation $consultation)
     {
-        $this->authorize('update', $consultation);
-        
-        $validated = $request->validate([
-            'rejection_reason' => 'required|string|min:5|max:255',
-        ]);
-        
-        $consultation->update([
-            'status' => 'rejected',
-            'rejection_reason' => $validated['rejection_reason'],
-            'reviewed_at' => now(),
-        ]);
-        
-        // Flash message for admin dashboard
-        session()->flash('message', 'Konsultasi berhasil ditolak dengan alasan.');
-        
-        return back();
+        try {
+            $this->authorize('update', $consultation);
+            
+            $validated = $request->validate([
+                'rejection_reason' => 'required|string|min:5|max:255',
+            ]);
+            
+            $consultation->update([
+                'status' => 'rejected',
+                'rejection_reason' => $validated['rejection_reason'],
+                'reviewed_at' => now(),
+            ]);
+            
+            // Flash message for admin dashboard
+            session()->flash('message', 'Konsultasi berhasil ditolak dengan alasan.');
+            
+            return back()->with('success', 'Permintaan konsultasi berhasil ditolak.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::warning('Validation error when rejecting consultation: ' . json_encode($e->errors()));
+            return back()->withErrors($e->errors())->withInput();
+        } catch (\Exception $e) {
+            Log::error('Error rejecting consultation: ' . $e->getMessage());
+            return back()->with('error', 'Terjadi kesalahan saat menolak konsultasi. Silakan coba lagi.');
+        }
     }
 
     /**
