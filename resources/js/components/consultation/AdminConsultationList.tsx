@@ -10,8 +10,10 @@ import {
   ExclamationCircleIcon,
   ArrowPathIcon,
   BellAlertIcon,
-  CheckCircleIcon
+  CheckCircleIcon,
+  ShieldCheckIcon
 } from '@heroicons/react/24/outline';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Consultation, useConsultation } from '@/contexts/ConsultationContext';
 
 const AdminConsultationList: React.FC = () => {
@@ -21,6 +23,7 @@ const AdminConsultationList: React.FC = () => {
   const [isRejectModalOpen, setIsRejectModalOpen] = useState<boolean>(false);
   const [notificationMessage, setNotificationMessage] = useState<string>('');
   const [notificationType, setNotificationType] = useState<'success' | 'error' | null>(null);
+  const [justRejectedId, setJustRejectedId] = useState<number | null>(null);
   
   // Auto-hide notification after 5 seconds
   useEffect(() => {
@@ -66,10 +69,14 @@ const AdminConsultationList: React.FC = () => {
     }
     
     try {
+      // Store the consultation ID that was just rejected
+      const rejectedId = activeConsultation;
+      setJustRejectedId(rejectedId);
+      
       // Call the rejection function from context which internally manages loading state
       rejectConsultation(activeConsultation, rejectReason);
       
-      // Clean up form state (these will run if no exception is thrown)
+      // Clean up form state
       setRejectReason('');
       setActiveConsultation(null);
       setIsRejectModalOpen(false);
@@ -77,6 +84,11 @@ const AdminConsultationList: React.FC = () => {
       // Show success notification
       setNotificationMessage('Konsultasi berhasil ditolak dengan alasan yang diberikan.');
       setNotificationType('success');
+      
+      // Clear the rejected ID after 5 seconds
+      setTimeout(() => {
+        setJustRejectedId(null);
+      }, 5000);
     } catch (error) {
       console.error('Error in reject handler:', error);
       setNotificationMessage('Terjadi kesalahan saat menolak konsultasi. Silakan coba lagi.');
@@ -87,24 +99,31 @@ const AdminConsultationList: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Success/Error Notification */}
-      {notificationMessage && (
-        <div className={`rounded-md p-4 ${notificationType === 'success' ? 'bg-green-50 dark:bg-green-900/20' : 'bg-red-50 dark:bg-red-900/20'}`}>
-          <div className="flex">
-            <div className="flex-shrink-0">
-              {notificationType === 'success' ? (
-                <CheckCircleIcon className="h-5 w-5 text-green-400" aria-hidden="true" />
-              ) : (
-                <ExclamationCircleIcon className="h-5 w-5 text-red-400" aria-hidden="true" />
-              )}
+      <AnimatePresence>
+        {notificationMessage && (
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className={`rounded-md p-4 ${notificationType === 'success' ? 'bg-green-50 dark:bg-green-900/20' : 'bg-red-50 dark:bg-red-900/20'}`}
+          >
+            <div className="flex">
+              <div className="flex-shrink-0">
+                {notificationType === 'success' ? (
+                  <CheckCircleIcon className="h-5 w-5 text-green-400" aria-hidden="true" />
+                ) : (
+                  <ExclamationCircleIcon className="h-5 w-5 text-red-400" aria-hidden="true" />
+                )}
+              </div>
+              <div className="ml-3">
+                <p className={`text-sm font-medium ${notificationType === 'success' ? 'text-green-800 dark:text-green-300' : 'text-red-800 dark:text-red-300'}`}>
+                  {notificationMessage}
+                </p>
+              </div>
             </div>
-            <div className="ml-3">
-              <p className={`text-sm font-medium ${notificationType === 'success' ? 'text-green-800 dark:text-green-300' : 'text-red-800 dark:text-red-300'}`}>
-                {notificationMessage}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
       
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
@@ -122,13 +141,34 @@ const AdminConsultationList: React.FC = () => {
 
       {!isLoading && pendingConsultations.length === 0 && (
         <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-8 text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-900/30 mb-4">
-            <CalendarIcon className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
-          </div>
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white">Tidak ada permintaan konsultasi</h3>
-          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-            Saat ini tidak ada permintaan konsultasi yang menunggu persetujuan.
-          </p>
+          {justRejectedId !== null ? (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="flex flex-col items-center justify-center"
+            >
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30 mb-5">
+                <ShieldCheckIcon className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
+              </div>
+              <h3 className="text-xl font-medium text-gray-900 dark:text-white">Konsultasi berhasil ditolak</h3>
+              <p className="mt-3 text-base text-gray-600 dark:text-gray-400">
+                Konsultasi berhasil ditolak dengan alasan yang diberikan.
+              </p>
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                Pengguna akan menerima notifikasi mengenai penolakan ini.
+              </p>
+            </motion.div>
+          ) : (
+            <>
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-900/30 mb-4">
+                <CalendarIcon className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+              </div>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">Tidak ada permintaan konsultasi</h3>
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                Saat ini tidak ada permintaan konsultasi yang menunggu persetujuan.
+              </p>
+            </>
+          )}
         </div>
       )}
 

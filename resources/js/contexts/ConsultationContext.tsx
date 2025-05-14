@@ -93,12 +93,34 @@ export const ConsultationProvider: React.FC<ConsultationProviderProps> = ({
   const rejectConsultation = (id: number, reason: string) => {
     setIsLoading(true);
     
-    // Call the API to reject the consultation
+    // Immediately update the local state to remove the consultation from the pending list
+    // This gives immediate feedback to the admin without waiting for page refresh
+    setConsultations(prevConsultations => {
+      // Find the consultation to update
+      const updatedConsultations = prevConsultations.map(consultation => {
+        if (consultation.id === id) {
+          // Update the status and add rejection reason
+          return {
+            ...consultation,
+            status: 'rejected' as 'rejected', // Type assertion to match the union type
+            rejection_reason: reason
+          };
+        }
+        return consultation;
+      });
+      return updatedConsultations;
+    });
+    
+    // Call the API to reject the consultation in the backend
     router.post(`/admin/consultations/${id}/reject`, {
       rejection_reason: reason
     }, {
+      // Use preserveState and preserveScroll to prevent full page reload
+      preserveState: true,
+      preserveScroll: true,
       onSuccess: () => {
-        // Update will happen through the page refresh
+        // Success is already handled by local state update above
+        // We won't refresh the page, so state persists
       },
       onError: (errors) => {
         console.error('Rejection error:', errors);
@@ -108,6 +130,20 @@ export const ConsultationProvider: React.FC<ConsultationProviderProps> = ({
         if (errors.rejection_reason) {
           errorMessage = `Error: ${errors.rejection_reason}`;
         }
+        
+        // Revert the local state change since the API call failed
+        setConsultations(prevConsultations => {
+          return prevConsultations.map(consultation => {
+            if (consultation.id === id) {
+              return {
+                ...consultation,
+                status: 'pending' as 'pending',
+                rejection_reason: undefined
+              };
+            }
+            return consultation;
+          });
+        });
         
         alert(errorMessage);
       },
