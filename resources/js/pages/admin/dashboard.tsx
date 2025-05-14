@@ -180,7 +180,6 @@ export default function Dashboard({
                                 value={dashboardStats.users}
                                 icon={<UserGroupIcon className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />}
                                 trend="up"
-                                change="+5% dari bulan lalu"
                             />
                         </motion.div>
                         <motion.div variants={itemVariants}>
@@ -189,7 +188,6 @@ export default function Dashboard({
                                 value={dashboardStats.pendingConsultations}
                                 icon={<ClipboardDocumentListIcon className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />}
                                 trend="neutral"
-                                change="Sama seperti kemarin"
                             />
                         </motion.div>
                         <motion.div variants={itemVariants}>
@@ -198,7 +196,6 @@ export default function Dashboard({
                                 value={dashboardStats.completedConsultations}
                                 icon={<ClipboardDocumentCheckIcon className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />}
                                 trend="up"
-                                change="+2 minggu ini"
                             />
                         </motion.div>
 
