@@ -24,6 +24,7 @@ const AdminConsultationList: React.FC = () => {
   const [notificationMessage, setNotificationMessage] = useState<string>('');
   const [notificationType, setNotificationType] = useState<'success' | 'error' | null>(null);
   const [justRejectedId, setJustRejectedId] = useState<number | null>(null);
+  const [justApprovedId, setJustApprovedId] = useState<number | null>(null);
   
   // Auto-hide notification after 5 seconds
   useEffect(() => {
@@ -45,9 +46,20 @@ const AdminConsultationList: React.FC = () => {
   };
 
   const handleApprove = (id: number) => {
+    // Store the consultation ID that was just approved
+    setJustApprovedId(id);
+    
+    // Call the approve function which will update the state
     approveConsultation(id);
+    
+    // Show success notification
     setNotificationMessage('Konsultasi berhasil diterima. Pengguna akan menerima notifikasi otomatis.');
     setNotificationType('success');
+    
+    // Clear the approved ID after 5 seconds
+    setTimeout(() => {
+      setJustApprovedId(null);
+    }, 5000);
   };
 
   const openRejectModal = (id: number) => {
@@ -141,7 +153,24 @@ const AdminConsultationList: React.FC = () => {
 
       {!isLoading && pendingConsultations.length === 0 && (
         <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-8 text-center">
-          {justRejectedId !== null ? (
+          {justApprovedId !== null ? (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="flex flex-col items-center justify-center"
+            >
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30 mb-5">
+                <CheckCircleIcon className="h-8 w-8 text-green-600 dark:text-green-400" />
+              </div>
+              <h3 className="text-xl font-medium text-gray-900 dark:text-white">Konsultasi berhasil diterima</h3>
+              <p className="mt-3 text-base text-gray-600 dark:text-gray-400">
+                Konsultasi berhasil diterima dan dijadwalkan.
+              </p>
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                Pengguna akan menerima notifikasi otomatis mengenai persetujuan ini.
+              </p>
+            </motion.div>
+          ) : justRejectedId !== null ? (
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}

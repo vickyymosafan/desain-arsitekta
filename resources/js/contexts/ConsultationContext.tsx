@@ -76,12 +76,45 @@ export const ConsultationProvider: React.FC<ConsultationProviderProps> = ({
   const approveConsultation = (id: number) => {
     setIsLoading(true);
     
-    // Call the API to approve the consultation
+    // Immediately update the local state to change the consultation status
+    // This gives immediate feedback to the admin without waiting for page refresh
+    setConsultations(prevConsultations => {
+      // Find the consultation to update
+      const updatedConsultations = prevConsultations.map(consultation => {
+        if (consultation.id === id) {
+          // Update the status to approved
+          return {
+            ...consultation,
+            status: 'approved' as 'approved' // Type assertion to match the union type
+          };
+        }
+        return consultation;
+      });
+      return updatedConsultations;
+    });
+    
+    // Call the API to approve the consultation in the backend
     router.post(`/admin/consultations/${id}/approve`, {}, {
+      // Use preserveState and preserveScroll to prevent full page reload
+      preserveState: true,
+      preserveScroll: true,
       onSuccess: () => {
-        // Update will happen through the page refresh
+        // Success is already handled by local state update above
       },
       onError: () => {
+        // Revert the local state change since the API call failed
+        setConsultations(prevConsultations => {
+          return prevConsultations.map(consultation => {
+            if (consultation.id === id) {
+              return {
+                ...consultation,
+                status: 'pending' as 'pending'
+              };
+            }
+            return consultation;
+          });
+        });
+        
         alert('Terjadi kesalahan saat menyetujui konsultasi');
       },
       onFinish: () => {
