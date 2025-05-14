@@ -35,7 +35,7 @@ interface StatCardProps {
 const StatCard: React.FC<StatCardProps> = ({ title, value, icon, change, trend }) => {
     return (
         <motion.div 
-            whileHover={{ y: -5 }}
+            whileHover={{ y: -5, scale: 1.02 }}
             transition={{ duration: 0.2 }}
             className="h-full bg-white dark:bg-gray-900 shadow-md rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800 hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800"
         >
@@ -134,7 +134,7 @@ export default function Dashboard({
             <AppLayout breadcrumbs={breadcrumbs}>
                 <Head title="Admin Dashboard" />
                 
-                <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 relative">
+                <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 relative">
                     {/* Admin dashboard content starts here */}
                     
                     {/* Admin Header */}
@@ -172,29 +172,33 @@ export default function Dashboard({
                         variants={containerVariants}
                         initial="hidden"
                         animate="visible"
-                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+                        className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10"
                     >
                         <motion.div variants={itemVariants}>
                             <StatCard
                                 title="Total Pengguna"
                                 value={dashboardStats.users}
-                                icon={<UserGroupIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />}
+                                icon={<UserGroupIcon className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />}
                                 trend="up"
+                                change="+5% dari bulan lalu"
                             />
                         </motion.div>
                         <motion.div variants={itemVariants}>
                             <StatCard
                                 title="Konsultasi Menunggu"
                                 value={dashboardStats.pendingConsultations}
-                                icon={<ClipboardDocumentListIcon className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />}
+                                icon={<ClipboardDocumentListIcon className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />}
+                                trend="neutral"
+                                change="Sama seperti kemarin"
                             />
                         </motion.div>
                         <motion.div variants={itemVariants}>
                             <StatCard
                                 title="Konsultasi Selesai"
                                 value={dashboardStats.completedConsultations}
-                                icon={<ClipboardDocumentCheckIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />}
+                                icon={<ClipboardDocumentCheckIcon className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />}
                                 trend="up"
+                                change="+2 minggu ini"
                             />
                         </motion.div>
 
@@ -205,7 +209,7 @@ export default function Dashboard({
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.3 }}
-                        className="bg-white dark:bg-gray-900 shadow-md rounded-xl mb-8 overflow-hidden border border-gray-100 dark:border-gray-800 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800"
+                        className="bg-white dark:bg-gray-900 shadow-lg rounded-xl mb-10 overflow-hidden border border-gray-100 dark:border-gray-800 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800"
                     >
                         <div className="px-8 py-6 border-b border-gray-200 dark:border-gray-700">
                             <div className="flex items-center">
@@ -220,7 +224,7 @@ export default function Dashboard({
                                 Daftar permintaan konsultasi yang perlu ditanggapi
                             </p>
                         </div>
-                        <div className="p-8">
+                        <div className="p-6 lg:p-8">
                             <AdminConsultationList />
                         </div>
                     </motion.div>
@@ -230,7 +234,7 @@ export default function Dashboard({
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.4 }}
-                        className="bg-white dark:bg-gray-900 shadow-md rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800"
+                        className="bg-white dark:bg-gray-900 shadow-lg rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800"
                     >
                         <div className="px-8 py-6 border-b border-gray-200 dark:border-gray-700">
                             <div className="flex items-center">
@@ -246,7 +250,7 @@ export default function Dashboard({
                             </p>
                         </div>
                         
-                        <div className="divide-y divide-gray-200 dark:divide-gray-700">
+                        <div className="divide-y divide-gray-200 dark:divide-gray-700 max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent">
                             <AnimatePresence>
                                 {adminConsultations.length > 0 ? (
                                     adminConsultations.slice(0, 5).map((consultation, index) => (
@@ -255,7 +259,7 @@ export default function Dashboard({
                                             initial={{ opacity: 0, y: 10 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ delay: index * 0.1 }}
-                                            className="p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150"
+                                            className="p-5 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150 rounded-md mx-2 my-1"
                                         >
                                             <div className="flex items-center space-x-4">
                                                 <div className="flex-shrink-0">
