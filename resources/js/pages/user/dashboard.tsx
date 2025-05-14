@@ -97,17 +97,9 @@ export default function Dashboard({ consultations = [] }: DashboardProps) {
               className="mb-8 relative"
             >
               <div className="flex items-center">
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 via-emerald-500 to-indigo-600 bg-clip-text text-transparent">
+                <h1 className="text-3xl font-bold text-white">
                   Selamat datang, {user?.name}
                 </h1>
-                <motion.div 
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.3, duration: 0.5 }}
-                  className="ml-2"
-                >
-                  <SparklesIcon className="h-6 w-6 text-emerald-500 animate-pulse" />
-                </motion.div>
               </div>
               <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                 Berikut adalah rangkuman dashboard Anda
