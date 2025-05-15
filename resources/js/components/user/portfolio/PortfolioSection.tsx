@@ -17,7 +17,7 @@ const portfolioProjects = [
         id: 1,
         title: 'Villa Serenity',
         category: 'residential',
-        image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80',
+        image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80',
         description: 'Desain villa modern dengan pemandangan pegunungan yang menakjubkan. Menggabungkan elemen alam dengan arsitektur kontemporer.',
         client: 'PT. Natura Living',
         year: 2023,
@@ -28,7 +28,7 @@ const portfolioProjects = [
         id: 2,
         title: 'Green Office Tower',
         category: 'commercial',
-        image: 'https://images.unsplash.com/photo-1577982787983-e07c6730f2d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80',
+        image: 'https://images.unsplash.com/photo-1545579133-99bb5ab189bd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80',
         description: 'Menara kantor 18 lantai dengan sertifikasi LEED Gold. Mengutamakan efisiensi energi dan ruang kerja yang nyaman.',
         client: 'Green Property Group',
         year: 2022,
@@ -39,7 +39,7 @@ const portfolioProjects = [
         id: 3,
         title: 'Harmony Cafe',
         category: 'commercial',
-        image: 'https://images.unsplash.com/photo-1521017432531-fbd92d768814?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80',
+        image: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80',
         description: 'Kafe dengan konsep industrial modern yang menekankan pada pengalaman santai dan sosial.',
         client: 'Harmony F&B',
         year: 2023,
@@ -50,7 +50,7 @@ const portfolioProjects = [
         id: 4,
         title: 'Zen House',
         category: 'residential',
-        image: 'https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80',
+        image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80',
         description: 'Rumah minimalis yang terinspirasi dari filosofi Zen. Mengutamakan keseimbangan, ruang, dan harmoni.',
         client: 'Keluarga Wijaya',
         year: 2022,
@@ -61,7 +61,7 @@ const portfolioProjects = [
         id: 5,
         title: 'Urban Park',
         category: 'landscape',
-        image: 'https://images.unsplash.com/photo-1569865867048-27e1a61ab8e5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80',
+        image: 'https://images.unsplash.com/photo-1587221703223-181d78a8fc4c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80',
         description: 'Taman kota yang dirancang untuk memberikan ruang hijau di tengah kawasan padat penduduk.',
         client: 'Pemerintah Kota Semarang',
         year: 2021,
@@ -72,7 +72,7 @@ const portfolioProjects = [
         id: 6,
         title: 'Luxury Apartment',
         category: 'residential',
-        image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80',
+        image: 'https://images.unsplash.com/photo-1600607688969-a5bfcd646154?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80',
         description: 'Desain interior apartemen mewah dengan sentuhan elegansi modern dan teknologi pintar.',
         client: 'Sky Living Development',
         year: 2023,
@@ -182,7 +182,7 @@ const PortfolioSection: React.FC = () => {
             >
                 <a 
                     href="#portfolio-more" 
-                    className="inline-flex items-center justify-center px-8 py-4 text-base font-medium text-emerald-800 bg-emerald-100 border border-transparent rounded-md shadow-lg hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all duration-300 group"
+                    className="inline-flex items-center justify-center px-8 py-4 text-base font-medium text-indigo-800 bg-indigo-100 border border-transparent rounded-md shadow-lg hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300 group"
                 >
                     <span>Lihat Lebih Banyak</span>
                     <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
