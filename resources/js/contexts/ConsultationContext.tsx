@@ -52,8 +52,12 @@ export const ConsultationProvider: React.FC<ConsultationProviderProps> = ({
   const submitConsultationRequest = (date: Date) => {
     setIsLoading(true);
     
-    // Format tanggal dalam format YYYY-MM-DD untuk dikirim ke server
-    const formattedDate = date.toISOString().split('T')[0];
+    // Format tanggal dalam format YYYY-MM-DD tetapi menggunakan zona waktu lokal
+    // untuk memastikan tanggal yang dipilih user tidak berubah
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    const formattedDate = `${year}-${month}-${day}`;
     
     // Submit the request to the server
     router.post('/consultations', {
