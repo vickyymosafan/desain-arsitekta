@@ -45,7 +45,7 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, icon, change, trend }
                         {icon}
                     </div>
                     <div className="ml-4 flex-1">
-                        <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                        <dt className="text-sm font-medium text-white truncate">
                             {title}
                         </dt>
                         <dd className="mt-1">
@@ -147,7 +147,7 @@ export default function Dashboard({
                         <div className="px-8 py-8">
                             <div className="flex items-center">
                                 <RectangleGroupIcon className="h-6 w-6 text-emerald-500 mr-3" />
-                                <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 via-emerald-300 to-indigo-400 bg-clip-text text-transparent">Admin Dashboard</h1>
+                                <h1 className="text-2xl font-bold text-white">Admin Dashboard</h1>
                                 <motion.div 
                                     initial={{ scale: 0.8, opacity: 0 }}
                                     animate={{ scale: 1, opacity: 1 }}
@@ -213,11 +213,11 @@ export default function Dashboard({
                                 <div className="mr-3 flex items-center justify-center p-2 rounded-md bg-emerald-100 dark:bg-emerald-900/30">
                                     <ClipboardDocumentListIcon className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                                 </div>
-                                <h3 className="text-lg font-bold bg-gradient-to-r from-indigo-600 to-emerald-500 bg-clip-text text-transparent">
+                                <h3 className="text-lg font-bold text-white">
                                     Permintaan Konsultasi Menunggu
                                 </h3>
                             </div>
-                            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                            <p className="mt-2 text-sm text-white">
                                 Daftar permintaan konsultasi yang perlu ditanggapi
                             </p>
                         </div>
@@ -238,11 +238,11 @@ export default function Dashboard({
                                 <div className="mr-3 flex items-center justify-center p-2 rounded-md bg-indigo-100 dark:bg-indigo-900/30">
                                     <CalendarIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
                                 </div>
-                                <h3 className="text-lg font-bold bg-gradient-to-r from-indigo-600 to-emerald-500 bg-clip-text text-transparent">
+                                <h3 className="text-lg font-bold text-white">
                                     Aktivitas Terbaru
                                 </h3>
                             </div>
-                            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                            <p className="mt-2 text-sm text-white">
                                 Daftar aktivitas terbaru dalam sistem
                             </p>
                         </div>
