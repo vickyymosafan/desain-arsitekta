@@ -8,11 +8,9 @@ import ConsultationRequest from '@/components/consultation/ConsultationRequest';
 import ConsultationStatus from '@/components/consultation/ConsultationStatus';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  BuildingOffice2Icon, 
   UserIcon, 
   DocumentTextIcon, 
   ClipboardDocumentListIcon,
-  ChartBarIcon,
   CalendarIcon,
   PlusCircleIcon,
   SparklesIcon
@@ -65,198 +63,170 @@ export default function Dashboard({ consultations = [] }: DashboardProps) {
     }
   };
 
-  const stats = [
-    { 
-      name: 'Total Proyek', 
-      value: '0', 
-      icon: BuildingOffice2Icon, 
-      color: 'text-blue-500 dark:text-blue-400', 
-      bgColor: 'bg-blue-100 dark:bg-blue-900/20' 
-    },
-    { 
-      name: 'Konsultasi', 
-      value: latestConsultation ? '1' : '0', 
-      icon: UserIcon, 
-      color: 'text-indigo-500 dark:text-indigo-400', 
-      bgColor: 'bg-indigo-100 dark:bg-indigo-900/20' 
-    },
-  ];
-
   return (
     <ConsultationProvider initialConsultations={latestConsultation ? [latestConsultation] : []}>
       <AppLayout breadcrumbs={breadcrumbs}>
         <Head title="Dashboard" />
-        <div className="py-10 sm:py-14 relative">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-            {/* Dashboard content starts here */}
-            {/* Welcome Header with animated sparkle icon */}
+        <div className="py-6 relative">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 relative">
+            {/* Welcome Header */}
             <motion.div 
-              initial={{ opacity: 0, y: -20 }}
+              initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="mb-8 relative"
+              transition={{ duration: 0.4 }}
+              className="mb-8 bg-gradient-to-r from-emerald-900/60 to-transparent p-6 rounded-xl border border-emerald-800/30"
             >
-              <div className="flex items-center">
-                <h1 className="text-3xl font-bold text-white">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-emerald-600/20 rounded-full">
+                  <SparklesIcon className="h-6 w-6 text-emerald-400" />
+                </div>
+                <h1 className="text-xl md:text-2xl font-bold text-white">
                   Selamat datang, {user?.name}
                 </h1>
               </div>
-              <p className="mt-2 text-sm text-white">
+              <p className="mt-2 text-sm text-emerald-100/80 ml-11">
                 Berikut adalah rangkuman dashboard Anda
               </p>
             </motion.div>
             
-            {/* Stats Grid with staggered animation */}
-            <motion.div 
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              className="mt-8 mb-10"
-            >
-              <dl className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                {stats.map((stat) => (
-                  <motion.div 
-                    key={stat.name}
-                    variants={itemVariants}
-                    whileHover={{ y: -5, transition: { duration: 0.2 } }}
-                    className="px-6 py-7 bg-white dark:bg-gray-900 shadow-lg rounded-xl overflow-hidden transition duration-200 hover:shadow-xl border border-gray-100 dark:border-gray-800 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800"
-                  >
-                    <dt className="text-base font-medium text-gray-500 dark:text-gray-400 truncate flex items-center">
-                      <div className={`mr-3 flex items-center justify-center p-2 rounded-md ${stat.bgColor}`}>
-                        <stat.icon className={`h-5 w-5 ${stat.color}`} aria-hidden="true" />
-                      </div>
-                      {stat.name}
-                    </dt>
-                    <dd className="mt-4 text-4xl font-bold text-gray-900 dark:text-white">{stat.value}</dd>
-                  </motion.div>
-                ))}
-              </dl>
-            </motion.div>
-
-            {/* Main Content with animated appearance */}
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4, duration: 0.5 }}
-              className="grid grid-cols-1 lg:grid-cols-3 gap-8"
-            >
-              {/* Left Column - Quick Stats */}
-              <div className="lg:col-span-1 space-y-8">
-                <motion.div variants={itemVariants} className="bg-white dark:bg-gray-900 overflow-hidden shadow-lg rounded-xl border border-gray-100 dark:border-gray-800 hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
-                  <div className="p-6">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 bg-indigo-100 dark:bg-indigo-900/30 rounded-full p-3">
-                        <CalendarIcon className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
-                      </div>
-                      <div className="ml-5 w-0 flex-1">
-                        <dl>
-                          <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
-                            Total Konsultasi
-                          </dt>
-                          <dd>
-                            <div className="text-lg font-medium text-gray-900 dark:text-white">
-                              {userConsultations.length}
-                            </div>
-                          </dd>
-                        </dl>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-
+            {/* Main Dashboard Content */}
+            <div className="grid grid-cols-12 gap-6">
+              {/* Left Column - Summary Stats */}
+              <div className="col-span-12 md:col-span-4 space-y-6">
+                {/* Consultation Count Card */}
                 <motion.div 
                   variants={itemVariants}
-                  className="bg-white dark:bg-gray-900 overflow-hidden shadow-md rounded-xl border border-gray-100 dark:border-gray-800 hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800"
+                  initial="hidden"
+                  animate="visible"
+                  className="bg-white dark:bg-gray-800 shadow-md rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 h-full"
                 >
-                  <div className="p-6">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 bg-indigo-100 dark:bg-indigo-900/30 rounded-full p-3">
-                        <ClipboardDocumentListIcon className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+                  <div className="p-5 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
+                    <h3 className="font-medium text-gray-700 dark:text-gray-200 flex items-center">
+                      <UserIcon className="h-5 w-5 mr-2 text-emerald-500" />
+                      Ringkasan
+                    </h3>
+                  </div>
+                  <div className="p-5">
+                    <div className="space-y-4">
+                      {/* Consultation Count */}
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-500 dark:text-gray-400">Total Konsultasi</span>
+                        <span className="text-lg font-semibold text-gray-900 dark:text-white">{userConsultations.length}</span>
                       </div>
-                      <div className="ml-5 w-0 flex-1">
-                        <dl>
-                          <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
-                            Status Terkini
-                          </dt>
-                          <dd>
-                            <div className="text-lg font-medium text-gray-900 dark:text-white">
-                              {latestConsultation?.status === 'pending' && 'Menunggu'}
-                              {latestConsultation?.status === 'approved' && 'Disetujui'}
-                              {latestConsultation?.status === 'rejected' && 'Ditolak'}
-                              {!latestConsultation && 'Belum Ada'}
-                            </div>
-                          </dd>
-                        </dl>
+                      
+                      {/* Consultation Status */}
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-500 dark:text-gray-400">Status Terkini</span>
+                        <span className={`text-sm font-medium px-2.5 py-0.5 rounded-full ${latestConsultation?.status === 'approved' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400' : latestConsultation?.status === 'rejected' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' : latestConsultation ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400' : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'}`}>
+                          {latestConsultation?.status === 'pending' && 'Menunggu'}
+                          {latestConsultation?.status === 'approved' && 'Disetujui'}
+                          {latestConsultation?.status === 'rejected' && 'Ditolak'}
+                          {!latestConsultation && 'Belum Ada'}
+                        </span>
                       </div>
                     </div>
                   </div>
                 </motion.div>
 
+                {/* New Consultation Request */}
                 {(!latestConsultation || latestConsultation.status === 'rejected') && (
-                  <motion.div variants={itemVariants}>
-                    <ConsultationRequest />
+                  <motion.div 
+                    variants={itemVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="bg-white dark:bg-gray-800 shadow-md rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700"
+                  >
+                    <div className="p-5 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
+                      <h3 className="font-medium text-gray-700 dark:text-gray-200 flex items-center">
+                        <PlusCircleIcon className="h-5 w-5 mr-2 text-emerald-500" />
+                        Permintaan Baru
+                      </h3>
+                    </div>
+                    <div className="p-5">
+                      <ConsultationRequest />
+                    </div>
                   </motion.div>
                 )}
               </div>
-
-              {/* Right Column - Consultation Status */}
-              <motion.div 
-                variants={itemVariants}
-                className="lg:col-span-2 space-y-6"
-              >
-                <AnimatePresence mode="wait">
-                  {latestConsultation ? (
-                    <motion.div
-                      key="consultation-status"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <ConsultationStatus consultation={latestConsultation} />
-                    </motion.div>
-                  ) : (
-                    <motion.div 
-                      key="no-consultation"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.3 }}
-                      className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 text-center py-10 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800"
-                    >
-                      <PlusCircleIcon className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" />
-                      <h3 className="mt-4 text-sm font-medium text-gray-900 dark:text-white">
-                        Belum Ada Konsultasi
-                      </h3>
-                      <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                        Anda belum mengajukan permintaan konsultasi.
-                      </p>
-                      <div className="mt-6">
-                        <button
-                          type="button"
-                          className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
-                          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              
+              {/* Right Column - Consultation Details */}
+              <div className="col-span-12 md:col-span-8">
+                <motion.div 
+                  variants={itemVariants}
+                  initial="hidden"
+                  animate="visible"
+                  className="bg-white dark:bg-gray-800 shadow-md rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 h-full"
+                >
+                  <div className="p-5 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
+                    <h3 className="font-medium text-gray-700 dark:text-gray-200 flex items-center">
+                      <CalendarIcon className="h-5 w-5 mr-2 text-emerald-500" />
+                      Status Konsultasi
+                    </h3>
+                  </div>
+                  <div className="p-5">
+                    <AnimatePresence mode="wait">
+                      {latestConsultation ? (
+                        <motion.div
+                          key="consultation-status"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.3 }}
                         >
-                          <CalendarIcon className="-ml-1 mr-2 h-4 w-4" />
-                          Ajukan Konsultasi
-                        </button>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                          <ConsultationStatus consultation={latestConsultation} />
+                        </motion.div>
+                      ) : (
+                        <motion.div 
+                          key="no-consultation"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.3 }}
+                          className="text-center py-6 flex flex-col items-center justify-center"
+                        >
+                          <div className="p-3 rounded-full bg-emerald-100 dark:bg-emerald-900/30 inline-flex mb-4">
+                            <PlusCircleIcon className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
+                          </div>
+                          <h3 className="text-base font-medium text-gray-900 dark:text-white mb-2">
+                            Belum Ada Konsultasi
+                          </h3>
+                          <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xs mx-auto mb-6">
+                            Anda belum mengajukan permintaan konsultasi untuk proyek Anda.
+                          </p>
+                          <button
+                            type="button"
+                            className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-emerald-600 hover:bg-emerald-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all duration-200 hover:scale-105 active:scale-95"
+                            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                          >
+                            <CalendarIcon className="-ml-1 mr-2 h-4 w-4" />
+                            Ajukan Konsultasi
+                          </button>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </motion.div>
                 
                 {latestConsultation && latestConsultation.status === 'approved' && (
                   <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.6, duration: 0.5 }}
-                    className="mt-8"
+                    variants={itemVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="mt-6 bg-white dark:bg-gray-800 shadow-md rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700"
                   >
-                    <ConsultationRequest />
+                    <div className="p-5 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
+                      <h3 className="font-medium text-gray-700 dark:text-gray-200 flex items-center">
+                        <PlusCircleIcon className="h-5 w-5 mr-2 text-emerald-500" />
+                        Permintaan Baru
+                      </h3>
+                    </div>
+                    <div className="p-5">
+                      <ConsultationRequest />
+                    </div>
                   </motion.div>
                 )}
-              </motion.div>
-            </motion.div>
+              </div>
+            </div>
           </div>
         </div>
       </AppLayout>
