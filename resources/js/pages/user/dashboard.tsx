@@ -74,17 +74,17 @@ export default function Dashboard({ consultations = [] }: DashboardProps) {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
-              className="mb-8 bg-gradient-to-r from-emerald-900/60 to-transparent p-6 rounded-xl border border-emerald-800/30"
+              className="mb-8 bg-gradient-to-r from-gray-900/90 to-gray-800/50 p-6 rounded-xl border border-gray-700/60"
             >
               <div className="flex items-center space-x-3">
-                <div className="p-2 bg-emerald-600/20 rounded-full">
-                  <SparklesIcon className="h-6 w-6 text-emerald-400" />
+                <div className="p-2 bg-indigo-900/30 rounded-full">
+                  <SparklesIcon className="h-6 w-6 text-indigo-400" />
                 </div>
                 <h1 className="text-xl md:text-2xl font-bold text-white">
                   Selamat datang, {user?.name}
                 </h1>
               </div>
-              <p className="mt-2 text-sm text-emerald-100/80 ml-11">
+              <p className="mt-2 text-sm text-gray-400 ml-11">
                 Berikut adalah rangkuman dashboard Anda
               </p>
             </motion.div>
@@ -102,7 +102,7 @@ export default function Dashboard({ consultations = [] }: DashboardProps) {
                 >
                   <div className="p-5 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
                     <h3 className="font-medium text-gray-700 dark:text-gray-200 flex items-center">
-                      <UserIcon className="h-5 w-5 mr-2 text-emerald-500" />
+                      <UserIcon className="h-5 w-5 mr-2 text-indigo-500" />
                       Ringkasan
                     </h3>
                   </div>
@@ -117,7 +117,7 @@ export default function Dashboard({ consultations = [] }: DashboardProps) {
                       {/* Consultation Status */}
                       <div className="flex justify-between items-center">
                         <span className="text-sm text-gray-500 dark:text-gray-400">Status Terkini</span>
-                        <span className={`text-sm font-medium px-2.5 py-0.5 rounded-full ${latestConsultation?.status === 'approved' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400' : latestConsultation?.status === 'rejected' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' : latestConsultation ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400' : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'}`}>
+                        <span className={`text-sm font-medium px-2.5 py-0.5 rounded-full ${latestConsultation?.status === 'approved' ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400' : latestConsultation?.status === 'rejected' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' : latestConsultation ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400' : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'}`}>
                           {latestConsultation?.status === 'pending' && 'Menunggu'}
                           {latestConsultation?.status === 'approved' && 'Disetujui'}
                           {latestConsultation?.status === 'rejected' && 'Ditolak'}
@@ -159,7 +159,7 @@ export default function Dashboard({ consultations = [] }: DashboardProps) {
                 >
                   <div className="p-5 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
                     <h3 className="font-medium text-gray-700 dark:text-gray-200 flex items-center">
-                      <CalendarIcon className="h-5 w-5 mr-2 text-emerald-500" />
+                      <CalendarIcon className="h-5 w-5 mr-2 text-indigo-500" />
                       Status Konsultasi
                     </h3>
                   </div>
@@ -184,8 +184,8 @@ export default function Dashboard({ consultations = [] }: DashboardProps) {
                           transition={{ duration: 0.3 }}
                           className="text-center py-6 flex flex-col items-center justify-center"
                         >
-                          <div className="p-3 rounded-full bg-emerald-100 dark:bg-emerald-900/30 inline-flex mb-4">
-                            <PlusCircleIcon className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
+                          <div className="p-3 rounded-full bg-indigo-100 dark:bg-indigo-900/30 inline-flex mb-4">
+                            <PlusCircleIcon className="h-8 w-8 text-indigo-600 dark:text-indigo-400" />
                           </div>
                           <h3 className="text-base font-medium text-gray-900 dark:text-white mb-2">
                             Belum Ada Konsultasi
@@ -195,7 +195,7 @@ export default function Dashboard({ consultations = [] }: DashboardProps) {
                           </p>
                           <button
                             type="button"
-                            className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-emerald-600 hover:bg-emerald-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all duration-200 hover:scale-105 active:scale-95"
+                            className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 hover:scale-105 active:scale-95"
                             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                           >
                             <CalendarIcon className="-ml-1 mr-2 h-4 w-4" />
