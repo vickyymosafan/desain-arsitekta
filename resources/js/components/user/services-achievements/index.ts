@@ -11,5 +11,18 @@ import ServicesAchievementsSection from './ServicesAchievementsSection';
 import ServiceCard from './ServiceCard';
 import AchievementCounter from './AchievementCounter';
 
-// Export all components
-export { ServicesAchievementsSection as default, ServiceCard, AchievementCounter };
+// Import data types and constants
+import { services, achievements, serviceCategories, ServiceItem, AchievementItem } from './data';
+
+// Export all components and data types
+export { 
+    ServicesAchievementsSection as default, 
+    ServiceCard, 
+    AchievementCounter,
+    services,
+    achievements,
+    serviceCategories
+};
+
+// Export types properly when isolatedModules is enabled
+export type { ServiceItem, AchievementItem };
