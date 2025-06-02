@@ -38,7 +38,7 @@ export const useScrollAnimation = ({
   duration = 0.7,
   threshold = 0.2,
   once = true,
-  customClasses,
+  // customClasses removed as it's unused
 }: ScrollAnimationProps = {}) => {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once, amount: threshold });

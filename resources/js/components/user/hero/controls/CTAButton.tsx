@@ -1,7 +1,11 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import { ButtonVariant, CTAButton } from '../utils/types';
+import AuthRequiredModal from '../../../modals/AuthRequiredModal';
+import DatePickerModal from '../../../consultation/DatePickerModal';
+import { useConsultation } from '../../../../contexts/ConsultationContext';
+import { SharedData } from '../../../../types';
 
 // Variasi gaya tombol dengan estetika modern untuk Gen-Z dan profesional arsitektur
 const buttonStyles: Record<ButtonVariant, string> = {
@@ -50,7 +54,21 @@ interface CTAButtonComponentProps {
 }
 
 const CTAButtonComponent: FC<CTAButtonComponentProps> = ({ button, index }) => {
-    const { text, href, variant = 'primary', icon = true, external = false } = button;
+    const { text, href = '#', variant = 'primary', icon = true, external = false, onClick, openDatePicker = false } = button;
+    const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+    const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+    
+    // Get auth state from page props
+    const { auth } = usePage<SharedData>().props;
+    
+    // Get consultation context if available
+    let consultationContext;
+    try {
+        consultationContext = useConsultation();
+    } catch (error) {
+        // ConsultationProvider not available, which is fine for regular buttons
+        consultationContext = null;
+    }
     
     // Mendapatkan ikon berdasarkan teks tombol atau menggunakan default
     const getButtonIcon = (buttonText: string) => {
@@ -63,54 +81,125 @@ const CTAButtonComponent: FC<CTAButtonComponentProps> = ({ button, index }) => {
         return buttonIconMap.default;
     };
 
-    const buttonIcon = button.icon ? getButtonIcon(button.text) : null;
+    // We'll use getButtonIcon directly in the render rather than storing in a variable
+    
+    // Handle date selection from date picker
+    const handleDateSelection = (date: Date) => {
+        if (consultationContext) {
+            consultationContext.submitConsultationRequest(date);
+        }
+    };
+
+    // Handle button click for consultation
+    const handleConsultationClick = (e: React.MouseEvent) => {
+        // If custom onClick handler is provided, use it
+        if (onClick) {
+            e.preventDefault();
+            onClick();
+            return;
+        }
+        
+        // Handle opening date picker directly
+        if (openDatePicker) {
+            e.preventDefault();
+            
+            // Check if user is authenticated
+            const isAuthenticated = auth?.user;
+            
+            if (!isAuthenticated) {
+                setIsAuthModalOpen(true);
+            } else {
+                setIsDatePickerOpen(true);
+            }
+            return;
+        }
+        
+        // For other consultation buttons without specific handlers
+        const isConsultation = text.toLowerCase().includes('konsultasi');
+        const isAuthenticated = auth?.user;
+        
+        if (isConsultation && !isAuthenticated) {
+            e.preventDefault();
+            setIsAuthModalOpen(true);
+        }
+    };
     
     // Menentukan komponen tombol berdasarkan flag external
-    const ButtonComponent = external ? 'a' : Link;
-    const buttonProps = external ? { href, target: "_blank", rel: "noopener noreferrer" } : { href };
+    const ButtonComponent = external ? 'a' : href === '#' ? 'button' : Link;
+    
+    // Build button props based on component type
+    let buttonProps: any = { onClick: handleConsultationClick };
+    
+    if (external) {
+        buttonProps = { 
+            ...buttonProps, 
+            href, 
+            target: "_blank", 
+            rel: "noopener noreferrer" 
+        };
+    } else if (href !== '#') {
+        buttonProps = { ...buttonProps, href };
+    }
     
     return (
-        <motion.div
-            whileHover={{ scale: 1.03, y: -2 }} 
-            whileTap={{ scale: 0.97 }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 + (index * 0.15), type: 'spring', stiffness: 300, damping: 15 }}
-            className="relative"
-        >
-            {/* Dot marker removed as requested */}
-            
-            <ButtonComponent
-                {...buttonProps}
-                className={buttonStyles[variant]}
+        <>
+            <motion.div
+                whileHover={{ scale: 1.03, y: -2 }} 
+                whileTap={{ scale: 0.97 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 + (index * 0.15), type: 'spring', stiffness: 300, damping: 15 }}
+                className="relative"
             >
-                {/* Subtle hover gradient effect overlay */}
-                <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-in-out" />
+                {/* Dot marker removed as requested */}
                 
-                {/* Button text with nicer spacing and tracking */}
-                <span className="tracking-wide">{text}</span>
-                
-                {icon && (
-                    <motion.span 
-                        className="relative group-hover:translate-x-1 transition-transform duration-300"
-                        animate={{ x: [0, 2, 0] }}
-                        transition={{ duration: 2, repeat: Infinity, repeatType: 'reverse', repeatDelay: 5 }}
-                    >
-                        {getButtonIcon(text)}
-                    </motion.span>
-                )}
-                
-                {/* Subtle animated line for primary variant */}
-                {variant === 'primary' && (
-                    <motion.span 
-                        className="absolute bottom-0 left-0 h-0.5 bg-white/20 w-full transform origin-left"
-                        initial={{ scaleX: 0 }}
-                        animate={{ scaleX: [0, 1, 1] }}
-                        transition={{ duration: 1.5, delay: 0.7 + (index * 0.15) }}
-                    />
-                )}
-            </ButtonComponent>
-        </motion.div>
+                <ButtonComponent
+                    {...buttonProps}
+                    className={buttonStyles[variant]}
+                >
+                    {/* Subtle hover gradient effect overlay */}
+                    <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-in-out" />
+                    
+                    {/* Button text with nicer spacing and tracking */}
+                    <span className="tracking-wide">{text}</span>
+                    
+                    {icon && (
+                        <motion.span 
+                            className="relative group-hover:translate-x-1 transition-transform duration-300"
+                            animate={{ x: [0, 2, 0] }}
+                            transition={{ duration: 2, repeat: Infinity, repeatType: 'reverse', repeatDelay: 5 }}
+                        >
+                            {getButtonIcon(text)}
+                        </motion.span>
+                    )}
+                    
+                    {/* Subtle animated line for primary variant */}
+                    {variant === 'primary' && (
+                        <motion.span 
+                            className="absolute bottom-0 left-0 h-0.5 bg-white/20 w-full transform origin-left"
+                            initial={{ scaleX: 0 }}
+                            animate={{ scaleX: [0, 1, 1] }}
+                            transition={{ duration: 1.5, delay: 0.7 + (index * 0.15) }}
+                        />
+                    )}
+                </ButtonComponent>
+            </motion.div>
+            
+            {/* Authentication required modal */}
+            <AuthRequiredModal 
+                isOpen={isAuthModalOpen} 
+                onClose={() => setIsAuthModalOpen(false)} 
+            />
+            
+            {/* Date picker modal for consultation */}
+            {openDatePicker && (
+                <DatePickerModal
+                    isOpen={isDatePickerOpen}
+                    onClose={() => setIsDatePickerOpen(false)}
+                    onSubmit={handleDateSelection}
+                />
+            )}
+        </>
     );
 };
 

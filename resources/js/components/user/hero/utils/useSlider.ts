@@ -1,17 +1,26 @@
-import { useState, useEffect, useRef, MutableRefObject } from 'react';
-import { Slide } from './types';
+/**
+ * This file is a bridge to the central useSlider hook
+ * It provides a simpler, more convenient API specifically for Hero components
+ * while leveraging the shared logic in the core hook.
+ */
 
-interface UseSliderProps {
-    slides: Slide[];
-    autoplay: boolean;
-    autoplaySpeed: number;
-    pauseOnHover: boolean;
-}
+import { useSlider as useSharedSlider } from '../../../../utils/hooks';
+import { Slide } from '../../../../utils/shared-types';
+import { RefObject } from 'react';
 
-interface UseSliderReturn {
+// Re-export the UseSliderProps from the shared types
+export type { UseSliderProps } from '../../../../utils/shared-types';
+
+/**
+ * Return value from the hero-specific useSlider hook with a streamlined API
+ */
+export interface UseSliderReturn {
     currentSlide: number;
+    goToSlide: (index: number) => void;
+    goToPrevSlide: () => void;
+    goToNextSlide: () => void;
+    sliderRef: RefObject<HTMLDivElement | null>;
     isPaused: boolean;
-    sliderRef: MutableRefObject<HTMLDivElement | null>;
     touchHandlers: {
         onTouchStart: (e: React.TouchEvent) => void;
         onTouchMove: (e: React.TouchEvent) => void;
@@ -24,128 +33,30 @@ interface UseSliderReturn {
     clickHandlers: {
         onClick: (e: React.MouseEvent) => void;
     };
-    slideControls: {
-        goToSlide: (index: number) => void;
-        goToPrevSlide: () => void;
-        goToNextSlide: () => void;
-    };
 }
 
-const useSlider = ({
-    slides,
-    autoplay,
-    autoplaySpeed,
-    pauseOnHover
-}: UseSliderProps): UseSliderReturn => {
-    // State untuk slide saat ini
-    const [currentSlide, setCurrentSlide] = useState<number>(0);
-    const [isPaused, setIsPaused] = useState<boolean>(false);
+/**
+ * Hero-specific slider hook that provides a simplified interface
+ * to the central useSlider hook functionality.
+ * 
+ * @param props - Slider configuration (slides, autoplay options, etc.)
+ * @returns Object with state and handlers for the slider
+ */
+export const useSlider = (props: { slides: Slide[], autoplay?: boolean, autoplaySpeed?: number, pauseOnHover?: boolean }): UseSliderReturn => {
+    // Use the centralized hook
+    const sliderData = useSharedSlider(props);
     
-    // Referensi untuk kontainer slider
-    const sliderRef = useRef<HTMLDivElement | null>(null);
-    
-    // Perpindahan slide otomatis
-    useEffect(() => {
-        if (!autoplay || isPaused) return;
-        
-        const interval = setInterval(() => {
-            setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length);
-        }, autoplaySpeed);
-
-        return () => clearInterval(interval);
-    }, [autoplay, autoplaySpeed, slides.length, isPaused]);
-    
-    // Handler navigasi slide
-    const goToSlide = (index: number): void => {
-        setCurrentSlide(index);
-    };
-
-    const goToPrevSlide = (): void => {
-        setCurrentSlide((prevSlide) => (prevSlide - 1 + slides.length) % slides.length);
-    };
-
-    const goToNextSlide = (): void => {
-        setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length);
-    };
-    
-    // Jeda pemutaran otomatis saat hover jika dikonfigurasi
-    const handleMouseEnter = () => {
-        if (pauseOnHover) {
-            setIsPaused(true);
-        }
-    };
-    
-    const handleMouseLeave = () => {
-        if (pauseOnHover) {
-            setIsPaused(false);
-        }
-    };
-    
-    // Penanganan klik mouse untuk navigasi slide
-    const handleClick = (e: React.MouseEvent) => {
-        const { clientX } = e;
-        const sliderWidth = sliderRef.current?.clientWidth || 0;
-        const clickPosition = clientX / sliderWidth;
-        
-        // Jika klik pada sisi kiri slider (< 0.5 atau 50% lebar), navigasi ke slide sebelumnya
-        // Jika klik pada sisi kanan slider (> 0.5 atau 50% lebar), navigasi ke slide berikutnya
-        if (clickPosition < 0.5) {
-            goToPrevSlide();
-        } else {
-            goToNextSlide();
-        }
-    };
-    
-    // Penanganan sentuh geser (swipe)
-    const [touchStart, setTouchStart] = useState<number | null>(null);
-    const [touchEnd, setTouchEnd] = useState<number | null>(null);
-    
-    // jarak minimal antara touchStart dan touchEnd untuk dideteksi sebagai swipe
-    const minSwipeDistance = 50;
-    
-    const onTouchStart = (e: React.TouchEvent) => {
-        setTouchEnd(null); // mencegah swipe terpicu dengan interaksi sentuh biasa
-        setTouchStart(e.targetTouches[0].clientX);
-    };
-    
-    const onTouchMove = (e: React.TouchEvent) => {
-        setTouchEnd(e.targetTouches[0].clientX);
-    };
-    
-    const onTouchEnd = () => {
-        if (!touchStart || !touchEnd) return;
-        const distance = touchStart - touchEnd;
-        const isLeftSwipe = distance > minSwipeDistance;
-        const isRightSwipe = distance < -minSwipeDistance;
-        
-        if (isLeftSwipe) {
-            goToNextSlide();
-        } else if (isRightSwipe) {
-            goToPrevSlide();
-        }
-    };
-
+    // Return a simplified interface suitable for Hero components
     return {
-        currentSlide,
-        isPaused,
-        sliderRef,
-        touchHandlers: {
-            onTouchStart,
-            onTouchMove,
-            onTouchEnd
-        },
-        hoverHandlers: {
-            onMouseEnter: handleMouseEnter,
-            onMouseLeave: handleMouseLeave
-        },
-        clickHandlers: {
-            onClick: handleClick
-        },
-        slideControls: {
-            goToSlide,
-            goToPrevSlide,
-            goToNextSlide
-        }
+        currentSlide: sliderData.currentSlide,
+        goToSlide: sliderData.slideControls.goToSlide,
+        goToPrevSlide: sliderData.slideControls.goToPrevSlide,
+        goToNextSlide: sliderData.slideControls.goToNextSlide,
+        sliderRef: sliderData.sliderRef,
+        isPaused: sliderData.isPaused,
+        touchHandlers: sliderData.touchHandlers,
+        hoverHandlers: sliderData.hoverHandlers,
+        clickHandlers: sliderData.clickHandlers
     };
 };
 

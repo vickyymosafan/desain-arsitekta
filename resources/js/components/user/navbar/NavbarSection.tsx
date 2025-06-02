@@ -1,52 +1,155 @@
-import { useEffect, useState } from 'react';
-import { NavbarProps, NavItem } from './components/types';
+import { useEffect, useState, useRef, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+// Import shared utilities
+import { 
+    useReducedMotionPreference, 
+    useScrollPosition, 
+    useClickOutside, 
+    useResponsive 
+} from '../../../utils/hooks';
+import { NAVIGATION_BREAKPOINTS, DEBOUNCE_DELAYS, Z_INDICES } from '../../../utils/constants';
+
+// Import component-specific dependencies
+import { NavbarProps } from './components/types';
 import NavLink from './components/NavLink';
 import Button from './components/NavButtons';
 import MobileMenu from './components/MobileMenu';
-import { motion, AnimatePresence } from 'framer-motion';
+import { navItems } from './components/navigationItems';
 
 /**
  * Komponen utama Navbar
  * Menampilkan menu navigasi, logo, dan tombol aksi
  */
-const NavbarSection = ({ user }: NavbarProps) => {
-    // State untuk menyimpan link yang sedang aktif
-    const [activeLink, setActiveLink] = useState<string>('#');
+const NavbarSection = ({ user, activeLink }: NavbarProps) => {
     
     // State untuk menu mobile (terbuka/tertutup)
     const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
     
-    // State untuk efek scroll pada navbar
-    const [scrolled, setScrolled] = useState<boolean>(false);
+    // State untuk active section pada scroll
+    const [activeSection, setActiveSection] = useState<string>('#');
+    
+    // State untuk menampilkan dropdown tablet
+    const [tabletDropdownOpen, setTabletDropdownOpen] = useState<boolean>(false);
+    
+    // Ref untuk dropdown menu pada tampilan tablet
+    const tabletDropdownRef = useRef<HTMLDivElement>(null);
+    
+    // State untuk menampilkan hover item pada tablet
+    const [activeTabletItem, setActiveTabletItem] = useState<string | null>(null);
+    
+    // Utilize shared hooks from utils
+    const prefersReducedMotion = useReducedMotionPreference();
+    const { scrollPosition, isScrolled: scrolled } = useScrollPosition();
+    const { isMobile, isTablet, isDesktop } = useResponsive();
+    
+    // Use click outside hook for dropdown
+    useClickOutside(tabletDropdownRef as React.RefObject<HTMLElement>, () => {
+        if (tabletDropdownOpen) setTabletDropdownOpen(false);
+    });
 
-    // Item navigasi dengan ikon
-    const navItems: NavItem[] = [
-        { href: '#', label: 'Beranda', icon: 'fa-home' },
-        { href: '#services', label: 'Layanan', icon: 'fa-tools' },
-        { href: '#portfolio', label: 'Portofolio', icon: 'fa-image' },
-        { href: '#blog', label: 'Blog', icon: 'fa-newspaper' },
-        { href: '#contact', label: 'Kontak', icon: 'fa-envelope' }
-    ];
+    // Menggunakan navItems dari file centralized
 
-    // Menangani efek scroll
-    useEffect(() => {
-        const handleScroll = () => {
-            // Set scrolled status berdasarkan posisi scroll
-            setScrolled(window.scrollY > 50);
-
-            // Mengatur section aktif berdasarkan posisi scroll
-            const sections = document.querySelectorAll('section[id]');
-            sections.forEach(section => {
-                const sectionTop = (section as HTMLElement).offsetTop;
-                if (window.scrollY >= sectionTop - 100) {
-                    setActiveLink(`#${section.id}`);
+    // Fungsi untuk mengecek section mana yang sedang aktif berdasarkan scroll position
+    const determineActiveSection = useCallback(() => {
+        // Mendapatkan posisi scroll saat ini (ditambah offset untuk deteksi yang lebih akurat)
+        const scrollPos = scrollPosition + 200; // Offset 200px agar section terdeteksi lebih awal
+        
+        // Cek section mana yang sedang aktif
+        // Tidak termasuk 'Beranda' karena itu adalah section pertama (default active)
+        const sections = navItems
+            .filter(item => item.href !== '#') // Skip 'Beranda'
+            .map(item => ({
+                id: item.href,
+                element: document.querySelector(item.href)
+            }));
+            
+        // Default ke 'Beranda' jika sedang berada di paling atas halaman
+        if (scrollPos < 100) {
+            setActiveSection('#');
+            return;
+        }
+        
+        // Loop dari bawah ke atas (section terakhir prioritas lebih tinggi)
+        // untuk mencari section mana yang sedang aktif
+        for (let i = sections.length - 1; i >= 0; i--) {
+            const { id, element } = sections[i];
+            if (element) {
+                const rect = element.getBoundingClientRect();
+                const sectionTop = rect.top + window.scrollY - 100; // Offset 100px
+                
+                if (scrollPos >= sectionTop) {
+                    setActiveSection(id);
+                    return;
                 }
+            }
+        }
+        
+        // Default ke 'Beranda' jika tidak ada section yang aktif
+        setActiveSection('#');
+    }, [scrollPosition]);
+    
+    // Menangani efek scroll untuk active section detection
+    useEffect(() => {
+        // Initial check saat komponen di-mount
+        determineActiveSection();
+        
+        // Karena useScrollPosition sudah menerapkan debouncing
+        // Kita hanya perlu memanggil determineActiveSection saat scrollPosition berubah
+        determineActiveSection();
+    }, [determineActiveSection, scrollPosition]);
+    
+    // Smooth scroll handler for managing nav link clicks
+    const handleNavLinkClick = (e: React.MouseEvent<Element>, href: string) => {
+        e.preventDefault();
+        // Skip jika link adalah 'Beranda' (alias '#'), lakukan default scroll to top
+        if (href === '#') {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
             });
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+            return;
+        }
+        
+        const targetElement = document.querySelector(href);
+        if (targetElement) {
+            // Mendapatkan posisi dari target section
+            // Kalkulasi offset untuk centering section di viewport
+            const navbarHeight = 70; // Perkiraan tinggi navbar
+            const windowHeight = window.innerHeight;
+            const elementHeight = targetElement.getBoundingClientRect().height;
+            
+            // Jika tinggi elemen lebih kecil dari viewport, center it
+            // Jika tidak, scroll ke bagian atas dengan offset navbar
+            const centerOffset = elementHeight < (windowHeight - navbarHeight) 
+                ? (windowHeight - elementHeight) / 2 - navbarHeight
+                : -navbarHeight;
+            
+            const y = targetElement.getBoundingClientRect().top + window.pageYOffset + centerOffset;
+            
+            window.scrollTo({
+                top: y,
+                behavior: 'smooth'
+            });
+            
+            // Set active section
+            setActiveSection(href);
+            
+            // Close mobile menu if open
+            if (mobileMenuOpen) {
+                setMobileMenuOpen(false);
+            }
+        }
+    };
+    
+    // Auto close dropdown when switching away from tablet view
+    useEffect(() => {
+        if (!isTablet && tabletDropdownOpen) {
+            setTabletDropdownOpen(false);
+        }
+    }, [isTablet, tabletDropdownOpen]);
+    
+    // useClickOutside hook replaces this entire effect
 
     return (
         <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 
@@ -66,7 +169,7 @@ const NavbarSection = ({ user }: NavbarProps) => {
                         <div className="relative flex items-center transition-all duration-300">
                             <div className="flex items-center gap-2">
                                 <img 
-                                    src="/storage/images/hero/4.webp" 
+                                    src="/images/4.webp" 
                                     alt="Antosa Architect" 
                                     className={`${scrolled ? 'h-8' : 'h-10'} transition-all duration-300 object-contain`} 
                                 />
@@ -75,36 +178,133 @@ const NavbarSection = ({ user }: NavbarProps) => {
                         </div>
                     </motion.div>
 
-                    {/* Navigasi Desktop */}
-                    <motion.nav 
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.1 }}
-                        className="hidden md:flex items-center space-x-8 ml-10"
-                    >
-                        {navItems.map((item, index) => (
-                            <motion.div 
-                                key={item.label}
-                                initial={{ opacity: 0, y: -10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.3, delay: 0.1 * (index + 1) }}
-                            >
-                                <NavLink 
-                                    href={item.href} 
-                                    active={activeLink === item.href}
-                                    icon={item.icon}
+                    {/* Navigasi Desktop dan Tablet */}
+                    {!isTablet ? (
+                        /* Navigasi Desktop (lebar 1024px ke atas) */
+                        <motion.nav 
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: prefersReducedMotion ? 0 : 0.5, delay: prefersReducedMotion ? 0 : 0.1 }}
+                            className="hidden lg:flex items-center space-x-8 ml-10"
+                        >
+                            {navItems.map((item, index) => (
+                                <motion.div 
+                                    key={item.label}
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ 
+                                        duration: prefersReducedMotion ? 0 : 0.3, 
+                                        delay: prefersReducedMotion ? 0 : 0.1 * (index + 1) 
+                                    }}
                                 >
-                                    {item.label}
-                                </NavLink>
-                            </motion.div>
-                        ))}
-                    </motion.nav>
+                                    <NavLink 
+                                        href={item.href} 
+                                        active={activeSection === item.href}
+                                        onClick={(e) => handleNavLinkClick(e, item.href)}
+                                    >
+                                        {item.label}
+                                    </NavLink>
+                                </motion.div>
+                            ))}
+                        </motion.nav>
+                    ) : (
+                        /* Navigasi Tablet (768px - 1024px) */
+                        <div className="hidden md:flex lg:hidden items-center relative" ref={tabletDropdownRef}>
+                            {/* Tampilkan 2 menu item paling penting secara langsung */}
+                            <div className="hidden md:flex lg:hidden items-center mr-3 gap-1">
+                                {navItems.slice(0, 2).map((item, idx) => (
+                                    <motion.div
+                                        key={item.label}
+                                        initial={{ opacity: 0, y: -10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ 
+                                            duration: prefersReducedMotion ? 0 : 0.3, 
+                                            delay: prefersReducedMotion ? 0 : 0.1 * (idx + 1) 
+                                        }}
+                                    >
+                                        <NavLink 
+                                            href={item.href} 
+                                            active={activeSection === item.href}
+                                            variant="desktop"
+                                            className="text-sm px-3"
+                                            onClick={(e) => handleNavLinkClick(e, item.href)}
+                                        >
+                                            {item.label}
+                                        </NavLink>
+                                    </motion.div>
+                                ))}
+                            </div>
+                            
+                            {/* Button untuk menu dropdown tablet */}
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={() => setTabletDropdownOpen(!tabletDropdownOpen)}
+                                className={`py-2 px-4 flex items-center space-x-2 rounded-lg font-medium transition-all duration-200 shadow-sm border ${tabletDropdownOpen 
+                                    ? 'bg-emerald-100 text-emerald-700 border-emerald-300 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800/50' 
+                                    : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-600 border-emerald-200/30 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-emerald-500 dark:border-gray-700/50'}`}
+                            >
+                                <span>{tabletDropdownOpen ? 'Tutup' : 'Menu Lainnya'}</span>
+                                <i className={`fas fa-chevron-${tabletDropdownOpen ? 'up' : 'down'} transition-transform duration-200`}></i>
+                            </motion.button>
+                            
+                            {/* Dropdown menu untuk tablet yang lebih user-friendly */}
+                            <AnimatePresence>
+                                {tabletDropdownOpen && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="absolute right-0 top-full mt-2 z-50 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 py-2 w-72"
+                                    >
+                                        {/* Menu header untuk tablet */}
+                                        <div className="px-4 py-2 border-b border-gray-100 dark:border-gray-700">
+                                            <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Menu Lainnya</h3>
+                                        </div>
+                                        
+                                        <div className="grid grid-cols-1 divide-y divide-gray-100 dark:divide-gray-700/50">
+                                            {/* Menampilkan hanya menu item yang tidak muncul di navbar */}
+                                            {navItems.slice(2).map((item) => (
+                                                <NavLink
+                                                    key={item.label}
+                                                    href={item.href}
+                                                    active={activeSection === item.href}
+                                                    variant="tablet"
+                                                    onClick={(e) => {
+                                                        handleNavLinkClick(e, item.href);
+                                                        setTabletDropdownOpen(false);
+                                                    }}
+                                                    className="hover:translate-x-1 px-4 py-3"
+                                                    onMouseEnter={() => setActiveTabletItem(item.label)}
+                                                    onMouseLeave={() => setActiveTabletItem(null)}
+                                                >
+                                                    <div className="flex flex-col">
+                                                        <span className="font-medium">{item.label}</span>
+                                                        {activeTabletItem === item.label && (
+                                                            <motion.span 
+                                                                initial={{ opacity: 0 }}
+                                                                animate={{ opacity: 1 }}
+                                                                className="text-xs text-gray-500 dark:text-gray-400 mt-0.5"
+                                                            >
+                                                                {`Lihat ${item.label}`}
+                                                            </motion.span>
+                                                        )}
+                                                    </div>
+                                                </NavLink>
+                                            ))}
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    )}
 
-                    {/* Tombol Desktop */}
+                    {/* Tombol Desktop & Tablet */}
                     <motion.div 
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.3 }}
+                        transition={{ duration: prefersReducedMotion ? 0 : 0.5, delay: prefersReducedMotion ? 0 : 0.3 }}
                         className="hidden md:flex items-center space-x-4"
                     >
                         {user ? (
@@ -142,7 +342,7 @@ const NavbarSection = ({ user }: NavbarProps) => {
                     <motion.button 
                         whileTap={{ scale: 0.95 }}
                         type="button" 
-                        className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 md:hidden hover:text-emerald-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-emerald-500 dark:hover:bg-gray-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2" 
+                        className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 lg:hidden md:hidden hover:text-emerald-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-emerald-500 dark:hover:bg-gray-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2" 
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                         aria-expanded={mobileMenuOpen}
                         aria-label="Buka menu utama"
@@ -160,15 +360,18 @@ const NavbarSection = ({ user }: NavbarProps) => {
                     </motion.button>
                 </div>
 
-                {/* Menu Navigasi Mobile */}
+                {/* Menu Navigasi Mobile - Hanya ditampilkan pada ukuran mobile hingga tablet kecil (< 768px) */}
                 <AnimatePresence>
-                    <MobileMenu 
-                        isOpen={mobileMenuOpen}
-                        activeLink={activeLink}
-                        navItems={navItems}
-                        user={user}
-                        onClose={() => setMobileMenuOpen(false)}
-                    />
+                    {!isTablet && (
+                        <MobileMenu 
+                            isOpen={mobileMenuOpen}
+                            activeLink={activeSection}
+                            navItems={navItems}
+                            user={user}
+                            onClose={() => setMobileMenuOpen(false)}
+                            onNavLinkClick={handleNavLinkClick}
+                        />
+                    )}
                 </AnimatePresence>
             </div>
         </header>

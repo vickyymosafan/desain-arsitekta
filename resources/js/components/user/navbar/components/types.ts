@@ -5,6 +5,7 @@ import { type User } from '@/types';
  */
 export interface NavbarProps {
     user: User | null;
+    activeLink?: string; // Section yang sedang aktif
 }
 
 /**
@@ -24,9 +25,11 @@ export interface NavLinkProps {
     children: React.ReactNode;
     active?: boolean;
     icon?: string;
-    variant?: 'desktop' | 'mobile';
-    onClick?: () => void;
+    variant?: 'desktop' | 'mobile' | 'tablet';
+    onClick?: (e: React.MouseEvent<Element>) => void;
     className?: string;
+    onMouseEnter?: () => void;
+    onMouseLeave?: () => void;
 }
 
 /**

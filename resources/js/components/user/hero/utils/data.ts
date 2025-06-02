@@ -1,4 +1,4 @@
-import { Slide, HeroConfig, CTAButton, ButtonVariant, HeroContentProps, AnimationVariant } from './types';
+import { Slide, HeroConfig, ButtonVariant, HeroContentProps, AnimationVariant } from './types';
 
 // Konfigurasi default dengan opsi animasi yang ditingkatkan
 export const defaultConfig: HeroConfig = {
@@ -26,7 +26,7 @@ export const defaultConfig: HeroConfig = {
 export const slides: Slide[] = [
     {
         id: 1,
-        image: "/storage/images/hero/1.webp",
+        image: "/images/1.webp",
         alt: "Progressive Architecture Design",
         headline: "Spatial Vision",
         subtext: "Menghadirkan keseimbangan sempurna antara estetika dan fungsionalitas ruang",
@@ -38,7 +38,7 @@ export const slides: Slide[] = [
     },
     {
         id: 2,
-        image: "/storage/images/hero/2.webp",
+        image: "/images/2.webp",
         alt: "Luxury Interior Design",
         headline: "Material Harmony",
         subtext: "Kurasi material premium yang menghadirkan dimensi dan tekstur tak terlupakan",
@@ -57,9 +57,10 @@ export const getHeroContent = (contentAnimation: string | undefined): HeroConten
     description: "Desain modern, konstruksi berkualitas, dan solusi yang berkelanjutan untuk mewujudkan hunian ideal sesuai gaya hidup Anda.",
     ctaPrimary: { 
         text: "Mulai Konsultasi Gratis", 
-        href: "/contact", 
+        href: "#", 
         variant: 'primary' as ButtonVariant, 
-        icon: true
+        icon: true,
+        openDatePicker: true // This will open date picker directly instead of navigating
     },
     ctaSecondary: { 
         text: "Lihat Hasil Karya", 

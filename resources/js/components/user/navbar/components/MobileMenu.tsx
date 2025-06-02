@@ -18,13 +18,15 @@ interface MobileMenuProps {
     user: User | null;
     /** Fungsi yang dijalankan saat menu ditutup */
     onClose: () => void;
+    /** Fungsi untuk handling nav link clicks dengan smooth scroll */
+    onNavLinkClick?: (e: React.MouseEvent<HTMLAnchorElement>, href: string) => void;
 }
 
 /**
  * Komponen menu navigasi untuk tampilan mobile
  * Menampilkan daftar navigasi dan tombol aksi
  */
-const MobileMenu = ({ isOpen, activeLink, navItems, user, onClose }: MobileMenuProps) => {
+const MobileMenu = ({ isOpen, activeLink, navItems, user, onClose, onNavLinkClick }: MobileMenuProps) => {
     // Animation variants for the menu container
     const menuVariants = {
         open: { 
@@ -80,9 +82,14 @@ const MobileMenu = ({ isOpen, activeLink, navItems, user, onClose }: MobileMenuP
                                 <NavLink
                                     href={item.href}
                                     active={activeLink === item.href}
-                                    icon={item.icon}
                                     variant="mobile"
-                                    onClick={onClose}
+                                    onClick={(e) => {
+                                        if (onNavLinkClick) {
+                                            onNavLinkClick(e, item.href);
+                                        } else {
+                                            onClose();
+                                        }
+                                    }}
                                     className="hover:translate-x-1"
                                 >
                                     {item.label}
