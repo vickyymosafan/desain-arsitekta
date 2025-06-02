@@ -340,7 +340,7 @@ export const useSlider = ({
     }, autoplaySpeed);
     
     return () => clearInterval(interval);
-  }, [autoplay, autoplaySpeed, currentSlide, isPaused]);
+  }, [autoplay, autoplaySpeed, currentSlide, isPaused, goToNextSlide]);
   
   return {
     currentSlide,

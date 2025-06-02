@@ -14,7 +14,7 @@ import {
   ShieldCheckIcon
 } from '@heroicons/react/24/outline';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Consultation, useConsultation } from '@/contexts/ConsultationContext';
+import { useConsultation } from '@/contexts/ConsultationContext';
 
 const AdminConsultationList: React.FC = () => {
   const { pendingConsultations, approveConsultation, rejectConsultation, isLoading } = useConsultation();

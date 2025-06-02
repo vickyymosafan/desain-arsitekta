@@ -89,7 +89,7 @@ export const ConsultationProvider: React.FC<ConsultationProviderProps> = ({
           // Update the status to approved
           return {
             ...consultation,
-            status: 'approved' as 'approved' // Type assertion to match the union type
+            status: 'approved' as const // Type assertion to match the union type
           };
         }
         return consultation;
@@ -112,7 +112,7 @@ export const ConsultationProvider: React.FC<ConsultationProviderProps> = ({
             if (consultation.id === id) {
               return {
                 ...consultation,
-                status: 'pending' as 'pending'
+                status: 'pending' as const
               };
             }
             return consultation;
@@ -139,7 +139,7 @@ export const ConsultationProvider: React.FC<ConsultationProviderProps> = ({
           // Update the status and add rejection reason
           return {
             ...consultation,
-            status: 'rejected' as 'rejected', // Type assertion to match the union type
+            status: 'rejected' as const, // Type assertion to match the union type
             rejection_reason: reason
           };
         }
@@ -174,7 +174,7 @@ export const ConsultationProvider: React.FC<ConsultationProviderProps> = ({
             if (consultation.id === id) {
               return {
                 ...consultation,
-                status: 'pending' as 'pending',
+                status: 'pending' as const,
                 rejection_reason: undefined
               };
             }

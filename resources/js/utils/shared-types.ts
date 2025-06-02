@@ -21,9 +21,9 @@ export type EasingType =
 
 // Common animation variant props structure
 export type AnimationVariantProps = {
-  initial: Record<string, any>;
-  animate: Record<string, any>;
-  transition: Record<string, any>;
+  initial: Record<string, number | string | boolean>;
+  animate: Record<string, number | string | boolean>;
+  transition: Record<string, number | string | boolean | object>;
 };
 
 // Base interface for any component with children
