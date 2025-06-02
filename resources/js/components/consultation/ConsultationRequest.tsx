@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { format } from 'date-fns';
-import { id } from 'date-fns/locale';
 import { CalendarIcon, ClockIcon, InformationCircleIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import DatePickerModal from './DatePickerModal';
 import { useConsultation } from '@/contexts/ConsultationContext';

@@ -317,19 +317,19 @@ export const useSlider = ({
   };
   
   // Slide navigation controls
-  const goToSlide = (index: number) => {
+  const goToSlide = useCallback((index: number) => {
     // Pastikan index dalam rentang valid
     const validIndex = index < 0 ? slides.length - 1 : index >= slides.length ? 0 : index;
     setCurrentSlide(validIndex);
-  };
+  }, [slides.length]);
   
-  const goToPrevSlide = () => {
+  const goToPrevSlide = useCallback(() => {
     goToSlide(currentSlide - 1);
-  };
+  }, [goToSlide, currentSlide]);
   
-  const goToNextSlide = () => {
+  const goToNextSlide = useCallback(() => {
     goToSlide(currentSlide + 1);
-  };
+  }, [goToSlide, currentSlide]);
   
   // Setup autoplay
   useEffect(() => {

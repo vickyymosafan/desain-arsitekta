@@ -6,7 +6,6 @@ import {
   ClockIcon, 
   CheckCircleIcon, 
   XCircleIcon,
-  ExclamationCircleIcon,
   InformationCircleIcon
 } from '@heroicons/react/24/outline';
 import { Consultation } from '@/contexts/ConsultationContext';
